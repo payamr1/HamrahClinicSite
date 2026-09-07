@@ -829,15 +829,6 @@ ON DUPLICATE KEY UPDATE v = VALUES(v);
 --  فایل‌ها در public/assets/img/ هستند و همراه مخزن استقرار
 --  می‌شوند. عکس‌های باکیفیت‌تر بعداً از پنل جایگزین می‌شوند.
 -- ------------------------------------------------------------
-UPDATE doctors SET photo = 'doctors/khalili.jpg'        WHERE name = 'دکتر محبوبه خلیلی';
-UPDATE doctors SET photo = 'doctors/mafi.jpg'           WHERE name = 'دکتر احمد مافی';
-UPDATE doctors SET photo = 'doctors/asghari-pour.jpg'   WHERE name = 'دکتر حسین اصغری‌پور';
-UPDATE doctors SET photo = 'doctors/behzadi.jpg'        WHERE name = 'دکتر بهناز بهزادی';
-UPDATE doctors SET photo = 'doctors/tatina.jpg'         WHERE name = 'دکتر علیرضا تاتینا';
-UPDATE doctors SET photo = 'doctors/alamzadeh.jpg'      WHERE name = 'دکتر مهناز عالم‌زاده بحرینی';
-UPDATE doctors SET photo = 'doctors/shekarkhar.jpg'     WHERE name = 'دکتر شادی شکرخوار';
-UPDATE doctors SET photo = 'doctors/badiezadegan.jpg'   WHERE name = 'دکتر مریم بدیع‌زادگان';
-
 UPDATE clinics SET image = 'clinics/cardiology.jpg'  WHERE slug IN ('cardiology','chemotherapy');
 UPDATE clinics SET image = 'clinics/oncology.webp'   WHERE slug = 'oncology';
 UPDATE clinics SET image = 'clinics/wound.jpg'       WHERE slug = 'wound';
@@ -845,6 +836,26 @@ UPDATE clinics SET image = 'clinics/endocrine.jpg'   WHERE slug IN ('endocrine',
 UPDATE clinics SET image = 'clinics/infectious.jpg'  WHERE slug IN ('infectious','urology','mental-health','persian-medicine');
 
 UPDATE pages SET hero_image = 'hero-reception.jpg' WHERE path = '/';
+
+-- ------------------------------------------------------------
+--  عکس پزشکان
+--
+--  نگاشت از تگ og:image صفحه‌ی هر پزشک در سایت فعلی گرفته
+--  شده، نه حدس. نسخه‌ی قبلی حدسی بود و همه‌ی ۱۲ نفر عکس
+--  اشتباه گرفته بودند.
+-- ------------------------------------------------------------
+UPDATE doctors SET photo = 'doctors/khalili.jpg' WHERE name = 'دکتر محبوبه خلیلی';
+UPDATE doctors SET photo = 'doctors/mafi.jpg' WHERE name = 'دکتر احمد مافی';
+UPDATE doctors SET photo = 'doctors/asghari-pour.jpg' WHERE name = 'دکتر حسین اصغری‌پور';
+UPDATE doctors SET photo = 'doctors/naeini.jpg' WHERE name = 'دکتر فاطمه نائینی';
+UPDATE doctors SET photo = 'doctors/behzadi.jpg' WHERE name = 'دکتر بهناز بهزادی';
+UPDATE doctors SET photo = 'doctors/tatina.jpg' WHERE name = 'دکتر علیرضا تاتینا';
+UPDATE doctors SET photo = 'doctors/alamzadeh.jpg' WHERE name = 'دکتر مهناز عالم‌زاده بحرینی';
+UPDATE doctors SET photo = 'doctors/shekarkhar.jpg' WHERE name = 'دکتر شادی شکرخوار';
+UPDATE doctors SET photo = 'doctors/danesh-amooz.jpg' WHERE name = 'دکتر حسام دانش‌آموز';
+UPDATE doctors SET photo = 'doctors/badiezadegan.jpg' WHERE name = 'دکتر مریم بدیع‌زادگان';
+UPDATE doctors SET photo = 'doctors/heydari-rad.jpg' WHERE name = 'دکتر غزاله حیدری‌راد';
+UPDATE doctors SET photo = 'doctors/moghbouli.jpg' WHERE name = 'دکتر رضا مقبولی';
 
 -- ##### db/seed/03-content.sql #####
 
