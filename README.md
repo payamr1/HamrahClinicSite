@@ -86,10 +86,13 @@ File Manager ▸ پوشه‌ی `hamrah-app` ▸ فایل `config.php.example` ر
 
 ### ۶. جدول‌ها را بسازید
 
-cPanel ▸ **phpMyAdmin** ▸ دیتابیس را انتخاب کنید ▸ تب Import، به ترتیب:
+cPanel ▸ **phpMyAdmin** ▸ دیتابیس را انتخاب کنید ▸ تب Import، **به همین ترتیب**:
 
-1. `db/schema.sql`
-2. `db/seed/01-pages.sql`
+1. `db/schema.sql` — ساخت ۱۳ جدول
+2. `db/seed/01-pages.sql` — ۸۲ آدرس با متای سئو
+3. `db/seed/02-clinics-doctors.sql` — ۹ کلینیک، ۱۲ پزشک و اتصال‌ها
+
+ترتیب مهم است: فایل سوم با `path` به صفحات فایل دوم وصل می‌شود.
 
 ### ۷. سلامت را بررسی کنید
 
