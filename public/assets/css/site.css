@@ -217,7 +217,10 @@ svg{display:block}
 .hero-acts{display:flex;gap:11px;flex-wrap:wrap}
 .hero-acts .b{padding:14px 26px;font-size:15px}
 
-.chips{position:absolute;inset-inline-start:24px;bottom:116px;z-index:2;
+/* پلاک‌های آمار روی سمتِ عکس می‌نشینند، نه روی متن.
+   در راست‌چین متن سمت راست است، پس inline-end یعنی چپ — همان
+   جایی که عکس است. با inline-start روی متن می‌افتادند. */
+.chips{position:absolute;inset-inline-end:24px;bottom:116px;z-index:2;
   margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
 .chips li{background:rgba(255,255,255,.96);border-radius:var(--r);
   padding:11px 17px;box-shadow:var(--sh);min-width:172px}
@@ -443,7 +446,7 @@ svg{display:block}
 .band .b{padding:14px 26px;font-size:15px}
 
 /* ---- واکنش‌گرا --------------------------------------------- */
-@media (max-width:1000px){
+@media (max-width:1150px){
   .lay{grid-template-columns:1fr;gap:26px}
   .side{position:static}
   .split{grid-template-columns:1fr;gap:28px}
