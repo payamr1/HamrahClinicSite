@@ -81,12 +81,41 @@ CREATE TABLE IF NOT EXISTS pages (
   KEY idx_page_published (published_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-ALTER TABLE pages
-  ADD CONSTRAINT fk_page_clinic FOREIGN KEY (clinic_id) REFERENCES clinics(id) ON DELETE SET NULL,
-  ADD CONSTRAINT fk_page_parent FOREIGN KEY (parent_id) REFERENCES pages(id)   ON DELETE SET NULL;
+-- ------------------------------------------------------------
+--  کلیدهای خارجی حلقوی
+--
+--  pages به clinics وابسته است و clinics به pages، پس این سه
+--  کلید بعد از ساخت هر دو جدول اضافه می‌شوند.
+--
+--  ALTER TABLE معادل IF NOT EXISTS ندارد و اجرای دوباره‌ی فایل
+--  با خطای ۱۲۱ (نام کلید تکراری) شکست می‌خورد — که MySQL آن را
+--  «Can't create table» گزارش می‌کند چون ALTER داخلاً جدول موقت
+--  می‌سازد. پس هر کدام قبل از افزوده شدن بررسی می‌شوند.
+-- ------------------------------------------------------------
 
-ALTER TABLE clinics
-  ADD CONSTRAINT fk_clinic_page FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL;
+SET @fk := (SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
+            WHERE CONSTRAINT_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'pages' AND CONSTRAINT_NAME = 'fk_page_clinic');
+SET @sql := IF(@fk = 0,
+  'ALTER TABLE pages ADD CONSTRAINT fk_page_clinic FOREIGN KEY (clinic_id) REFERENCES clinics(id) ON DELETE SET NULL',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+SET @fk := (SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
+            WHERE CONSTRAINT_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'pages' AND CONSTRAINT_NAME = 'fk_page_parent');
+SET @sql := IF(@fk = 0,
+  'ALTER TABLE pages ADD CONSTRAINT fk_page_parent FOREIGN KEY (parent_id) REFERENCES pages(id) ON DELETE SET NULL',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+SET @fk := (SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
+            WHERE CONSTRAINT_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'clinics' AND CONSTRAINT_NAME = 'fk_clinic_page');
+SET @sql := IF(@fk = 0,
+  'ALTER TABLE clinics ADD CONSTRAINT fk_clinic_page FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
 
 -- ------------------------------------------------------------
 -- پزشکان
