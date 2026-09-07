@@ -2,18 +2,18 @@
 # ============================================================
 #  استقرار خودکار cPanel
 #
-#  با هر بار زدن دکمه‌ی «Update from Remote» یا «Deploy HEAD Commit»
-#  در cPanel ▸ Git Version Control، این وظیفه‌ها اجرا می‌شوند.
+#  با هر بار زدن دکمه‌ی «Deploy HEAD Commit» در
+#  cPanel ▸ Git Version Control، این وظیفه‌ها اجرا می‌شوند.
+#  توجه: clone به‌تنهایی فایلی را جابه‌جا نمی‌کند.
 #
 #  ساختار روی سرور:
 #    ~/public_html/           ← ریشه‌ی وب (محتوای public/)
 #    ~/hamrah-app/            ← کد برنامه، بیرون از دسترس مرورگر
 #    ~/hamrah-app/config.php  ← رمز دیتابیس؛ دست‌نخورده می‌ماند
 #
-#  ⚠ WEBROOT را با مقدار واقعی چک کنید:
-#     تأییدشده از cPanel ▸ Domains: ریشه‌ی وب /public_html است،
-#     چون new.hamrahclinic.ir دامنه‌ی اصلی همین اکانت است.
-#     اگر چیز دیگری بود، فقط همین یک خط را عوض کنید.
+#  ریشه‌ی وب از cPanel ▸ Domains تأیید شده: new.hamrahclinic.ir
+#  دامنه‌ی اصلی همین اکانت است و Document Root آن /public_html.
+#  اگر روزی عوض شد، فقط خط WEBROOT را تغییر دهید.
 # ============================================================
 deployment:
   tasks:
@@ -37,6 +37,11 @@ deployment:
     - /bin/find $WEBROOT -type f -exec /bin/chmod 644 {} +
     - /bin/chmod 700 $APPROOT
     - /bin/chmod 600 $APPROOT/config.php || /bin/true
+
+    # کش تصویر — در اولین درخواست پر می‌شود، پس بعد از chmod ساخته
+    # می‌شود تا قابل نوشتن بماند
+    - /bin/mkdir -p $WEBROOT/assets/cache/img
+    - /bin/chmod 775 $WEBROOT/assets/cache $WEBROOT/assets/cache/img
 
     # نشانه‌ی زمان آخرین استقرار — صفحه‌ی سلامت آن را نشان می‌دهد
     - /bin/date -u +%Y-%m-%dT%H:%M:%SZ > $WEBROOT/.deployed

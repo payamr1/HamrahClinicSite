@@ -34,6 +34,7 @@ require $appDir . '/Database.php';
 require $appDir . '/Router.php';
 require $appDir . '/Seo.php';
 require $appDir . '/Repository.php';
+require $appDir . '/Images.php';
 require $appDir . '/helpers.php';
 
 // ---- دیتابیس --------------------------------------------------
@@ -48,6 +49,11 @@ try {
     }
     exit;
 }
+
+// ---- بهینه‌ساز تصویر ------------------------------------------
+// ریشه‌ی وب همان پوشه‌ای است که index.php در آن اجرا می‌شود
+$images = new Images($_SERVER['DOCUMENT_ROOT'] ?: dirname($appDir) . '/public');
+img_init($images);
 
 // ---- تنظیمات عمومی از دیتابیس ---------------------------------
 $settings = [];
@@ -66,6 +72,7 @@ return [
     'router'   => new Router($db),
     'repo'     => new Repository($db),
     'seo'      => new Seo($config, $settings),
+    'images'   => $images,
     'debug'    => $debug,
     'appDir'   => $appDir,
     'rootDir'  => $rootDir,

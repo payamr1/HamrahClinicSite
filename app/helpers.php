@@ -14,6 +14,35 @@ function url(?string $path): string
     return implode('/', array_map('rawurlencode', explode('/', $path)));
 }
 
+/**
+ * بهینه‌ساز تصویر — یک نمونه برای کل درخواست.
+ * bootstrap آن را یک بار ست می‌کند و قالب‌ها از img() استفاده می‌کنند.
+ */
+function img_init(?Images $i = null): ?Images
+{
+    static $inst = null;
+    if ($i !== null) {
+        $inst = $i;
+    }
+    return $inst;
+}
+
+/**
+ * آدرس نسخه‌ی بهینه‌ی یک تصویر.
+ *
+ * @param string|null $rel مسیر نسبی داخل assets/img
+ * @param int         $w   عرضی که واقعاً در قالب دیده می‌شود
+ */
+function img(?string $rel, int $w): string
+{
+    $rel = (string) $rel;
+    if ($rel === '') {
+        return '';
+    }
+    $opt = img_init();
+    return $opt ? $opt->url($rel, $w) : '/assets/img/' . ltrim($rel, '/');
+}
+
 /** آدرس فایل ثابت با نسخه‌گذاری بر اساس زمان تغییر فایل */
 function asset(string $rel): string
 {

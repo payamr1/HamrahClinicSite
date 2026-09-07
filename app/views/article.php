@@ -32,7 +32,7 @@ ob_start(); ?>
     <div class="byline">
       <?php if ($author !== null): ?>
         <?php if (!empty($author['photo'])): ?>
-          <span class="av" style="background-image:url('<?= e(asset('/assets/img/' . $author['photo'])) ?>')"
+          <span class="av" style="background-image:url('<?= e(img($author['photo'], 400)) ?>')"
                 role="img" aria-label="<?= e($author['name']) ?>"></span>
         <?php else: ?>
           <span class="av av-empty" aria-hidden="true"></span>
@@ -58,7 +58,7 @@ ob_start(); ?>
   <article class="prose">
     <?php if (!empty($page['hero_image'])): ?>
       <figure class="fig">
-        <span class="ph" style="background-image:url('<?= e(asset('/assets/img/' . $page['hero_image'])) ?>')"
+        <span class="ph" style="background-image:url('<?= e(img($page['hero_image'], 900)) ?>')"
               role="img" aria-label="<?= e($page['title']) ?>"></span>
       </figure>
     <?php endif; ?>
@@ -75,7 +75,7 @@ ob_start(); ?>
     <?php if ($author !== null): ?>
     <aside class="author">
       <?php if (!empty($author['photo'])): ?>
-        <span class="av" style="background-image:url('<?= e(asset('/assets/img/' . $author['photo'])) ?>')"></span>
+        <span class="av" style="background-image:url('<?= e(img($author['photo'], 400)) ?>')"></span>
       <?php else: ?>
         <span class="av av-empty"></span>
       <?php endif; ?>

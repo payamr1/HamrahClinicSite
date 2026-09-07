@@ -6,7 +6,7 @@ $clinics = $repo->clinics();
 ob_start(); ?>
 
 <header class="phead">
-  <div class="pic" style="background-image:url('<?= e(asset('/assets/img/hero-reception.jpg')) ?>')" aria-hidden="true"></div>
+  <div class="pic" style="background-image:url('<?= e(img('hero-reception.jpg', 1600)) ?>')" aria-hidden="true"></div>
   <div class="veil" aria-hidden="true"></div>
   <div class="in">
     <p class="kick">کلینیک‌های تخصصی</p>

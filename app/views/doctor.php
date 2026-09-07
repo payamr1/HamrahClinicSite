@@ -22,12 +22,12 @@ $hero  = $page['hero_image'] ?: 'hero-reception.jpg';
 ob_start(); ?>
 
 <header class="phead">
-  <div class="pic" style="background-image:url('<?= e(asset('/assets/img/' . $hero)) ?>')" aria-hidden="true"></div>
+  <div class="pic" style="background-image:url('<?= e(img($hero, 1600)) ?>')" aria-hidden="true"></div>
   <div class="veil" aria-hidden="true"></div>
   <div class="in">
     <div class="dhero">
       <?php if (!empty($doc['photo'])): ?>
-        <div class="por" style="background-image:url('<?= e(asset('/assets/img/' . $doc['photo'])) ?>')"
+        <div class="por" style="background-image:url('<?= e(img($doc['photo'], 600)) ?>')"
              role="img" aria-label="<?= e($doc['name']) ?>"></div>
       <?php else: ?>
         <div class="por por-empty" aria-hidden="true"></div>

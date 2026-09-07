@@ -6,7 +6,7 @@ $doctors = $repo->doctors(40);
 ob_start(); ?>
 
 <header class="phead">
-  <div class="pic" style="background-image:url('<?= e(asset('/assets/img/hero-reception.jpg')) ?>')" aria-hidden="true"></div>
+  <div class="pic" style="background-image:url('<?= e(img('hero-reception.jpg', 1600)) ?>')" aria-hidden="true"></div>
   <div class="veil" aria-hidden="true"></div>
   <div class="in">
     <p class="kick">تیم درمان</p>
@@ -20,7 +20,7 @@ ob_start(); ?>
     <?php foreach ($doctors as $d): ?>
       <a class="doc" href="<?= url($d['path'] ?? '/team/') ?>">
         <span class="ph<?= empty($d['photo']) ? ' ph-empty' : '' ?>"
-          <?php if (!empty($d['photo'])): ?>style="background-image:url('<?= e(asset('/assets/img/' . $d['photo'])) ?>')"<?php endif; ?>></span>
+          <?php if (!empty($d['photo'])): ?>style="background-image:url('<?= e(img($d['photo'], 400)) ?>')"<?php endif; ?>></span>
         <span class="bd">
           <h3><?= e($d['name']) ?></h3>
           <span class="sp"><?= e($d['specialty']) ?></span>

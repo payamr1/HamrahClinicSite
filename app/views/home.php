@@ -20,7 +20,7 @@ $tel   = $app['settings']['phone_raw'] ?? '02191303132';
 ob_start(); ?>
 
 <header class="hero">
-  <div class="pic" style="background-image:url('<?= e(asset('/assets/img/' . $hero)) ?>')"
+  <div class="pic" style="background-image:url('<?= e(img($hero, 1600)) ?>')"
        role="img" aria-label="پذیرش همراه کلینیک"></div>
   <div class="veil" aria-hidden="true"></div>
 
@@ -79,7 +79,7 @@ ob_start(); ?>
     <?php foreach ($clinics as $c): ?>
       <a class="card" href="<?= url($c['page_path'] ?? '/service/') ?>">
         <?php if (!empty($c['image'])): ?>
-          <span class="ph" style="background-image:url('<?= e(asset('/assets/img/' . $c['image'])) ?>')"></span>
+          <span class="ph" style="background-image:url('<?= e(img($c['image'], 400)) ?>')"></span>
         <?php else: ?>
           <span class="ph ph-empty"></span>
         <?php endif; ?>
@@ -137,7 +137,7 @@ ob_start(); ?>
       </div>
     </div>
   </div>
-  <div class="art" style="background-image:url('<?= e(asset('/assets/img/' . $hero)) ?>')"
+  <div class="art" style="background-image:url('<?= e(img($hero, 1600)) ?>')"
        role="img" aria-label="محیط همراه کلینیک"></div>
 </div></div></section>
 
@@ -152,7 +152,7 @@ ob_start(); ?>
     <?php foreach ($doctors as $d): ?>
       <a class="doc" href="<?= url($d['path'] ?? '/team/') ?>">
         <?php if (!empty($d['photo'])): ?>
-          <span class="ph" style="background-image:url('<?= e(asset('/assets/img/' . $d['photo'])) ?>')"></span>
+          <span class="ph" style="background-image:url('<?= e(img($d['photo'], 400)) ?>')"></span>
         <?php else: ?>
           <span class="ph ph-empty"></span>
         <?php endif; ?>
@@ -186,7 +186,7 @@ ob_start(); ?>
     <?php foreach ($posts as $p): ?>
       <a class="art-c" href="<?= url($p['path']) ?>">
         <span class="ph<?= empty($p['hero_image']) ? ' ph-empty' : '' ?>"
-          <?php if (!empty($p['hero_image'])): ?>style="background-image:url('<?= e(asset('/assets/img/' . $p['hero_image'])) ?>')"<?php endif; ?>></span>
+          <?php if (!empty($p['hero_image'])): ?>style="background-image:url('<?= e(img($p['hero_image'], 400)) ?>')"<?php endif; ?>></span>
         <span class="bd">
           <h3><?= e($p['title']) ?></h3>
           <span class="dt">
