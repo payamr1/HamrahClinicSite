@@ -1,0 +1,327 @@
+<title>مرجع کلینیک‌های چندتخصصی</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&family=Vazirmatn:wght@200;300;400;500;700&display=swap">
+<style>
+:root{
+  --stone:#E8EAEF; --paper:#F4F5F8; --sunk:#DCDFE7;
+  --navy:#24408D; --navy-2:#2F4FA6;
+  --ink:#17224A; --ink-2:#48547A; --ink-3:#79839F;
+  --teal:#1E8570; --teal-lt:#4EC3A9;
+  --rule:#C9CDD9; --rule-2:#AEB5C6;
+  --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --stone:#0D1424; --paper:#131C30; --sunk:#18223A;
+    --navy:#0F1B3D; --navy-2:#1B2C5E;
+    --ink:#E7EAF3; --ink-2:#AAB4CE; --ink-3:#7B85A2;
+    --teal:#5FCFB6; --teal-lt:#78DAC4;
+    --rule:#232E4A; --rule-2:#313D5E;
+    --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+  }
+}
+:root[data-theme="dark"]{
+  --stone:#0D1424; --paper:#131C30; --sunk:#18223A;
+  --navy:#0F1B3D; --navy-2:#1B2C5E;
+  --ink:#E7EAF3; --ink-2:#AAB4CE; --ink-3:#7B85A2;
+  --teal:#5FCFB6; --teal-lt:#78DAC4;
+  --rule:#232E4A; --rule-2:#313D5E;
+  --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{margin:0;background:var(--stone);color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  font-weight:300;font-size:15px;line-height:1.9;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Markazi Text","Vazirmatn",serif;font-weight:600;margin:0;line-height:1.28}
+a{color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 80px}
+
+.mast{background:var(--navy);color:var(--on-dark);padding:40px 0 34px;margin-bottom:0}
+.mast .in{max-width:1000px;margin:0 auto;padding:0 24px}
+.mast .kick{font-size:11px;letter-spacing:.15em;color:var(--teal-lt);font-weight:500;margin:0 0 14px}
+.mast h1{font-size:clamp(30px,4.6vw,46px);color:var(--on-dark);margin:0 0 12px;max-width:22ch}
+.mast p{margin:0;font-size:16px;font-weight:200;color:var(--on-dark-2);max-width:58ch;line-height:2}
+
+.admit{background:var(--paper);border-right:3px solid var(--teal-lt);padding:22px 26px;margin:0 0 44px}
+.admit h2{font-family:"Vazirmatn",sans-serif;font-size:15px;font-weight:700;margin:0 0 10px;color:var(--ink)}
+.admit p{margin:0 0 10px;font-size:14.5px;color:var(--ink-2);line-height:2}
+.admit p:last-child{margin:0}
+.admit b{color:var(--ink);font-weight:700}
+
+section{margin:0 0 46px}
+.shead{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:6px;flex-wrap:wrap}
+.shead h2{font-size:27px}
+.shead .cnt{font-size:11px;letter-spacing:.1em;color:var(--teal);font-weight:500}
+.sdesc{margin:0 0 20px;font-size:13.5px;color:var(--ink-3);max-width:70ch;line-height:1.9}
+
+.site{border-bottom:1px solid var(--rule);padding:20px 0;display:grid;grid-template-columns:1fr 168px;gap:26px;align-items:start}
+.site:first-of-type{border-top:1px solid var(--rule)}
+.site h3{font-size:24px;margin:0 0 2px;line-height:1.3}
+.site h3 a{text-decoration:none}
+.site h3 a:hover{color:var(--teal)}
+.site .loc{font-size:11px;color:var(--ink-3);letter-spacing:.04em;margin:0 0 9px}
+.site p.d{margin:0 0 10px;font-size:14.5px;color:var(--ink-2);line-height:1.95;max-width:62ch}
+.site .take{font-size:13px;color:var(--ink-2);line-height:1.9;padding-top:9px;border-top:1px dashed var(--rule);max-width:62ch}
+.site .take b{color:var(--teal);font-weight:600}
+.url{display:block;font-size:11.5px;color:var(--ink-3);direction:ltr;text-align:left;
+  word-break:break-all;line-height:1.7;text-decoration:none}
+.url:hover{color:var(--teal)}
+
+/* tiny structural wireframe */
+.wf{width:168px;border:1px solid var(--rule-2);background:var(--paper);padding:0;overflow:hidden}
+.wf .bar{height:9px;background:var(--sunk);border-bottom:1px solid var(--rule)}
+.wf .hero{height:62px;position:relative;display:flex;align-items:center;padding:0 8px}
+.wf .hero.photo{background:linear-gradient(115deg,var(--navy) 0%,var(--navy-2) 100%)}
+.wf .hero.light{background:var(--sunk)}
+.wf .hero.split{background:var(--sunk);justify-content:space-between}
+.wf .txt{display:flex;flex-direction:column;gap:3px}
+.wf .l{height:4px;background:var(--on-dark-2);opacity:.85}
+.wf .hero.light .l,.wf .hero.split .l{background:var(--ink-3);opacity:.55}
+.wf .l.w1{width:56px}.wf .l.w2{width:40px}.wf .l.w3{width:30px}
+.wf .cta{height:9px;width:34px;background:var(--teal-lt);margin-top:4px}
+.wf .ph{width:52px;height:44px;background:var(--rule-2);opacity:.8}
+.wf .tiles{display:flex;height:20px;border-top:1px solid var(--rule)}
+.wf .tiles i{flex:1;border-left:1px solid var(--rule);background:var(--sunk)}
+.wf .tiles i:last-child{border-left:none}
+.wf .tiles.teal i{background:var(--teal-lt);opacity:.55}
+.wf .search{height:14px;margin:6px 8px;background:var(--paper);border:1px solid var(--rule-2)}
+.wf .grid{display:flex;gap:3px;padding:6px 8px}
+.wf .grid i{flex:1;height:16px;background:var(--sunk);border:1px solid var(--rule)}
+.wf cap{display:block;font-size:9.5px;color:var(--ink-3);text-align:center;padding:5px 4px 6px;border-top:1px solid var(--rule);line-height:1.5}
+
+.common{background:var(--navy);color:var(--on-dark);padding:30px 26px;margin:0 0 8px}
+.common h2{color:var(--on-dark);font-size:27px;margin:0 0 6px}
+.common > p{margin:0 0 18px;font-size:14px;color:var(--on-dark-2);font-weight:200;max-width:64ch}
+.clist{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:rgba(234,237,244,.16);border:1px solid rgba(234,237,244,.16)}
+.clist div{background:var(--navy);padding:14px 16px}
+.clist b{display:block;color:var(--teal-lt);font-size:12.5px;font-weight:600;margin-bottom:3px}
+.clist span{font-size:12.5px;color:var(--on-dark-2);line-height:1.8;font-weight:200}
+
+.ask{border:1px solid var(--rule);background:var(--paper);padding:22px 26px;margin-top:40px}
+.ask h2{font-size:25px;margin:0 0 8px}
+.ask p{margin:0 0 8px;font-size:14.5px;color:var(--ink-2);line-height:2}
+.ask p:last-child{margin:0}
+.ask b{color:var(--ink);font-weight:700}
+
+@media (max-width:720px){
+  .site{grid-template-columns:1fr;gap:16px}
+  .wf{width:100%;max-width:260px}
+  .wrap,.mast .in{padding-left:18px;padding-right:18px}
+  .common{padding:24px 18px}
+}
+</style>
+
+<header class="mast">
+  <div class="in">
+    <p class="kick">مرجع طراحی — ۱۰ سایت کلینیک و بیمارستان چندتخصصی</p>
+    <h1>الگوهای واقعی صفحه‌ی اول</h1>
+    <p>ده سایت بررسی و از هرکدام عکس گرفته شد. اینجا ساختار صفحه‌ی اول هرکدام تحلیل شده تا انتخاب کنی از کدام الگو برویم.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="admit">
+    <h2>چیزی که در طرح قبلی من نبود</h2>
+    <p>هر ده سایت بدون استثنا سه چیز دارند که طرح اول من نداشت: <b>عکس واقعی در بالای صفحه</b> (محیط کلینیک، تیم پزشکی یا کمپین درمانی)، <b>یک ردیف دسترسی سریع درست زیر بنر</b> (یافتن پزشک، رزرو نوبت، نتیجه‌ی آزمایش، شعب)، و <b>ویجت نوبت‌دهی برجسته</b> که همان بالای صفحه دیده می‌شود.</p>
+    <p>طرح من به‌جای عکس، تایپوگرافی و نوار قلب گذاشته بود. برای یک مجله‌ی پزشکی درست بود، برای کلینیکی که باید اعتماد بیمار را جلب کند نه. حق با تو بود.</p>
+  </div>
+
+  <!-- ============ A ============ -->
+  <section>
+    <div class="shead"><h2>الگوی الف — بنر عکس تمام‌عرض</h2><span class="cnt">۴ سایت</span></div>
+    <p class="sdesc">عکس بزرگ محیط یا تیم پزشکی، تیتر روی آن، و دکمه‌ی نوبت. جدی‌ترین و معتبرترین حالت. برای کلینیکی که ساختمان و تجهیزات خوبی دارد بهترین گزینه است.</p>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.acibadem.com.tr" target="_blank" rel="noopener">Acıbadem</a></h3>
+        <p class="loc">ترکیه · گروه بیمارستانی چندتخصصی</p>
+        <p class="d">بنر سرمه‌ای یک‌دست با تیتر بزرگ «برای فردایی سالم‌تر»، دو دکمه، و بلافاصله زیرش ردیفی از شش آیکون: نتیجه‌ی آزمایش، یافتن پزشک، یافتن بیمارستان، طرف قرارداد، استعلام قیمت، نظر دوم پزشکی.</p>
+        <p class="take"><b>قابل برداشت:</b> ردیف شش‌تایی دسترسی سریع. این دقیقاً چیزی است که سایت شما ندارد و بیمار سردرگم را مستقیم به مقصد می‌رساند.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero photo"><div class="txt"><span class="l w1"></span><span class="l w2"></span><span class="cta"></span></div></div>
+        <div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <cap>بنر + ردیف ۶ آیکون</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://my.clevelandclinic.org" target="_blank" rel="noopener">Cleveland Clinic</a></h3>
+        <p class="loc">آمریکا · مرجع جهانی چندتخصصی</p>
+        <p class="d">ویدیو/عکس واقعی از راهرو و اتاق بیمار، تیتر انسانی «هر وقت به ما نیاز داشتید اینجاییم»، و سه لینک ساده‌ی زیرخط‌دار. دکمه‌ی Appointments آبی در گوشه‌ی بالا همیشه دیده می‌شود.</p>
+        <p class="take"><b>قابل برداشت:</b> لحن. تیتر درباره‌ی بیمار است نه درباره‌ی کلینیک. و عکس واقعی از فضای خودشان، نه عکس استوک.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero photo"><div class="txt"><span class="l w1"></span><span class="l w1"></span><span class="l w3"></span></div></div>
+        <div class="grid"><i></i><i></i><i></i></div>
+        <cap>بنر ویدیویی + لینک ساده</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.medicana.com.tr" target="_blank" rel="noopener">Medicana</a></h3>
+        <p class="loc">ترکیه · گروه بیمارستانی</p>
+        <p class="d">عکس بریده‌شده‌ی سه پزشک روی زمینه‌ی آبی تیره، تیتر «کنار شماییم، پشتیبان شماییم»، سه کاشی شیشه‌ای (بیمارستان‌ها، بخش‌ها، نوبت آنلاین) و یک نوار سفید شناور با سه دکمه‌ی تماس.</p>
+        <p class="take"><b>قابل برداشت:</b> عکس پزشکان با پس‌زمینه‌ی حذف‌شده روی رنگ برند. با عکس‌های موجود شما شدنی است و خیلی حرفه‌ای درمی‌آید.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero photo"><div class="txt"><span class="l w1"></span><span class="l w2"></span></div><div class="ph" style="margin-right:auto"></div></div>
+        <div class="tiles teal"><i></i><i></i><i></i></div>
+        <cap>عکس + کاشی + نوار تماس</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.mayoclinic.org" target="_blank" rel="noopener">Mayo Clinic</a></h3>
+        <p class="loc">آمریکا · مرجع جهانی</p>
+        <p class="d">عکس تمام‌عرض، تیتر بسیار کوتاه «Transforming your care»، یک لینک و یک دکمه‌ی درخواست نوبت. ساده‌ترین و کم‌شلوغ‌ترین نمونه‌ی این فهرست.</p>
+        <p class="take"><b>قابل برداشت:</b> اگر عکس قوی داشته باشی، متن کم می‌تواند مؤثرتر باشد. ولی این سایت روی اعتبار برند تکیه دارد که کلینیک نوپا ندارد.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero photo"><div class="txt"><span class="l w1"></span><span class="cta"></span></div></div>
+        <div class="grid"><i></i><i></i><i></i></div>
+        <cap>بنر ساده + نوبت</cap>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ B ============ -->
+  <section>
+    <div class="shead"><h2>الگوی ب — اسلایدر کمپین تبلیغاتی</h2><span class="cnt">۳ سایت</span></div>
+    <p class="sdesc">بنر متغیر با طرح گرافیکی کمپین (مثلاً آگاهی‌رسانی سرطان پروستات). بازاریابی‌محورتر است. اگر بخواهی دوره‌ای پیام‌های مختلف بدهی مناسب است، ولی سرعت سایت را پایین می‌آورد.</p>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.memorial.com.tr" target="_blank" rel="noopener">Memorial</a></h3>
+        <p class="loc">ترکیه · گروه بیمارستانی</p>
+        <p class="d">کمپین آماری بزرگ: «از هر ۸ مرد، ۱ نفر در طول زندگی سرطان پروستات می‌گیرد» با عکس گروهی و عدد ۸ غول‌پیکر. زیرش چهار کاشی رنگی: خدمات در منزل، مراکز، بخش‌ها، پزشکان.</p>
+        <p class="take"><b>قابل برداشت:</b> استفاده از یک آمار پزشکی واقعی به‌عنوان قلاب. برای کاردیو آنکولوژی شما آمار قوی وجود دارد.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero split"><div class="txt"><span class="l w1"></span><span class="l w2"></span><span class="cta"></span></div><div class="ph"></div></div>
+        <div class="tiles"><i></i><i></i><i></i><i></i></div>
+        <cap>کمپین + ۴ کاشی</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.bumrungrad.com/en" target="_blank" rel="noopener">Bumrungrad International</a></h3>
+        <p class="loc">تایلند · بیمارستان بین‌المللی</p>
+        <p class="d">اسلایدر تبلیغاتی بالا، و درست زیرش چهار کاشی رنگی بزرگ با آیکون: یافتن پزشک، ارسال پرسش، رزرو نوبت، مشاوره‌ی آنلاین. بعد بخش «مراکز تخصصی ما».</p>
+        <p class="take"><b>قابل برداشت:</b> چهار کاشی رنگی بلافاصله بعد از بنر. ساده، بزرگ، و روی موبایل عالی کار می‌کند.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero light"><div class="txt"><span class="l w1"></span><span class="l w3"></span></div></div>
+        <div class="tiles teal"><i></i><i></i><i></i><i></i></div>
+        <div class="grid"><i></i><i></i><i></i></div>
+        <cap>اسلایدر + ۴ کاشی رنگی</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.asterclinic.ae" target="_blank" rel="noopener">Aster Clinic</a></h3>
+        <p class="loc">امارات · شبکه‌ی کلینیک چندتخصصی</p>
+        <p class="d">کمپین «Care for Her» با عکس گروهی زنان از سنین و پوشش‌های مختلف، تایپوگرافی دست‌نویس، و دکمه‌ی معرفی برنامه. نوار بالا با دکمه‌ی سبز BOOK APPOINTMENTS.</p>
+        <p class="take"><b>قابل برداشت:</b> کمپین موضوعی برای یک گروه بیمار خاص. برای شما می‌تواند «مراقبت قلب در دوران شیمی‌درمانی» باشد.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero split"><div class="ph"></div><div class="txt"><span class="l w2"></span><span class="l w3"></span><span class="cta"></span></div></div>
+        <div class="grid"><i></i><i></i><i></i></div>
+        <cap>کمپین تصویری</cap>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ C ============ -->
+  <section>
+    <div class="shead"><h2>الگوی ج — جست‌وجو و نوبت‌دهی در مرکز</h2><span class="cnt">۲ سایت</span></div>
+    <p class="sdesc">به‌جای تیتر تبلیغاتی، ابزار کار وسط صفحه است. برای مراکزی که بیمار می‌داند چه می‌خواهد و فقط دنبال نوبت است، بالاترین نرخ تبدیل را دارد.</p>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://www.apollohospitals.com" target="_blank" rel="noopener">Apollo Hospitals</a></h3>
+        <p class="loc">هند · بزرگ‌ترین شبکه‌ی خصوصی</p>
+        <p class="d">نوار جست‌وجوی بزرگ در مرکز صفحه: «جست‌وجوی پزشک، تخصص و پکیج چکاپ». زیرش چهار دکمه: رزرو نوبت، یافتن بیمارستان، رزرو چکاپ، نظر دوم پزشکی.</p>
+        <p class="take"><b>قابل برداشت:</b> اگر نوبت‌دهی آنلاین راه بیفتد، این کاربردی‌ترین الگوست. ولی برای کلینیک تک‌شعبه ممکن است خشک باشد.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero photo" style="justify-content:center"><div class="txt" style="align-items:center;width:100%"><span class="l w1"></span></div></div>
+        <div class="search"></div>
+        <div class="tiles"><i></i><i></i><i></i><i></i></div>
+        <cap>جست‌وجوی مرکزی</cap>
+      </div>
+    </article>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://burjeel.com" target="_blank" rel="noopener">Burjeel</a></h3>
+        <p class="loc">امارات · گروه بیمارستانی</p>
+        <p class="d">تیتر کوتاه وسط‌چین «Trusted Care, here in the UAE» با یک دکمه‌ی رزرو نوبت. مینیمال‌ترین نمونه، ولی صفحه‌ی اولش کمی خالی به نظر می‌رسد.</p>
+        <p class="take"><b>قابل برداشت:</b> کم. بیشتر به‌عنوان نمونه‌ی منفی مفید است — نشان می‌دهد بنر بدون عکس چقدر بی‌روح می‌شود.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero light" style="justify-content:center"><div class="txt" style="align-items:center"><span class="l w2"></span><span class="cta"></span></div></div>
+        <div class="grid"><i></i><i></i><i></i><i></i></div>
+        <cap>مینیمال وسط‌چین</cap>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ D ============ -->
+  <section>
+    <div class="shead"><h2>الگوی د — راست‌چین با آمار شناور</h2><span class="cnt">۱ سایت — نزدیک‌ترین به کار ما</span></div>
+    <p class="sdesc">تنها نمونه‌ی راست‌چین این فهرست. از نظر جهت متن، جای منو و جای عکس دقیقاً همان مسئله‌ای است که سایت فارسی شما دارد.</p>
+
+    <article class="site">
+      <div>
+        <h3><a href="https://hmg.com/ar" target="_blank" rel="noopener">مجموعة الدكتور سليمان الحبيب</a></h3>
+        <p class="loc">عربستان · بزرگ‌ترین گروه پزشکی خصوصی · راست‌چین</p>
+        <p class="d">تیتر بزرگ سمت راست، عکس دو پزشک (زن و مرد) سمت چپ با پس‌زمینه‌ی حذف‌شده، و سه پلاک آمار شناور روی عکس: <span style="direction:ltr;display:inline-block">۲۷ مرکز درمانی · ۴۵۰۰+ پزشک · ۳۳ داروخانه</span>. دکمه‌ی قرمز «آشنایی با خدمات».</p>
+        <p class="take"><b>قابل برداشت:</b> این نزدیک‌ترین الگو به نیاز شماست. پلاک‌های آمار شناور را می‌شود با اعداد واقعی خودتان پر کرد: <b>۹ کلینیک تخصصی · ۱۲ پزشک · ۴۶ خدمت درمانی · ۵ فلوشیپ کاردیو آنکولوژی</b>. تیتر راست، عکس چپ — همان چیدمانی که برای فارسی طبیعی است.</p>
+      </div>
+      <div class="wf">
+        <div class="bar"></div>
+        <div class="hero split"><div class="txt"><span class="l w1"></span><span class="l w2"></span><span class="cta"></span></div><div class="ph" style="position:relative"></div></div>
+        <div class="tiles"><i></i><i></i><i></i></div>
+        <cap>تیتر راست + عکس چپ + آمار</cap>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ COMMON ============ -->
+  <section class="common">
+    <h2>مشترک بین هر ده سایت</h2>
+    <p>فارغ از اینکه کدام الگو را انتخاب کنی، این شش عنصر در همه‌شان هست و باید در سایت شما هم باشد.</p>
+    <div class="clist">
+      <div><b>عکس واقعی در بنر</b><span>محیط کلینیک، تیم پزشکی یا کمپین. هیچ‌کدام بنر فقط متنی ندارند.</span></div>
+      <div><b>دکمه‌ی نوبت در نوار بالا</b><span>همیشه دیده می‌شود، رنگ متمایز، در گوشه‌ی ثابت.</span></div>
+      <div><b>ردیف دسترسی سریع</b><span>بلافاصله زیر بنر: یافتن پزشک، رزرو نوبت، بخش‌ها، تماس.</span></div>
+      <div><b>آمار به‌عنوان اعتماد</b><span>تعداد پزشک، بخش، سال سابقه — عدد مشخص، نه ادعای کلی.</span></div>
+      <div><b>شبکه‌ی بخش‌های تخصصی</b><span>با عکس یا آیکون، نه فقط فهرست متنی.</span></div>
+      <div><b>شماره تلفن برجسته</b><span>در نوار بالا و قابل کلیک روی موبایل.</span></div>
+    </div>
+  </section>
+
+  <div class="ask">
+    <h2>حالا انتخاب با توست</h2>
+    <p><b>پیشنهاد من الگوی «د» است</b> — راست‌چین با عکس تیم پزشکی و پلاک‌های آمار شناور — چون هم تنها نمونه‌ی راست‌چین است و هم اعداد واقعی خوبی برای پر کردنش دارید. اگر عکس باکیفیت از تیم و ساختمان دارید، الگوی «الف» (Acıbadem یا Medicana) هم عالی می‌شود.</p>
+    <p>بگو کدام شماره را می‌پسندی — یا حتی ترکیب: مثلاً «بنر مثل Medicana، ردیف آیکون مثل Acıbadem، آمار مثل الحبیب». بعد صفحه‌ی اصلی را از نو با عکس می‌سازم.</p>
+    <p style="color:var(--ink-3);font-size:13px">ضمناً: برای بنر به عکس نیاز داریم. از سایت فعلی عکس‌های تیم و محیط موجود است، ولی اگر عکاسی حرفه‌ای از کلینیک دارید کیفیت نتیجه خیلی فرق می‌کند.</p>
+  </div>
+
+</div>

@@ -1,0 +1,84 @@
+# ============================================================
+#  همراه کلینیک — تنظیمات آپاچی
+# ============================================================
+
+Options -Indexes
+DirectoryIndex index.php
+
+# ------------------------------------------------------------
+#  جلوگیری از ایندکس شدن نسخه‌ی آزمایشی
+#
+#  مهم‌ترین خط این فایل. تا وقتی روی new.hamrahclinic.ir کار
+#  می‌کنیم، این هدر باید فعال بماند؛ وگرنه نسخه‌ی آزمایشی با
+#  سایت اصلی محتوای تکراری می‌سازد و به رتبه‌ها آسیب می‌زند.
+#
+#  روز جایگزینی: این بلوک را حذف کنید و در config.php
+#  مقدار env را production و force_noindex را false کنید.
+# ------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+</IfModule>
+
+# ------------------------------------------------------------
+#  مسیریابی — همه‌چیز به index.php
+# ------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # فایل‌ها و پوشه‌های واقعی مستقیم سرو شوند
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # بقیه به کنترلر اصلی
+  RewriteRule ^ index.php [L]
+</IfModule>
+
+# ------------------------------------------------------------
+#  امنیت
+# ------------------------------------------------------------
+# فایل‌های حساس هرگز سرو نشوند
+<FilesMatch "(^\.|\.(sql|tsv|md|yml|yaml|pl|log|example)$)">
+  Require all denied
+</FilesMatch>
+
+# اگر پوشه‌ی برنامه به اشتباه داخل ریشه‌ی وب کپی شد، بسته باشد
+RedirectMatch 404 ^/(app|db|seo|design|extract)/
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# ------------------------------------------------------------
+#  کارایی
+# ------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml application/xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 1 year"
+  ExpiresByType application/javascript  "access plus 1 year"
+  ExpiresByType image/webp              "access plus 1 year"
+  ExpiresByType image/jpeg              "access plus 1 year"
+  ExpiresByType image/png               "access plus 1 year"
+  ExpiresByType image/svg+xml           "access plus 1 year"
+  ExpiresByType font/woff2              "access plus 1 year"
+  ExpiresByType text/html               "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|webp|jpg|jpeg|png|svg|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------
+#  UTF-8 برای آدرس‌های فارسی
+# ------------------------------------------------------------
+AddDefaultCharset UTF-8

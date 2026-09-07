@@ -1,0 +1,698 @@
+<title>بازبینی متای سئو همراه کلینیک</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800&display=swap">
+<style>
+:root{
+  --navy:#24408D; --navy-d:#1B3272; --teal:#4EC3A9; --teal-dd:#176B5A;
+  --ground:#FFFFFF; --soft:#F2F5F8; --soft-2:#E7ECF2;
+  --ink:#16203F; --ink-2:#4A5673; --ink-3:#7C88A3; --rule:#DCE3EC;
+  --serp-t:#1a0dab; --serp-u:#4d5156; --serp-d:#4d5156;
+  --warn:#B4451F; --warn-bg:#FBEDE7;
+  --r:10px; --sh:0 2px 4px rgba(22,32,63,.05), 0 12px 32px -12px rgba(22,32,63,.16);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#16255C; --navy-d:#0E1B45; --teal:#4EC3A9; --teal-dd:#78DAC4;
+  --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
+  --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8; --rule:#243050;
+  --serp-t:#8ab4f8; --serp-u:#9aa0a6; --serp-d:#bdc1c6;
+  --warn:#E2916E; --warn-bg:#2E1B14;
+  --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --navy:#16255C; --navy-d:#0E1B45; --teal:#4EC3A9; --teal-dd:#78DAC4;
+  --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
+  --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8; --rule:#243050;
+  --serp-t:#8ab4f8; --serp-u:#9aa0a6; --serp-d:#bdc1c6;
+  --warn:#E2916E; --warn-bg:#2E1B14;
+  --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;font-weight:400;font-size:15px;
+  line-height:1.85;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.4}
+.in{max-width:1080px;margin:0 auto;padding:0 22px}
+.mast{background:var(--navy);color:#fff;padding:40px 0 34px}
+.mast .kick{font-size:12px;font-weight:600;color:var(--teal);letter-spacing:.08em;margin:0 0 12px}
+.mast h1{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.015em;margin-bottom:12px;max-width:24ch}
+.mast p{margin:0;font-size:16px;font-weight:300;color:#C9D4EA;max-width:62ch;line-height:2}
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin:-24px auto 34px;
+  max-width:1036px;box-shadow:var(--sh);position:relative}
+.sc{background:var(--ground);padding:17px 18px}
+.sc b{display:block;font-size:29px;font-weight:800;color:var(--navy);line-height:1.2;font-variant-numeric:tabular-nums}
+.sc span{display:block;font-size:12px;color:var(--ink-3);line-height:1.55}
+.sc.t b{color:var(--teal-dd)}
+.note{background:var(--warn-bg);border:1px solid var(--warn);border-right-width:4px;border-radius:var(--r);
+  padding:18px 22px;margin:0 0 34px}
+.note h3{font-size:15.5px;color:var(--warn);margin-bottom:8px}
+.note p{margin:0 0 9px;font-size:14px;color:var(--ink-2);line-height:1.95}
+.note p:last-child{margin:0}
+.note b{color:var(--ink);font-weight:700}
+.legend{background:var(--soft);border:1px solid var(--rule);border-radius:var(--r);padding:16px 20px;margin:0 0 34px}
+.legend p{margin:0 0 7px;font-size:13.5px;color:var(--ink-2);line-height:1.9}
+.legend p:last-child{margin:0}
+section{margin:0 0 38px}
+section h2{font-size:22px;font-weight:800;padding-bottom:9px;border-bottom:2px solid var(--navy);
+  margin-bottom:18px;display:flex;align-items:baseline;gap:11px}
+section h2 .c{font-size:12px;font-weight:600;color:var(--teal-dd)}
+.row{border-bottom:1px solid var(--rule);padding:16px 0}
+.row:last-child{border-bottom:none}
+.slug{font-size:11.5px;color:var(--ink-3);margin:0 0 9px;direction:ltr;text-align:right;
+  font-variant-numeric:tabular-nums;word-break:break-all}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.serp{border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px 12px;position:relative;background:var(--ground)}
+.serp.old{background:var(--soft);opacity:.85}
+.serp.new{border-color:var(--teal);box-shadow:var(--sh)}
+.tagx,.tagv{position:absolute;top:-9px;right:14px;font-size:10.5px;font-weight:700;
+  padding:2px 9px;border-radius:4px}
+.tagx{background:var(--soft-2);color:var(--ink-3)}
+.tagv{background:var(--teal);color:#0F2340}
+.serp .u{margin:4px 0 2px;font-size:12px;color:var(--serp-u);direction:ltr;text-align:right}
+.serp .t{margin:0 0 4px;font-size:17px;line-height:1.5;color:var(--serp-t);font-weight:400}
+.serp .d{margin:0;font-size:13px;line-height:1.75;color:var(--serp-d);font-weight:300}
+.serp .d .none{color:var(--warn);font-style:normal;font-size:12.5px}
+.serp .len{margin:9px 0 0;font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;
+  padding-top:7px;border-top:1px dashed var(--rule)}
+.stat-src{display:none}
+footer{background:var(--navy-d);color:#B7C4DE;padding:28px 0;margin-top:40px;font-size:13px}
+footer p{margin:0 0 8px;line-height:1.95;font-weight:300}
+footer p:last-child{margin:0}
+footer b{color:#fff}
+@media (max-width:760px){.pair{grid-template-columns:1fr;gap:20px}.in{padding:0 15px}}
+</style>
+<header class="mast"><div class="in">
+  <p class="kick">بازبینی پیش از اعمال</p>
+  <h1>متای سئوی ۸۲ صفحه، بازنویسی‌شده</h1>
+  <p>هر صفحه همان‌طور که در نتایج گوگل دیده می‌شود، قبل و بعد. پیش از انتقال به دیتابیس، این‌ها را بخوان و هرکدام را خواستی تغییر بده.</p>
+</div></header>
+<div class="in">
+<div class="scores">
+  <div class="sc"><b>۸۲</b><span>صفحه پوشش داده شد</span></div>
+  <div class="sc t"><b>۶۴</b><span>عنوان بازنویسی شد</span></div>
+  <div class="sc t"><b>۵۵</b><span>توضیح بازنویسی شد</span></div>
+  <div class="sc t"><b>۱۶</b><span>صفحه که هیچ توضیحی نداشت</span></div>
+  <div class="sc"><b>۰</b><span>عنوان یا توضیح تکراری</span></div>
+</div>
+<div class="note">
+  <h3>یک ادعای نادرست که در متای فعلی پیدا کردم</h3>
+  <p>توضیحات صفحه‌ی <b>کلینیک زخم</b> نوشته بود: «مرکز <b>دولتی</b> و <b>شبانه‌روزی</b> با کادر مجرب». همراه کلینیک نه دولتی است و نه شبانه‌روزی — ساعات کاری‌اش شنبه تا چهارشنبه ۸ تا ۲۰ و پنجشنبه ۸ تا ۱۳ است.</p>
+  <p>این فقط یک اشتباه سئویی نیست؛ بیماری که با تصور «شبانه‌روزی» ساعت ۲۳ مراجعه کند، درِ بسته می‌بیند. هر دو ادعا را حذف کردم. اگر جایی دیگر در محتوای سایت هم تکرار شده، بگو تا بررسی کنم.</p>
+</div>
+
+<div class="legend">
+  <p><b>چه چیزی بازنویسی شد و چه چیزی دست‌نخورده ماند.</b> صفحات کلینیک غدد از قبل متای حرفه‌ای و کلیدواژه‌محور داشتند؛ آن‌ها را عمداً تقریباً دست‌نخورده گذاشتم و فقط طول‌های خارج از استاندارد را اصلاح کردم. بازنویسی متایی که خوب کار می‌کند، ریسک از دست دادن رتبه دارد بدون اینکه سودی داشته باشد.</p>
+  <p>در مقابل، ۱۲ صفحه‌ی خدمات اصلی (قلب، آنکولوژی، شیمی‌درمانی و…) و ۱۲ صفحه‌ی پزشکان کاملاً بازنویسی شدند، چون ضعیف‌ترین متای سایت را داشتند.</p>
+  <p><b>سه اصلی که رعایت شد:</b> کلیدواژه‌ی اصلی در ابتدای عنوان؛ کلیدواژه‌ی مکانی (تجریش / تهران) در جایی که جست‌وجوی محلی دارد؛ و توضیحی که به نیاز جست‌وجوگر پاسخ دهد نه اینکه نام صفحه را تکرار کند.</p>
+</div>
+<p class="stat-src" data-nodesc="16" data-tch="64" data-dch="55"></p>
+<section><h2>صفحه‌ی اصلی <span class="c">1 صفحه</span></h2>
+<article class="row">
+  <p class="slug">hamrahclinic.ir</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">همراه کلینیک | کلینیک فوق تخصصی قلب و عروق و آنکولوژی</p><p class="d">کلینیک فوق تخصصی همراه در منطقه تجریش تهران|شامل بخشهای فوق تخصصی قلب و عروق و آنکولوژی با هدف درمان بیماری‌ها سرطانی می‌باشد با رویکرد MDT</p><p class="len">عنوان 53 · توضیح 139</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">همراه کلینیک | فوق تخصصی قلب، آنکولوژی و شیمی‌درمانی تجریش</p><p class="d">کلینیک فوق تخصصی همراه در تجریش تهران؛ قلب و عروق، آنکولوژی، شیمی‌درمانی، غدد، زخم و عفونی با تیم درمان چندتخصصی. رزرو نوبت: ۰۲۱۹۱۳۰۳۱۳۲</p><p class="len">عنوان 58 · توضیح 136</p></div>
+  </div>
+</article>
+</section>
+<section><h2>صفحات ثابت <span class="c">7 صفحه</span></h2>
+<article class="row">
+  <p class="slug">about-us</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درباره ما</p><p class="d">درباره ما</p><p class="len">عنوان 9 · توضیح 9</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درباره همراه کلینیک | کلینیک فوق تخصصی تجریش تهران</p><p class="d">داستان همراه کلینیک؛ مرکزی با رویکرد تیم درمان چندتخصصی در تجریش تهران که قلب، آنکولوژی، تغذیه و روان را در یک پرونده‌ی مشترک کنار هم قرار می‌دهد.</p><p class="len">عنوان 50 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">contact-us</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تماس با ما</p><p class="d">تهران، خیابان شریعتی، نرسیده به میدان قدس، کوچه مهنا ۱، پلاک ۶</p><p class="len">عنوان 10 · توضیح 62</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تماس با همراه کلینیک | آدرس، تلفن و ساعات کاری</p><p class="d">آدرس همراه کلینیک: تهران، خیابان شریعتی، نرسیده به میدان قدس، کوچه مهنا ۱، پلاک ۶. تلفن ۰۲۱۹۱۳۰۳۱۳۲. شنبه تا چهارشنبه ۸ تا ۲۰، پنجشنبه ۸ تا ۱۳.</p><p class="len">عنوان 46 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">blog</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">وبلاگ</p><p class="d">ناحیه سرویس ما</p><p class="len">عنوان 5 · توضیح 14</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">بلاگ سلامت همراه کلینیک | مقالات پزشکی تخصصی</p><p class="d">مقالات علمی و کاربردی درباره‌ی بیماری‌های قلبی، شیمی‌درمانی، تغذیه و سلامت روان، نوشته‌ی پزشکان متخصص همراه کلینیک به زبان ساده و قابل فهم.</p><p class="len">عنوان 44 · توضیح 139</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">team</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر های همراه</p><p class="d">دکتر های همراه Archive - همراه کلینیک</p><p class="len">عنوان 14 · توضیح 37</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">پزشکان همراه کلینیک | ۱۲ متخصص با بورد تخصصی</p><p class="d">معرفی پزشکان همراه کلینیک؛ متخصصان قلب و عروق، آنکولوژی، خون، تغذیه، روان‌پزشکی و طب ایرانی با بورد تخصصی و شماره‌ی نظام پزشکی قابل استعلام.</p><p class="len">عنوان 44 · توضیح 140</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">service</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">اکوکاردیوگرافی قلب جنین - همراه کلینیک</p><p class="d">اکوکاردیوگرافی قلب جنین روشی دقیق و ایمن برای بررسی ساختار و عملکرد قلب جنین در دوران بارداری است که به تشخیص زودهنگام ناهنجاری‌های قلبی کمک می‌کند.</p><p class="len">عنوان 38 · توضیح 148</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">خدمات همراه کلینیک | ۴۶ خدمت در ۹ کلینیک تخصصی</p><p class="d">فهرست کامل خدمات همراه کلینیک تجریش؛ قلب و عروق، آنکولوژی، شیمی‌درمانی، کلینیک زخم، کلینیک غدد، کلینیک عفونی، تغذیه، روان و طب ایرانی.</p><p class="len">عنوان 46 · توضیح 134</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%da%af%d8%a7%d9%84%d8%b1%db%8c</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">گالری</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 5 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">گالری تصاویر همراه کلینیک | محیط و تجهیزات</p><p class="d">تصاویر محیط، بخش‌های درمانی و تجهیزات همراه کلینیک در تجریش تهران؛ نگاهی به فضایی که درمان شما در آن انجام می‌شود، از پذیرش تا اتاق شیمی‌درمانی.</p><p class="len">عنوان 42 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b3%d9%88%d8%a7%d9%84%d8%a7%d8%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">سوالات متداول</p><p class="d">آیا کلینیک جای پارک داره؟</p><p class="len">عنوان 13 · توضیح 25</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">سوالات متداول همراه کلینیک | نوبت، هزینه و مراجعه</p><p class="d">پاسخ پرتکرارترین پرسش‌های بیماران همراه کلینیک درباره‌ی نوبت‌دهی، ساعات کاری، پارکینگ، بیمه و نحوه‌ی مراجعه به بخش‌های تخصصی.</p><p class="len">عنوان 49 · توضیح 125</p></div>
+  </div>
+</article>
+</section>
+<section><h2>صفحات پزشکان <span class="c">12 صفحه</span></h2>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d9%85%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر محبوبه خلیلی</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 17 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر محبوبه خلیلی | متخصص قلب و عروق و کاردیو آنکولوژی</p><p class="d">دکتر محبوبه خلیلی، متخصص قلب و عروق با بورد تخصصی و فلوشیپ کاردیو آنکولوژی از انستیتو شهید رجایی، مؤسس همراه کلینیک تجریش. نظام پزشکی ۹۴۳۶۰.</p><p class="len">عنوان 54 · توضیح 140</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%a7%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر احمد مافی</p><p class="d">رتبه سوم امتحان کشوری بورد تخصصی، شهریور 1391</p><p class="len">عنوان 14 · توضیح 45</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر احمد مافی | متخصص رادیوتراپی انکولوژی تهران</p><p class="d">دکتر احمد مافی، متخصص رادیوتراپی انکولوژی با بورد تخصصی و دانشیار دانشگاه علوم پزشکی شهید بهشتی، در بخش آنکولوژی همراه کلینیک تجریش. نظام پزشکی ۷۹۰۱۸.</p><p class="len">عنوان 48 · توضیح 150</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%ad%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر حسین اصغری پور</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 19 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر حسین اصغری‌پور | فوق تخصص خون و انکولوژی</p><p class="d">دکتر حسین اصغری‌پور، متخصص بیماری‌های داخلی و فوق تخصص خون و انکولوژی، عضو انجمن سرطان اروپا و آمریکا، در همراه کلینیک تجریش. نظام پزشکی ۱۰۳۸۲۴.</p><p class="len">عنوان 45 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%d9%83%d8%aa%d8%b1-%d9%81%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دكتر فاطمه نائيني</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 17 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر فاطمه نائینی | متخصص تغذیه بالینی و رژیم‌درمانی</p><p class="d">دکتر فاطمه نائینی، متخصص تغذیه بالینی از دانشگاه علوم پزشکی تهران، عضو بنیاد ملی نخبگان با شاخص علمی ۲۲ و بیش از ۵۰ مقاله بین‌المللی. همراه کلینیک تجریش.</p><p class="len">عنوان 52 · توضیح 153</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%a8%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر بهناز بهزادی</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 17 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر بهناز بهزادی | متخصص رادیوانکولوژی</p><p class="d">دکتر بهناز بهزادی، متخصص رادیوانکولوژی با بورد تخصصی رادیوتراپی از دانشگاه شهید بهشتی و عضو انجمن رادیوتراپی و انکولوژی ایران. همراه کلینیک تجریش.</p><p class="len">عنوان 39 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%b9%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر علیرضا تاتینا</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 18 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر علیرضا تاتینا | متخصص قلب و کاردیو آنکولوژی</p><p class="d">دکتر علیرضا تاتینا، متخصص قلب و عروق با بورد تخصصی و فلوشیپ کاردیو آنکولوژی از انستیتو قلب شهید رجایی، در همراه کلینیک تجریش. نظام پزشکی ۹۷۹۹۵.</p><p class="len">عنوان 48 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d9%85%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر مهناز عالم زاده بحرینی</p><p class="d">متخصص قلب و عروق فلوشیپ اکوکاردیوگرافی</p><p class="len">عنوان 27 · توضیح 38</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر مهناز عالم‌زاده | متخصص قلب و اکوکاردیوگرافی</p><p class="d">دکتر مهناز عالم‌زاده بحرینی، متخصص قلب و عروق با بورد تخصصی و فلوشیپ اکوکاردیوگرافی از انستیتو شهید رجایی، در همراه کلینیک تجریش. نظام پزشکی ۱۰۳۹۵۷.</p><p class="len">عنوان 49 · توضیح 148</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%b4%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر شادی شکرخوار</p><p class="d">سوابق تحصیلی دوره دبیرستان: دبیرستان فرزانگان (استعدادهای درخشان) دکترای حرفه‌ای پزشکی (MD): دانشگاه علوم پزشکی شهید بهشتی – قبولی با رتبه ۹۳ کنکور سراسری</p><p class="len">عنوان 17 · توضیح 154</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر شادی شکرخوار | متخصص قلب و اکوکاردیوگرافی</p><p class="d">دکتر شادی شکرخوار، متخصص قلب و عروق از دانشگاه علوم پزشکی شهید بهشتی با فلوشیپ اکوکاردیوگرافی، در بخش قلب همراه کلینیک تجریش. نظام پزشکی ۱۰۵۴۴۹.</p><p class="len">عنوان 46 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%ad%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر حسام دانش آموز</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 19 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر حسام دانش‌آموز | فوق تخصص قلب کودکان</p><p class="d">دکتر حسام دانش‌آموز، متخصص کودکان و فوق تخصص قلب کودکان، در کلینیک قلب کودکان همراه در تجریش تهران. تشخیص و پیگیری بیماری‌های مادرزادی قلب.</p><p class="len">عنوان 41 · توضیح 139</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d9%85%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر مریم بدیع زادگان</p><p class="d">بورد تخصصی اعصاب و روان (روان پزشکی) از دانشگاه علوم پزشکی شهید بهشتی</p><p class="len">عنوان 21 · توضیح 69</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر مریم بدیع‌زادگان | متخصص اعصاب و روان</p><p class="d">دکتر مریم بدیع‌زادگان، متخصص اعصاب و روان (روان‌پزشک) با بورد تخصصی از دانشگاه شهید بهشتی، در بخش روان‌پزشکی همراه کلینیک تجریش. نظام پزشکی ۹۰۶۶۷.</p><p class="len">عنوان 42 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%ba%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر غزاله حیدری‌راد</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 20 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر غزاله حیدری‌راد | پزشک طب ایرانی و سبک زندگی</p><p class="d">دکتر غزاله حیدری‌راد، پزشک MD.PhD طب ایرانی و عضو هیأت علمی دانشگاه علوم پزشکی شهید بهشتی، در بخش طب ایرانی همراه کلینیک تجریش. نظام پزشکی ۱۰۵۹۹۵.</p><p class="len">عنوان 49 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%af%da%a9%d8%aa%d8%b1-%d8%b1%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر رضا مقبولی</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 15 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">دکتر رضا مقبولی | متخصص اورولوژی و جراحی کلیه</p><p class="d">دکتر رضا مقبولی، متخصص جراحی کلیه، مجاری ادراری و تناسلی (اورولوژی) در کلینیک اورولوژی همراه، تجریش تهران. نظام پزشکی ۱۸۹۲۵۱. رزرو نوبت آنلاین.</p><p class="len">عنوان 45 · توضیح 143</p></div>
+  </div>
+</article>
+</section>
+<section><h2>صفحات خدمات <span class="c">46 صفحه</span></h2>
+<article class="row">
+  <p class="slug">%d9%82%d9%84%d8%a8-%d9%88-%d8%b9%d…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش قلب و عروق همراه کلینیک</p><p class="d">بخش قلب و عروق همراه کلینیک با حضور متخصصان مجرب و تجهیزات پیشرفته، خدمات تشخیص، درمان و پیشگیری از بیماری‌های قلبی و عروقی را ارائه می‌دهد.</p><p class="len">عنوان 27 · توضیح 140</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">متخصص قلب و عروق در تجریش تهران | همراه کلینیک</p><p class="d">بخش قلب و عروق همراه کلینیک با ۵ متخصص دارای بورد و فلوشیپ کاردیو آنکولوژی؛ اکوکاردیوگرافی، نوار قلب، هولتر و پایش قلب در دوره‌ی شیمی‌درمانی.</p><p class="len">عنوان 46 · توضیح 141</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%a2%d9%86%da%a9%d9%88%d9%84%d9%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">خدمات مشاوره و درمان آنکولوژی در همراه کلینیک</p><p class="d">خدمات مشاوره و آنکولوژی در همراه کلینیک شامل ارزیابی، تشخیص، درمان و پیگیری بیماران مبتلا به سرطان با رویکردی تخصصی و جامع.</p><p class="len">عنوان 45 · توضیح 123</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک آنکولوژی تهران | تشخیص و درمان سرطان</p><p class="d">بخش آنکولوژی همراه کلینیک در تجریش تهران؛ ارزیابی، تشخیص و درمان سرطان با تیم چندتخصصی (MDT) و همراهی متخصص قلب در تمام طول دوره‌ی درمان.</p><p class="len">عنوان 43 · توضیح 137</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b4%db%8c%d9%85%db%8c-%d8%af%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش شیمی درمانی همراه کلینیک</p><p class="d">بخش شیمی درمانی همراه کلینیک با بهره‌گیری از تیم تخصصی انکولوژی، تجهیزات پیشرفته، خدمات درمانی ایمن و مؤثر را برای بیماران سرطانی ارائه می‌دهد</p><p class="len">عنوان 28 · توضیح 142</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">بخش شیمی درمانی همراه کلینیک در تجریش تهران</p><p class="d">شیمی‌درمانی سرپایی در محیطی آرام با پرستار اختصاصی، پایش عملکرد قلب پیش و حین درمان، و مشاوره‌ی تغذیه و روان در همان مرکز. تلفن ۰۲۱۹۱۳۰۳۱۳۲.</p><p class="len">عنوان 43 · توضیح 140</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%87%d9%85%d8%a7%d8%aa%d9%88%d9%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش هماتولوژی همراه کلینیک</p><p class="d">در بخش هماتولوژی همراه کلینیک، خدمات تخصصی تشخیص، درمان و پیگیری بیماری‌های خون و اختلالات مرتبط ارائه می‌شود.</p><p class="len">عنوان 26 · توضیح 110</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک هماتولوژی تهران | درمان بیماری‌های خون</p><p class="d">تشخیص و درمان کم‌خونی، اختلالات انعقادی و بدخیمی‌های خون در بخش هماتولوژی همراه کلینیک تجریش، زیر نظر فوق تخصص خون و انکولوژی با بورد تخصصی.</p><p class="len">عنوان 45 · توضیح 140</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b1%d9%88%d8%a7%d9%86-%d9%be%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش روان پزشکی همراه کلینیک</p><p class="d">بخش روان پزشکی همراه کلینیک با حضور متخصصان مجرب، خدمات تشخیص، درمان و پیگیری اختلالات روان، اضطراب، افسردگی و سایر مشکلات سلامت روان را ارائه می‌دهد.</p><p class="len">عنوان 27 · توضیح 150</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">روان‌پزشک در تجریش تهران | همراه کلینیک</p><p class="d">بخش روان‌پزشکی همراه کلینیک؛ تشخیص و درمان اضطراب، افسردگی و اختلالات خواب، با تمرکز ویژه بر حمایت روانی بیماران تحت درمان سرطان و خانواده‌هایشان.</p><p class="len">عنوان 39 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b1%d9%88%d8%a7%d9%86-%d8%b4%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش روان شناسی همراه کلینیک</p><p class="d">بخش روان شناسی همراه کلینیک با ارائه خدمات مشاوره، ارزیابی و درمان روان‌شناختی به ارتقای سلامت روان، بهبود روابط و افزایش کیفیت زندگی کمک می‌کند.</p><p class="len">عنوان 27 · توضیح 145</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">مشاوره روان‌شناسی در تجریش تهران | همراه کلینیک</p><p class="d">خدمات روان‌شناسی همراه کلینیک؛ مدیریت استرس، بهبود روابط فردی و همراهی روانی در دوره‌ی درمان، با راهکارهای علمی و عملی از متخصصان مجرب.</p><p class="len">عنوان 47 · توضیح 135</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%aa%d8%ba%d8%b0%db%8c%d9%87</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش تخصصی تغذیه همراه کلینیک</p><p class="d">بخش تخصصی تغذیه همراه کلینیک با ارائه مشاوره تغذیه، رژیم‌درمانی و برنامه‌های غذایی متناسب، به حفظ سلامت، کنترل بیماری‌ها و بهبود سبک زندگی کمک می‌کند.</p><p class="len">عنوان 28 · توضیح 150</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">متخصص تغذیه و رژیم‌درمانی در تجریش تهران</p><p class="d">بخش تغذیه همراه کلینیک؛ رژیم‌درمانی تخصصی، کنترل وزن و برنامه‌ی غذایی دوره‌ی شیمی‌درمانی، زیر نظر متخصص تغذیه‌ی بالینی دانشگاه علوم پزشکی تهران.</p><p class="len">عنوان 40 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b7%d8%a8-%d8%a7%db%8c%d8%b1%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بخش طب ایرانی همراه کلینیک</p><p class="d">بخش طب ایرانی همراه کلینیک با ارائه خدمات طب ایرانی و اصلاح سبک زندگی، به کاهش عوارض شیمی‌درمانی و رادیوتراپی و بهبود کیفیت زندگی بیماران سرطان کمک می‌کند.</p><p class="len">عنوان 26 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">طب ایرانی و اصلاح سبک زندگی | همراه کلینیک تهران</p><p class="d">بخش طب ایرانی همراه کلینیک با هدف کاهش عوارض شیمی‌درمانی و رادیوتراپی و اصلاح سبک زندگی، زیر نظر عضو هیأت علمی دانشگاه علوم پزشکی شهید بهشتی.</p><p class="len">عنوان 48 · توضیح 141</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%da%a9%d9%84%db%8c%d9%86%db%8c%da%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک واریس</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 12 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک واریس تهران | درمان واریس پا در تجریش</p><p class="d">تشخیص و درمان واریس و نارسایی وریدی اندام تحتانی در کلینیک واریس همراه، تجریش تهران. ارزیابی با سونوگرافی داپلر و درمان سرپایی زیر نظر متخصص قلب.</p><p class="len">عنوان 44 · توضیح 145</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%da%a9%d9%84%db%8c%d9%86%db%8c%da%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک فوق تخصصی قلب کودکان - همراه کلینیک</p><p class="d">کلینیک فوق تخصصی قلب کودکان همراه کلینیک با ارائه خدمات تشخیص، درمان و پایش بیماری‌های قلبی نوزادان، کودکان و نوجوانان، همراه سلامت قلب فرزند شما است.</p><p class="len">عنوان 42 · توضیح 150</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">فوق تخصص قلب کودکان در تهران | همراه کلینیک</p><p class="d">کلینیک قلب کودکان همراه در تجریش تهران؛ تشخیص و پیگیری بیماری‌های مادرزادی قلب نوزادان و کودکان، با اکوکاردیوگرافی کودکان و فوق تخصص قلب اطفال.</p><p class="len">عنوان 43 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%a7%da%a9%d9%88%da%a9%d8%a7%d8%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">اکوکاردیوگرافی قلب جنین - همراه کلینیک</p><p class="d">اکوکاردیوگرافی قلب جنین روشی دقیق و ایمن برای بررسی ساختار و عملکرد قلب جنین در دوران بارداری است که به تشخیص زودهنگام ناهنجاری‌های قلبی کمک می‌کند.</p><p class="len">عنوان 38 · توضیح 148</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">اکوکاردیوگرافی قلب جنین در تهران | همراه کلینیک</p><p class="d">بررسی ساختار و عملکرد قلب جنین در دوران بارداری با اکوکاردیوگرافی؛ روشی دقیق و بی‌خطر برای تشخیص زودهنگام ناهنجاری‌های قلبی. تجریش تهران.</p><p class="len">عنوان 47 · توضیح 137</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%84%db%8c%d8%b3%d8%aa-%d8%ae%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">لیست خدمات کلینیک همراه</p><p class="d">با بهره‌گیری از تیم متخصص و تجهیزات پیشرفته، همه خدمات درمانی مورد نیاز شما در یک مجموعه</p><p class="len">عنوان 23 · توضیح 88</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">لیست کامل خدمات همراه کلینیک | ۴۶ خدمت درمانی</p><p class="d">فهرست کامل خدمات درمانی همراه کلینیک تجریش در ۹ بخش تخصصی؛ از قلب و آنکولوژی تا کلینیک زخم، غدد، عفونی، تغذیه و روان. مشاهده‌ی جزئیات هر خدمت.</p><p class="len">عنوان 45 · توضیح 142</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">adrenal</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات غده فوق کلیه (آدرنال)</p><p class="d">تشخیص و درمان اختلالات غده فوق کلیه شامل سندرم کوشینگ، آدیسون، هیپرآلدوسترونیسم و فئوکروموسیتوما در کلینیک غدد همراه تهران.</p><p class="len">عنوان 36 · توضیح 123</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات غده فوق کلیه (آدرنال)</p><p class="d">تشخیص و درمان اختلالات غده فوق کلیه شامل سندرم کوشینگ، آدیسون، هیپرآلدوسترونیسم و فئوکروموسیتوما در کلینیک غدد همراه تهران.</p><p class="len">عنوان 36 · توضیح 123</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">arterial-ulcer</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم شریانی</p><p class="d">زخم شریانی (Arterial Ulcer) ناشی از کاهش جریان خون شریانی به اندام‌های انتهایی است و معمولاً در انگشتان پا، پاشنه و نواحی فشاری ظاهر می‌شود. این زخم‌ها بسیار</p><p class="len">عنوان 16 · توضیح 157</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم شریانی | کلینیک زخم همراه تهران</p><p class="d">زخم شریانی (Arterial Ulcer) ناشی از کاهش جریان خون شریانی به اندام‌های انتهایی است و معمولاً در انگشتان پا، پاشنه و نواحی فشاری ظاهر می‌شود. این زخم‌ها بسیار</p><p class="len">عنوان 41 · توضیح 157</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">brucellosis</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان تب مالت (بروسلوز)</p><p class="d">تب مالت (بروسلوز) یکی از شایع‌ترین عفونت‌های مشترک بین انسان و حیوان (زئونوز) در ایران است. مصرف لبنیات غیرپاستوریزه و کار با دام، اصلی‌ترین راه ابتلا است.</p><p class="len">عنوان 23 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان تب مالت (بروسلوز) | کلینیک عفونی تهران</p><p class="d">تب مالت (بروسلوز) یکی از شایع‌ترین عفونت‌های مشترک بین انسان و حیوان (زئونوز) در ایران است. مصرف لبنیات غیرپاستوریزه و کار با دام، اصلی‌ترین راه ابتلا است.</p><p class="len">عنوان 44 · توضیح 155</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">burn-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم سوختگی</p><p class="d">زخم سوختگی یکی از پیچیده‌ترین انواع زخم است که نیاز به مراقبت تخصصی برای کاهش عوارض، اسکار و عفونت دارد. کلینیک زخم همراه با پروتکل‌های مدرن، درمان سوختگی‌های</p><p class="len">عنوان 16 · توضیح 158</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم سوختگی | کلینیک زخم همراه تهران</p><p class="d">زخم سوختگی یکی از پیچیده‌ترین انواع زخم است که نیاز به مراقبت تخصصی برای کاهش عوارض، اسکار و عفونت دارد. کلینیک زخم همراه با پروتکل‌های مدرن، درمان سوختگی‌های</p><p class="len">عنوان 41 · توضیح 158</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">chronic-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم مزمن غیرملتئم</p><p class="d">زخم مزمن (Chronic Wound) هر زخمی است که در عرض ۶ هفته با درمان‌های متداول بهبود نیافته باشد. این زخم‌ها معمولاً علامت یک بیماری زمینه‌ای هستند و نیازمند</p><p class="len">عنوان 23 · توضیح 152</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم مزمن غیرملتئم | کلینیک زخم همراه تهران</p><p class="d">زخم مزمن (Chronic Wound) هر زخمی است که در عرض ۶ هفته با درمان‌های متداول بهبود نیافته باشد. این زخم‌ها معمولاً علامت یک بیماری زمینه‌ای هستند و نیازمند</p><p class="len">عنوان 48 · توضیح 152</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">diabetes</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان دیابت</p><p class="d">درمان تخصصی دیابت نوع ۱، نوع ۲، بارداری و پیش‌دیابت در کلینیک غدد همراه تهران با پایش HbA1c، مشاوره تغذیه و درمان‌های به‌روز.</p><p class="len">عنوان 11 · توضیح 125</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان دیابت</p><p class="d">درمان تخصصی دیابت نوع ۱، نوع ۲، بارداری و پیش‌دیابت در کلینیک غدد همراه تهران با پایش HbA1c، مشاوره تغذیه و درمان‌های به‌روز.</p><p class="len">عنوان 11 · توضیح 125</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">diabetic-foot</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم پای دیابتی</p><p class="d">زخم پای دیابتی شایع‌ترین عارضه‌ی مزمن دیابت است که در ۱۵ تا ۲۵ درصد بیماران دیابتی در طول عمرشان رخ می‌دهد. این زخم اگر به‌موقع و توسط تیم تخصصی درمان نشود،</p><p class="len">عنوان 20 · توضیح 156</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم پای دیابتی | کلینیک زخم همراه تهران</p><p class="d">زخم پای دیابتی شایع‌ترین عارضه‌ی مزمن دیابت است که در ۱۵ تا ۲۵ درصد بیماران دیابتی در طول عمرشان رخ می‌دهد. این زخم اگر به‌موقع و توسط تیم تخصصی درمان نشود،</p><p class="len">عنوان 45 · توضیح 156</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">endocrine-clinic</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک غدد و متابولیسم در تهران [نوبت دهی آنلاین✅]</p><p class="d">تشخیص و درمان تخصصی دیابت، اختلالات تیروئید، چاقی، مشکلات هورمونی و متابولیک توسط پزشکان مجرب با امکان رزرو اینترنتی نوبت.</p><p class="len">عنوان 50 · توضیح 122</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک غدد و متابولیسم در تهران [نوبت دهی آنلاین✅]</p><p class="d">تشخیص و درمان تخصصی دیابت، اختلالات تیروئید، چاقی، مشکلات هورمونی و متابولیک توسط پزشکان مجرب با امکان رزرو اینترنتی نوبت.</p><p class="len">عنوان 50 · توضیح 122</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">fever-unknown-origin</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بررسی تب با علت نامشخص (FUO)</p><p class="d">تب با علت نامشخص (FUO) به تب بیش از ۳۸.۳ که حداقل ۳ هفته طول کشیده و پس از بررسی‌های اولیه علت آن مشخص نشده، گفته می‌شود. کلینیک عفونی همراه با رویکرد</p><p class="len">عنوان 28 · توضیح 150</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">بررسی تب با علت نامشخص (FUO) | کلینیک عفونی تهران</p><p class="d">تب با علت نامشخص (FUO) به تب بیش از ۳۸.۳ که حداقل ۳ هفته طول کشیده و پس از بررسی‌های اولیه علت آن مشخص نشده، گفته می‌شود. کلینیک عفونی همراه با رویکرد</p><p class="len">عنوان 49 · توضیح 150</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">fungal-infection</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت‌های قارچی</p><p class="d">عفونت‌های قارچی از موارد سطحی پوست تا عفونت‌های مهاجم تهدیدکننده‌ی جان متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری بخش انکولوژی و بیماری‌های مزمن، عفونت‌های</p><p class="len">عنوان 21 · توضیح 154</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت‌های قارچی | کلینیک عفونی تهران</p><p class="d">عفونت‌های قارچی از موارد سطحی پوست تا عفونت‌های مهاجم تهدیدکننده‌ی جان متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری بخش انکولوژی و بیماری‌های مزمن، عفونت‌های</p><p class="len">عنوان 42 · توضیح 154</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">gi-infection</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت‌های گوارشی</p><p class="d">عفونت‌های گوارشی از علل اصلی اسهال حاد و مزمن هستند. کلینیک عفونی همراه با تشخیص دقیق پاتوژن (باکتری، انگل، ویروس) و درمان هدفمند، از تجویز کور آنتی‌بیوتیک</p><p class="len">عنوان 22 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت‌های گوارشی | کلینیک عفونی تهران</p><p class="d">عفونت‌های گوارشی از علل اصلی اسهال حاد و مزمن هستند. کلینیک عفونی همراه با تشخیص دقیق پاتوژن (باکتری، انگل، ویروس) و درمان هدفمند، از تجویز کور آنتی‌بیوتیک</p><p class="len">عنوان 43 · توضیح 155</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">growth-puberty</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات رشد و بلوغ کودکان در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان اختلالات رشد و بلوغ کودکان شامل کوتاهی قد، کمبود هورمون رشد و بلوغ زودرس در کلینیک غدد همراه تهران.</p><p class="len">عنوان 58 · توضیح 113</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات رشد و بلوغ کودکان در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان اختلالات رشد و بلوغ کودکان شامل کوتاهی قد، کمبود هورمون رشد و بلوغ زودرس در کلینیک غدد همراه تهران، با بررسی سن استخوانی و پیگیری دوره‌ای.</p><p class="len">عنوان 58 · توضیح 152</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">infected-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم عفونی</p><p class="d">زخم عفونی هر زخمی است که علائم آلودگی میکروبی نشان می‌دهد. عفونت می‌تواند هر زخمی را که در حال بهبود است متوقف کرده و در موارد شدید جان بیمار را تهدید کند.</p><p class="len">عنوان 15 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم عفونی | کلینیک زخم همراه تهران</p><p class="d">زخم عفونی هر زخمی است که علائم آلودگی میکروبی نشان می‌دهد. عفونت می‌تواند هر زخمی را که در حال بهبود است متوقف کرده و در موارد شدید جان بیمار را تهدید کند.</p><p class="len">عنوان 40 · توضیح 155</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">infectious-clinic</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بهترین کلینیک تخصصی عفونی در تهران</p><p class="d">کلینیک تخصصی عفونی در شهر تهران با پزشکان مجرب، تشخیص دقیق و درمان بیماری‌های عفونی، تب، هپاتیت و عفونت‌های ویروسی و باکتریایی با امکان رزرو نوبت بصورت آنلاین</p><p class="len">عنوان 34 · توضیح 158</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">بهترین کلینیک تخصصی عفونی در تهران</p><p class="d">کلینیک تخصصی عفونی در شهر تهران با پزشکان مجرب، تشخیص دقیق و درمان بیماری‌های عفونی، تب، هپاتیت و عفونت‌های ویروسی و باکتریایی با امکان رزرو نوبت بصورت آنلاین</p><p class="len">عنوان 34 · توضیح 158</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">malignant-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم سرطانی و ناشی از درمان سرطان</p><p class="d">بخش درمان زخم سرطانی و ناشی از درمان سرطان همراه کلینیک، خدمات تخصصی ارزیابی، پانسمان و مراقبت از زخم را برای تسریع بهبود و کاهش عوارض ارائه می‌دهد.</p><p class="len">عنوان 38 · توضیح 148</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم سرطانی و ناشی از درمان سرطان</p><p class="d">بخش درمان زخم سرطانی و ناشی از درمان سرطان همراه کلینیک، خدمات تخصصی ارزیابی، پانسمان و مراقبت از زخم را برای تسریع بهبود و کاهش عوارض ارائه می‌دهد.</p><p class="len">عنوان 38 · توضیح 148</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">metabolic-syndrome</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان چربی خون و سندرم متابولیک در کلینیک غدد همراه تهران</p><p class="d">درمان چربی خون بالا و سندرم متابولیک با رویکرد کاهش ریسک قلبی-عروقی در کلینیک غدد همراه تهران.</p><p class="len">عنوان 57 · توضیح 94</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان چربی خون و سندرم متابولیک در کلینیک غدد همراه تهران</p><p class="d">درمان چربی خون بالا و سندرم متابولیک با رویکرد کاهش ریسک قلبی-عروقی در کلینیک غدد همراه تجریش تهران؛ ارزیابی آزمایشگاهی، اصلاح تغذیه و دارودرمانی.</p><p class="len">عنوان 57 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">obesity</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان چاقی و کنترل وزن در کلینیک غدد همراه تهران</p><p class="d">درمان چاقی و اضافه وزن با ارزیابی علل هورمونی، مشاوره تغذیه و دارودرمانی در کلینیک غدد همراه تهران.</p><p class="len">عنوان 48 · توضیح 99</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان چاقی و کنترل وزن در کلینیک غدد همراه تهران</p><p class="d">درمان چاقی و اضافه وزن با ارزیابی علل هورمونی، مشاوره تغذیه و دارودرمانی در کلینیک غدد همراه تجریش تهران؛ برنامه‌ی شخصی‌سازی‌شده و پیگیری منظم.</p><p class="len">عنوان 48 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">osteoporosis</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان پوکی استخوان در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان پوکی استخوان با سنجش تراکم استخوان (DEXA) و درمان دارویی برای پیشگیری از شکستگی در کلینیک غدد همراه تهران.</p><p class="len">عنوان 44 · توضیح 120</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان پوکی استخوان در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان پوکی استخوان با سنجش تراکم استخوان (DEXA) و درمان دارویی برای پیشگیری از شکستگی در کلینیک غدد همراه تهران.</p><p class="len">عنوان 44 · توضیح 120</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">pcos</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان سندرم تخمدان پلی‌کیستیک (PCOS) در کلینیک غدد همراه تهران</p><p class="d">درمان سندرم تخمدان پلی‌کیستیک (PCOS) با رویکرد هورمونی و متابولیک — تنظیم قاعدگی، پرمویی و ناباروری در کلینیک غدد همراه تهران.</p><p class="len">عنوان 62 · توضیح 126</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان سندرم تخمدان پلی‌کیستیک (PCOS) در کلینیک غدد تهران</p><p class="d">درمان سندرم تخمدان پلی‌کیستیک (PCOS) با رویکرد هورمونی و متابولیک — تنظیم قاعدگی، پرمویی و ناباروری در کلینیک غدد همراه تهران.</p><p class="len">عنوان 56 · توضیح 126</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">pituitary</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات غده هیپوفیز در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان اختلالات غده هیپوفیز شامل پرولاکتینوما، آکرومگالی و کم‌کاری هیپوفیز در کلینیک غدد همراه تهران.</p><p class="len">عنوان 52 · توضیح 108</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان اختلالات غده هیپوفیز در کلینیک غدد همراه تهران</p><p class="d">تشخیص و درمان اختلالات غده هیپوفیز شامل پرولاکتینوما، آکرومگالی و کم‌کاری هیپوفیز در کلینیک غدد همراه تجریش تهران، با آزمایش‌های هورمونی تخصصی.</p><p class="len">عنوان 52 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">pressure-ulcer</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم بستر (فشاری)</p><p class="d">زخم بستر یا زخم فشاری (Pressure Ulcer) آسیبی است که در پوست و بافت‌های زیرین آن به دلیل فشار طولانی‌مدت ایجاد می‌شود. این زخم‌ها معمولاً در بیماران سالمند،</p><p class="len">عنوان 22 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم بستر (فشاری) | کلینیک زخم همراه تهران</p><p class="d">زخم بستر یا زخم فشاری (Pressure Ulcer) آسیبی است که در پوست و بافت‌های زیرین آن به دلیل فشار طولانی‌مدت ایجاد می‌شود. این زخم‌ها معمولاً در بیماران سالمند،</p><p class="len">عنوان 47 · توضیح 155</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">respiratory-infection</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت تنفسی</p><p class="d">عفونت‌های تنفسی از علل اصلی مراجعه به پزشک هستند. کلینیک عفونی همراه با ارزیابی دقیق، تصویربرداری مناسب و تشخیص افتراقی بین عفونت‌های ویروسی و باکتریایی، از</p><p class="len">عنوان 17 · توضیح 156</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت تنفسی | کلینیک عفونی تهران</p><p class="d">عفونت‌های تنفسی از علل اصلی مراجعه به پزشک هستند. کلینیک عفونی همراه با ارزیابی دقیق، تصویربرداری مناسب و تشخیص افتراقی بین عفونت‌های ویروسی و باکتریایی، از</p><p class="len">عنوان 38 · توضیح 156</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">sex-hormones</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">اختلالات هورمون‌های جنسی و یائسگی در کلینیک غدد همراه تهران</p><p class="d">درمان اختلالات هورمون‌های جنسی، یائسگی و افت تستوسترون با هورمون‌درمانی اصولی در کلینیک غدد همراه تهران.</p><p class="len">عنوان 59 · توضیح 104</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">اختلالات هورمون‌های جنسی و یائسگی در کلینیک غدد همراه تهران</p><p class="d">درمان اختلالات هورمون‌های جنسی، یائسگی و افت تستوسترون با هورمون‌درمانی اصولی در کلینیک غدد همراه تجریش تهران؛ ارزیابی کامل هورمونی و پیگیری دوره‌ای.</p><p class="len">عنوان 59 · توضیح 149</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">skin-infection</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت پوست و بافت نرم</p><p class="d">عفونت‌های پوست و بافت نرم (SSTI) از سلولیت ساده تا عفونت‌های تهدیدکننده‌ی جان مانند نکروتیزینگ فاسئیت متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری کلینیک زخم،</p><p class="len">عنوان 27 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت پوست و بافت نرم | کلینیک عفونی تهران</p><p class="d">عفونت‌های پوست و بافت نرم (SSTI) از سلولیت ساده تا عفونت‌های تهدیدکننده‌ی جان مانند نکروتیزینگ فاسئیت متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری کلینیک زخم،</p><p class="len">عنوان 48 · توضیح 155</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">sti</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص و درمان عفونت‌های مقاربتی (STI)</p><p class="d">عفونت‌های مقاربتی (STI) قابل تشخیص و درمان هستند، اما به دلیل تابو فرهنگی، اغلب دیر تشخیص داده می‌شوند. کلینیک عفونی همراه با رعایت کامل محرمانگی و حریم</p><p class="len">عنوان 37 · توضیح 152</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص و درمان عفونت‌های مقاربتی (STI)</p><p class="d">عفونت‌های مقاربتی (STI) قابل تشخیص و درمان هستند، اما به دلیل تابو فرهنگی، اغلب دیر تشخیص داده می‌شوند. کلینیک عفونی همراه با رعایت کامل محرمانگی و حریم</p><p class="len">عنوان 37 · توضیح 152</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">surgical-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم بعد از جراحی</p><p class="d">زخم‌های بعد از جراحی که دیر التیام می‌یابند یا دچار باز شدن (Wound Dehiscence) شده‌اند، نیازمند مراقبت تخصصی هستند. کلینیک زخم همراه با پروتکل‌های استاندارد و</p><p class="len">عنوان 22 · توضیح 158</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم بعد از جراحی | کلینیک زخم همراه تهران</p><p class="d">زخم‌های بعد از جراحی که دیر التیام می‌یابند یا دچار باز شدن (Wound Dehiscence) شده‌اند، نیازمند مراقبت تخصصی هستند. کلینیک زخم همراه با پروتکل‌های استاندارد و</p><p class="len">عنوان 47 · توضیح 158</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">thyroid</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان بیماری‌های تیروئید در کلینیک غدد همراه تهران</p><p class="d">درمان کم‌کاری، پرکاری، گواتر و گره‌های تیروئید در کلینیک غدد همراه تهران با سونوگرافی و نمونه‌برداری در محل.</p><p class="len">عنوان 50 · توضیح 108</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان بیماری‌های تیروئید در کلینیک غدد همراه تهران</p><p class="d">درمان کم‌کاری، پرکاری، گواتر و گره‌های تیروئید در کلینیک غدد همراه تجریش تهران، با سونوگرافی و نمونه‌برداری (FNA) در محل و پاسخ‌دهی سریع.</p><p class="len">عنوان 50 · توضیح 137</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">traumatic-wound</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم ضربه‌ای (تروماتیک)</p><p class="d">زخم‌های ضربه‌ای (Traumatic Wounds) ناشی از تصادف، سقوط، بریدگی شدید یا حادثه هستند که می‌توانند سطحی یا عمیق، تمیز یا آلوده باشند. کلینیک زخم همراه پیگیری پس</p><p class="len">عنوان 28 · توضیح 157</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم ضربه‌ای (تروماتیک) | کلینیک زخم همراه تهران</p><p class="d">زخم‌های ضربه‌ای (Traumatic Wounds) ناشی از تصادف، سقوط، بریدگی شدید یا حادثه هستند که می‌توانند سطحی یا عمیق، تمیز یا آلوده باشند. کلینیک زخم همراه پیگیری پس</p><p class="len">عنوان 53 · توضیح 157</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">tuberculosis</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص و درمان سل (TB)</p><p class="d">سل (Tuberculosis) یکی از کشنده‌ترین عفونت‌های جهان است که هنوز سالانه میلیون‌ها نفر را در سراسر دنیا مبتلا می‌کند. کلینیک عفونی همراه با دسترسی به Gene-Xpert</p><p class="len">عنوان 21 · توضیح 157</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص و درمان سل (TB) | کلینیک عفونی تهران</p><p class="d">سل (Tuberculosis) یکی از کشنده‌ترین عفونت‌های جهان است که هنوز سالانه میلیون‌ها نفر را در سراسر دنیا مبتلا می‌کند. کلینیک عفونی همراه با دسترسی به Gene-Xpert</p><p class="len">عنوان 42 · توضیح 157</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">urinary-tract-infection</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت ادراری (UTI)</p><p class="d">عفونت ادراری (UTI) شایع‌ترین عفونت باکتریایی در جامعه است و حدود ۵۰٪ زنان حداقل یک‌بار در طول عمرشان به آن مبتلا می‌شوند. کلینیک عفونی همراه با تشخیص دقیق</p><p class="len">عنوان 24 · توضیح 154</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان عفونت ادراری (UTI) | کلینیک عفونی تهران</p><p class="d">عفونت ادراری (UTI) شایع‌ترین عفونت باکتریایی در جامعه است و حدود ۵۰٪ زنان حداقل یک‌بار در طول عمرشان به آن مبتلا می‌شوند. کلینیک عفونی همراه با تشخیص دقیق</p><p class="len">عنوان 45 · توضیح 154</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">urology-clinic</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک فوق تخصصی اورولوژی در تهران</p><p class="d">تشخیص و درمان تخصصی بیماری‌های کلیه، مجاری ادراری، پروستات، ناباروری مردان و مشکلات ادراری توسط پزشکان مجرب با امکان نوبت‌دهی آنلاین.</p><p class="len">عنوان 34 · توضیح 133</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک فوق تخصصی اورولوژی در تهران</p><p class="d">تشخیص و درمان تخصصی بیماری‌های کلیه، مجاری ادراری، پروستات، ناباروری مردان و مشکلات ادراری توسط پزشکان مجرب با امکان نوبت‌دهی آنلاین.</p><p class="len">عنوان 34 · توضیح 133</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">venous-ulcer</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم وریدی</p><p class="d">زخم وریدی شایع‌ترین نوع زخم مزمن پای انسان است و در ۸۰٪ موارد زخم‌های مزمن ساق پا را شامل می‌شود. این زخم‌ها معمولاً در نتیجه‌ی نارسایی مزمن وریدی (CVI) و</p><p class="len">عنوان 15 · توضیح 154</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان زخم وریدی | کلینیک زخم همراه تهران</p><p class="d">زخم وریدی شایع‌ترین نوع زخم مزمن پای انسان است و در ۸۰٪ موارد زخم‌های مزمن ساق پا را شامل می‌شود. این زخم‌ها معمولاً در نتیجه‌ی نارسایی مزمن وریدی (CVI) و</p><p class="len">عنوان 40 · توضیح 154</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">viral-hepatitis</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">درمان هپاتیت ویروسی (B و C)</p><p class="d">هپاتیت‌های ویروسی B و C از مهم‌ترین عفونت‌های مزمن کبد هستند که در صورت عدم درمان به سیروز، نارسایی کبد و سرطان کبد منجر می‌شوند. کلینیک عفونی همراه با دسترسی</p><p class="len">عنوان 27 · توضیح 158</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">درمان هپاتیت ویروسی (B و C) | کلینیک عفونی تهران</p><p class="d">هپاتیت‌های ویروسی B و C از مهم‌ترین عفونت‌های مزمن کبد هستند که در صورت عدم درمان به سیروز، نارسایی کبد و سرطان کبد منجر می‌شوند. کلینیک عفونی همراه با دسترسی</p><p class="len">عنوان 48 · توضیح 158</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">wound-clinic</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بهترین کلینیک زخم تهران (شبانه‌روزی/دولتی) + آدرس شمال تهران</p><p class="d">کلینیک زخم چیست و چگونه درمان شویم؟ ارائه خدمات در بهترین کلینیک زخم تهران. مرکز دولتی و شبانه‌روزی با کادر مجرب. مشاهده آدرس کلینیک زخم تهران و شعبه شمال تهران</p><p class="len">عنوان 60 · توضیح 160</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">کلینیک زخم تهران | درمان زخم دیابتی، بستر و مزمن</p><p class="d">درمان تخصصی زخم دیابتی، بستر، وریدی، شریانی و سوختگی در کلینیک زخم همراه، تجریش تهران. ارزیابی، پانسمان تخصصی و پیگیری دوره‌ای زیر نظر کادر مجرب.</p><p class="len">عنوان 48 · توضیح 145</p></div>
+  </div>
+</article>
+</section>
+<section><h2>مقالات وبلاگ <span class="c">16 صفحه</span></h2>
+<article class="row">
+  <p class="slug">%d8%a7%d8%b2-%da%a9%d8%ac%d8%a7-%d…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">از کجا بفهمیم شیمی درمانی جواب داده؟ علائم و روش‌های تشخیص</p><p class="d">از کجا بفهمیم شیمی‌درمانی جواب داده است؟ با علائم بهبود، نتایج آزمایش خون، سی‌تی‌اسکن، ام‌آر‌آی و روش‌های تشخیص اثربخشی درمان سرطان آشنا شوید.</p><p class="len">عنوان 58 · توضیح 142</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">از کجا بفهمیم شیمی‌درمانی جواب داده؟ علائم و روش‌های تشخیص</p><p class="d">علائم پاسخ بدن به شیمی‌درمانی چیست؟ نقش آزمایش خون، سی‌تی‌اسکن، ام‌آر‌آی و تومورمارکرها در سنجش اثربخشی درمان، به زبان ساده از پزشکان همراه کلینیک.</p><p class="len">عنوان 58 · توضیح 147</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%a7%db%8c%d8%a7-%da%af%d8%b1%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">ایا گرفتگی عروق پا خطرناک است؟</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 30 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">آیا گرفتگی عروق پا خطرناک است؟ علائم و درمان</p><p class="d">گرفتگی عروق پا (بیماری شریان محیطی) در صورت درمان‌نشدن به زخم مزمن و گنگرن می‌رسد. علائم هشدار، افراد در معرض خطر و روش‌های تشخیص و درمان تخصصی.</p><p class="len">عنوان 44 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%a8%d9%87%d8%aa%d8%b1%db%8c%d9%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">بهترین صبحانه قبل از شیمی درمانی</p><p class="d">بهترین صبحانه برای روز شیمی درمانی شامل غذاهای سبک، زودهضم و مغذی است که به حفظ انرژی و کاهش ناراحتی‌های گوارشی کمک می‌کنند.</p><p class="len">عنوان 32 · توضیح 124</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">بهترین صبحانه قبل از شیمی درمانی | چه بخوریم؟</p><p class="d">صبحانه‌ی روز شیمی‌درمانی باید سبک، زودهضم و مغذی باشد. فهرست خوراکی‌های مناسب و مواردی که باید پرهیز کنید، از متخصص تغذیه‌ی بالینی همراه کلینیک.</p><p class="len">عنوان 45 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%aa%d8%b4%d8%ae%db%8c%d8%b5-%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص آریتمی قلبی در خانه</p><p class="d">⚠️ نکته بسیار مهم: تشخیص آریتمی قلبی در خانه به صورت قطعی و علمی امکان‌پذیر نیست. آریتمی قلبی یک وضعیت پزشکی جدی است که فقط با استفاده از تجهیزات تخصصی مانند</p><p class="len">عنوان 25 · توضیح 157</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تشخیص آریتمی قلبی در خانه | روش‌ها و محدودیت‌ها</p><p class="d">آیا می‌توان آریتمی قلبی را در خانه تشخیص داد؟ روش کنترل نبض، دقت ساعت هوشمند و محدودیت‌های آن، و اینکه چه زمانی حتماً باید نوار قلب گرفته شود.</p><p class="len">عنوان 47 · توضیح 142</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%aa%d9%82%d9%88%db%8c%d8%aa-%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تقویت سیستم ایمنی بدن بعد از شیمی درمانی</p><p class="d">داروهای شیمی‌درمانی به گونه‌ای طراحی شده‌اند تا سلول‌هایی که سرعت تکثیر بالایی دارند (مانند سلول‌های سرطانی) را هدف قرار دهند. اما سلول‌های مغز استخوان (که</p><p class="len">عنوان 40 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تقویت سیستم ایمنی بدن بعد از شیمی درمانی</p><p class="d">چگونه پس از شیمی‌درمانی سیستم ایمنی را بازسازی کنیم؟ تغذیه، خواب، واکسیناسیون و نکات پیشگیری از عفونت، از متخصصان همراه کلینیک در تجریش تهران.</p><p class="len">عنوان 40 · توضیح 142</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%ad%d9%85%d8%a7%db%8c%d8%aa-%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">حمایت روانی از بیماران در زمان شیمی‌درمانی</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 42 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">حمایت روانی از بیمار در دوران شیمی‌درمانی</p><p class="d">بیمار تحت شیمی‌درمانی به همان اندازه‌ی دارو به حمایت روانی نیاز دارد. راهکارهای عملی برای بیمار و خانواده، از روان‌پزشک همراه کلینیک تجریش.</p><p class="len">عنوان 41 · توضیح 139</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b1%d8%a7%d9%87%d9%86%d9%85%d8%…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">راهنمای جامع تغذیه در دوران شیمی‌درمانی: توصیه‌ها و پرهیزات ضروری</p><p class="d">دوران شیمی‌درمانی یکی از مراحل حساس درمان سرطان است که در آن، تغذیه صحیح نقش بسیار مهمی در حفظ قوای جسمانی بیمار و مدیریت عوارض جانبی درمان ایفا می‌کند. در</p><p class="len">عنوان 65 · توضیح 155</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تغذیه در دوران شیمی‌درمانی | توصیه‌ها و پرهیزها</p><p class="d">چه بخوریم و از چه پرهیز کنیم در دوران شیمی‌درمانی؟ راهنمای کامل تغذیه برای کنترل تهوع، حفظ وزن و تقویت بدن، از متخصص تغذیه‌ی بالینی همراه کلینیک.</p><p class="len">عنوان 47 · توضیح 145</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b1%d9%88%d8%ba%d9%86-%d8%b3%db…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">روغن سیاه دانه برای واریس پا [فواید و روش مصرف]</p><p class="d">آیا روغن سیاه‌دانه برای واریس پا مؤثر است؟ با خواص، روش مصرف و نکات مهم استفاده از این درمان خانگی برای تسکین رگ‌های واریسی آشنا شوید.</p><p class="len">عنوان 47 · توضیح 134</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">روغن سیاه‌دانه برای واریس پا | فواید و روش مصرف</p><p class="d">آیا روغن سیاه‌دانه واریس پا را درمان می‌کند؟ بررسی شواهد علمی، روش صحیح مصرف، نکات ایمنی و اینکه چه زمانی باید به متخصص قلب و عروق مراجعه کنید.</p><p class="len">عنوان 47 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d8%b4%d8%a8-%d9%82%d8%a8%d9%84-%d…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">شب قبل از شیمی درمانی چه بخوریم</p><p class="d">احتمالا ذهن شما هم درگیر این موضوع شود که شب قبل از شیمی درمانی چه بخوریم تا فردا حال بهتری داشته باشیم؟ زیرا همان‌طور که می‌دانید، غذایی که میل می‌کنید</p><p class="len">عنوان 31 · توضیح 152</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">شب قبل از شیمی درمانی چه بخوریم؟</p><p class="d">وعده‌ی شب پیش از شیمی‌درمانی روی حال شما در روز درمان اثر دارد. فهرست خوراکی‌های مناسب، مواردی که باید پرهیز کنید و نکات آب‌رسانی بدن.</p><p class="len">عنوان 32 · توضیح 134</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%81%d8%b4%d8%a7%d8%b1-%d8%af%db…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">فشار دیاستولیک پایین نشانه چیست؟</p><p class="d">فشار دیاستولیک پایین معمولاً نشانه کم‌آبی بدن، مشکلات دریچه قلب، سوءتغذیه یا عوارض دارویی است و این حالت با سرگیجه و خستگی همراه است و نیاز به بررسی پزشک دارد.</p><p class="len">عنوان 32 · توضیح 159</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">فشار دیاستولیک پایین نشانه چیست؟ علل و درمان</p><p class="d">فشار دیاستولیک پایین می‌تواند نشانه‌ی کم‌آبی، مشکل دریچه‌ی قلب، سوءتغذیه یا عارضه‌ی دارویی باشد. علائم هشدار و زمان مراجعه به متخصص قلب و عروق.</p><p class="len">عنوان 44 · توضیح 143</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%82%d8%b1%d8%b5-%d9%86%db%8c%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">قرص نیتروگلیسیرین چه زمانی مصرف شود؟</p><p class="d">زمان مصرف قرص نیتروگلیسیرین بلافاصله پس از شروع درد قفسه سینه (آنژین) یا ۵ دقیقه قبل از فعالیت‌های محرک است، قرص را زیر زبان بگذارید تا جریان خون قلب بهتر شود.</p><p class="len">عنوان 36 · توضیح 159</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">قرص نیتروگلیسیرین چه زمانی مصرف شود؟</p><p class="d">نیتروگلیسیرین را بلافاصله پس از شروع درد قفسه‌ی سینه یا ۵ دقیقه پیش از فعالیت سنگین مصرف کنید. روش صحیح، دوز مجاز و هشدارهای مهم دارویی.</p><p class="len">عنوان 36 · توضیح 136</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%86%d9%82%d8%b4-%d8%a2%d9%86%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">نقش آنتی‌اکسیدان‌ها در پیشگیری از سرطان</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 39 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">نقش آنتی‌اکسیدان‌ها در پیشگیری از سرطان</p><p class="d">آنتی‌اکسیدان‌ها چگونه از سلول‌ها محافظت می‌کنند؟ منابع غذایی، شواهد علمی درباره‌ی پیشگیری از سرطان و هشدار مهم درباره‌ی مکمل‌ها در دوره‌ی درمان.</p><p class="len">عنوان 39 · توضیح 144</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%d9%87%d8%b1-%d8%af%d9%88%d8%b1%d9…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">تعداد جلسات شیمی‌ درمانی و فاصله بین جلسات چقدر است؟</p><p class="d">شاید پرتکرارترین و البته منطقی‌ترین سوالی که بیماران یا همراهان آن‌ها در همان جلسه اول از پزشک می‌پرسند، این است که هر دوره شیمی درمانی چند جلسه است و این</p><p class="len">عنوان 52 · توضیح 154</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">تعداد جلسات شیمی‌درمانی و فاصله بین آن‌ها</p><p class="d">هر دوره‌ی شیمی‌درمانی چند جلسه است و فاصله‌ی بین جلسات چقدر؟ عوامل تعیین‌کننده‌ی تعداد جلسات و آنچه در فاصله‌ی بین دو جلسه باید بدانید.</p><p class="len">عنوان 41 · توضیح 135</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">%da%86%d8%b1%d8%a7-%d9%85%d8%ba%d8…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">چرا مغز ما در مواجهه با استرس بیش‌فعال می‌شود؟</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 46 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">چرا مغز ما در مواجهه با استرس بیش‌فعال می‌شود؟</p><p class="d">واکنش مغز به استرس چگونه کار می‌کند و چرا گاهی از کنترل خارج می‌شود؟ نقش آمیگدال و کورتیزول و راهکارهای عملی آرام‌سازی، از روان‌پزشک همراه کلینیک.</p><p class="len">عنوان 46 · توضیح 146</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">10-%d9%86%d8%b4%d8%a7%d9%86%d9%87-…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">10 نشانه پنهان بیماری قلبی که نباید نادیده بگیرید</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 49 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">۱۰ نشانه پنهان بیماری قلبی که نباید نادیده بگیرید</p><p class="d">بسیاری از بیماری‌های قلبی پیش از سکته نشانه‌های خاموشی دارند؛ از خستگی غیرعادی تا تورم پا. ده علامتی که باید جدی بگیرید، از متخصص قلب همراه کلینیک.</p><p class="len">عنوان 49 · توضیح 147</p></div>
+  </div>
+</article>
+<article class="row">
+  <p class="slug">7-%d8%a7%d8%b4%d8%aa%d8%a8%d8%a7%d…</p>
+  <div class="pair">
+    <div class="serp old"><span class="tagx">قبل</span><p class="u">hamrahclinic.ir</p><p class="t">7 اشتباه رایج تغذیه‌ای که مانع کاهش وزن می‌شود</p><p class="d"><em class="none">— هیچ توضیحی ندارد؛ گوگل خودش متنی از صفحه برمی‌دارد —</em></p><p class="len">عنوان 46 · توضیح 0</p></div>
+    <div class="serp new"><span class="tagv">بعد</span><p class="u">hamrahclinic.ir</p><p class="t">۷ اشتباه رایج تغذیه‌ای که مانع کاهش وزن می‌شود</p><p class="d">چرا با وجود رژیم، وزن کم نمی‌کنید؟ هفت اشتباه رایج از حذف وعده تا مصرف پنهان قند، و راه اصلاح هرکدام، از متخصص تغذیه‌ی بالینی همراه کلینیک.</p><p class="len">عنوان 46 · توضیح 139</p></div>
+  </div>
+</article>
+</section>
+</div>
+<footer><div class="in">
+  <p><b>گام بعدی:</b> این متن‌ها در فایل <code>seo/meta-new.tsv</code> ذخیره شده‌اند و آماده‌ی انتقال به دیتابیس MySQL سایت جدیدند.</p>
+  <p>هر ردیفی را خواستی تغییر بده — شماره‌ی صفحه یا نام آن را بگو و بازنویسی می‌کنم.</p>
+  <p style="color:#8595B8">همراه کلینیک · بازبینی متای سئو · شهریور ۱۴۰۵</p>
+</div></footer>

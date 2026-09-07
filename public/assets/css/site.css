@@ -1,0 +1,196 @@
+/* ============================================================
+   همراه کلینیک — استایل پایه
+   پالت از رنگ‌های لوگو: سرمه‌ای #24408D و فیروزه‌ای #4EC3A9
+
+   نکته‌ی دسترس‌پذیری: فیروزه‌ی لوگو روی زمینه‌ی روشن کنتراست
+   حدود ۲:۱ دارد. پس --teal فقط برای زمینه‌ی سرمه‌ای، دکمه‌ها و
+   گرافیک است و متن و لینک روی زمینه‌ی روشن از --teal-d می‌آید.
+   ============================================================ */
+
+:root{
+  --navy:#24408D; --navy-d:#1B3272; --navy-l:#2F4FA6;
+  --teal:#4EC3A9; --teal-d:#1E8570; --teal-dd:#176B5A;
+  --ground:#FFFFFF; --soft:#F2F5F8; --soft-2:#E7ECF2;
+  --ink:#16203F; --ink-2:#4A5673; --ink-3:#7C88A3;
+  --rule:#DCE3EC;
+  --r:10px; --r-s:6px;
+  --sh:0 2px 4px rgba(22,32,63,.05), 0 12px 32px -12px rgba(22,32,63,.18);
+  --sh-lg:0 4px 10px rgba(22,32,63,.07), 0 24px 56px -20px rgba(22,32,63,.30);
+  --maxw:1200px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --navy:#16255C; --navy-d:#0E1B45; --navy-l:#233C82;
+    --teal:#4EC3A9; --teal-d:#5FCFB6; --teal-dd:#78DAC4;
+    --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
+    --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8;
+    --rule:#243050;
+    --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+    --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 24px 56px -20px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --navy:#16255C; --navy-d:#0E1B45; --navy-l:#233C82;
+  --teal:#4EC3A9; --teal-d:#5FCFB6; --teal-dd:#78DAC4;
+  --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
+  --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8;
+  --rule:#243050;
+  --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+  --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 24px 56px -20px rgba(0,0,0,.7);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{direction:rtl}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  font-weight:400;font-size:15px;line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0;font-weight:700;line-height:1.4}
+img{max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+.in{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+.skip{position:absolute;right:-9999px;top:0;background:var(--teal);color:#0F2340;
+  padding:10px 18px;z-index:100;border-radius:0 0 var(--r-s) var(--r-s);font-weight:600}
+.skip:focus{right:20px}
+
+/* ---- نشانه‌ی محیط آزمایشی --------------------------------- */
+.staging-flag{
+  background:#8A4B12;color:#FFF3E4;text-align:center;
+  font-size:12.5px;font-weight:600;padding:7px 16px;letter-spacing:.01em;
+}
+
+/* ---- نوار بالا -------------------------------------------- */
+.topbar{background:var(--navy-d);color:#BFCBE4;font-size:12.5px}
+.topbar .in{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;height:38px;flex-wrap:wrap;overflow:hidden}
+.topbar .tel{display:inline-flex;align-items:center;gap:7px;color:#fff}
+.topbar .tel b{font-size:15px;font-weight:700;letter-spacing:.02em}
+
+/* ---- منو ---------------------------------------------------- */
+.nav{background:var(--ground);border-bottom:1px solid var(--rule);
+  position:sticky;top:0;z-index:30}
+.nav .in{display:flex;align-items:center;gap:26px;height:74px}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.brand .mk{width:34px;height:38px;flex-shrink:0}
+.brand b{display:block;font-size:19px;font-weight:800;color:var(--navy);
+  line-height:1.2;letter-spacing:-.01em}
+.brand span span{display:block;font-size:8px;letter-spacing:.19em;
+  color:var(--ink-3);direction:ltr;font-weight:500}
+.menu{display:flex;gap:2px;margin-inline-start:auto}
+.menu a{padding:9px 13px;font-size:14px;font-weight:500;color:var(--ink-2);
+  border-radius:var(--r-s)}
+.menu a:hover{color:var(--navy);background:var(--soft)}
+
+/* ---- دکمه‌ها ------------------------------------------------ */
+.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:inherit;font-size:14px;font-weight:600;padding:11px 20px;
+  border-radius:var(--r-s);border:1px solid transparent;cursor:pointer;
+  white-space:nowrap;transition:filter .16s,background .16s,border-color .16s}
+.b-teal{background:var(--teal);color:#0F2340;border-color:var(--teal)}
+.b-teal:hover{filter:brightness(1.07)}
+.b-out{background:transparent;color:var(--navy);border-color:var(--rule)}
+.b-out:hover{border-color:var(--navy);background:var(--soft)}
+.b-ghost{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.35)}
+.b-ghost:hover{background:rgba(255,255,255,.2)}
+
+/* ---- مسیر راهنما -------------------------------------------- */
+.crumb{background:var(--soft);border-bottom:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-3)}
+.crumb .in{padding-block:9px}
+.crumb a:hover{color:var(--teal-d)}
+.crumb i{opacity:.5;margin:0 7px;font-style:normal}
+
+/* ---- سربرگ صفحه -------------------------------------------- */
+.phead{position:relative;background:var(--navy);overflow:hidden}
+.phead .pic{position:absolute;inset:0;background:var(--navy-l);
+  background-size:cover;background-position:45% center}
+.phead .veil{position:absolute;inset:0;background:linear-gradient(to left,
+  var(--navy-d) 0%, rgba(27,50,114,.95) 46%, rgba(27,50,114,.72) 72%, rgba(27,50,114,.5) 100%)}
+.phead .in{position:relative;padding-block:32px 34px}
+.phead .kick{margin:0 0 13px;font-size:12px;font-weight:600;color:var(--teal);
+  display:inline-block;background:rgba(78,195,169,.14);
+  border:1px solid rgba(78,195,169,.34);padding:5px 13px;border-radius:100px}
+.phead h1{font-size:clamp(27px,3.9vw,42px);font-weight:800;color:#fff;
+  letter-spacing:-.015em;max-width:22ch;margin-bottom:12px;text-wrap:balance}
+.phead .lede{margin:0;font-size:16px;font-weight:300;line-height:2;
+  color:#D6DFF2;max-width:54ch}
+
+/* ---- متن ---------------------------------------------------- */
+.prose{max-width:66ch;padding-block:34px 46px}
+.prose h2{font-size:26px;font-weight:800;margin:34px 0 12px;letter-spacing:-.01em}
+.prose h2:first-child{margin-top:0}
+.prose h3{font-size:17px;font-weight:700;margin:22px 0 6px}
+.prose p{margin:0 0 15px;font-size:15.5px;line-height:2.1;color:var(--ink-2);font-weight:300}
+.prose strong{font-weight:700;color:var(--ink)}
+.prose a{color:var(--teal-dd);font-weight:500;text-decoration:underline;
+  text-underline-offset:3px}
+.prose ul,.prose ol{margin:0 0 18px;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:9px}
+.prose li{position:relative;padding-inline-start:28px;font-size:15px;
+  line-height:1.95;color:var(--ink-2);font-weight:300}
+.prose li::before{content:"";position:absolute;inset-inline-start:0;top:10px;
+  width:16px;height:16px;border-radius:50%;background:rgba(78,195,169,.2)}
+.prose img{border-radius:var(--r);box-shadow:var(--sh);margin-block:8px 18px}
+.prose table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:14px}
+.prose th,.prose td{padding:10px 14px;border:1px solid var(--rule);text-align:right}
+.prose th{background:var(--soft);font-weight:600}
+.prose blockquote{margin:0 0 18px;padding:14px 18px;background:var(--soft);
+  border-inline-start:3px solid var(--teal);border-radius:var(--r-s)}
+.prose blockquote p:last-child{margin:0}
+
+/* ---- یادداشت صفحه‌ی بدون محتوا ------------------------------ */
+.empty-note{background:var(--soft);border:1px dashed var(--rule);
+  border-radius:var(--r);padding:20px 24px}
+.empty-note p{margin:0 0 8px;font-size:14.5px;color:var(--ink-2)}
+.kv{margin:14px 0 0;display:grid;gap:0}
+.kv div{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:8px 0;
+  border-top:1px solid var(--rule)}
+.kv dt{font-size:12.5px;color:var(--ink-3)}
+.kv dd{margin:0;font-size:13.5px;color:var(--ink-2);word-break:break-word}
+
+/* ---- ۴۰۴ ---------------------------------------------------- */
+.nf{padding-block:70px 90px;text-align:center;max-width:52ch;margin-inline:auto}
+.nf .code{margin:0 0 6px;font-size:64px;font-weight:800;color:var(--teal);
+  line-height:1;letter-spacing:-.03em}
+.nf h1{font-size:29px;font-weight:800;margin-bottom:10px}
+.nf .lede{margin:0 0 26px;color:var(--ink-2);font-weight:300;font-size:16px}
+.nf-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ---- فوتر --------------------------------------------------- */
+.site-foot{background:var(--navy-d);color:#B7C4DE;margin-top:40px;
+  padding-block:40px 0;font-size:13.5px}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:34px;
+  padding-bottom:32px}
+.site-foot h4{font-size:14.5px;color:#fff;margin-bottom:14px}
+.site-foot ul{margin:0;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:8px}
+.site-foot a:hover{color:var(--teal)}
+.site-foot p{margin:0;line-height:2;font-weight:300}
+.fname{font-size:19px;font-weight:800;color:#fff;display:block}
+.fen{font-size:8px;letter-spacing:.19em;color:#8595B8;direction:ltr;
+  display:block;margin-bottom:13px}
+.ftel{font-size:21px;font-weight:800;color:var(--teal);display:block;
+  margin-bottom:5px;letter-spacing:.02em}
+.fbot{border-top:1px solid rgba(255,255,255,.11);padding-block:16px;
+  font-size:12.5px;color:#8595B8}
+
+/* ---- واکنش‌گرا ---------------------------------------------- */
+@media (max-width:1000px){
+  .menu{display:none}
+}
+@media (max-width:760px){
+  .in{padding:0 16px}
+  .topbar .hours{display:none}
+  .fgrid{grid-template-columns:1fr;gap:26px}
+  .phead .in{padding-block:24px 26px}
+  .prose{padding-block:26px 34px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}

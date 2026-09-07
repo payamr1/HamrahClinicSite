@@ -1,0 +1,571 @@
+<title>طرح نو همراه کلینیک</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&family=Vazirmatn:wght@200;300;400;500;700&display=swap">
+<style>
+:root{
+  --stone:#E8EAEF;
+  --paper:#F4F5F8;
+  --sunk:#DCDFE7;
+  --navy:#24408D;
+  --navy-2:#2F4FA6;
+  --ink:#17224A;
+  --ink-2:#48547A;
+  --ink-3:#79839F;
+  --teal:#1E8570;
+  --teal-lt:#4EC3A9;
+  --rule:#C9CDD9;
+  --rule-2:#AEB5C6;
+  --on-dark:#EAEDF4;
+  --on-dark-2:#A6B0CB;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --stone:#0D1424;
+    --paper:#131C30;
+    --sunk:#18223A;
+    --navy:#0F1B3D;
+    --navy-2:#1B2C5E;
+    --ink:#E7EAF3;
+    --ink-2:#AAB4CE;
+    --ink-3:#7B85A2;
+    --teal:#5FCFB6;
+    --teal-lt:#78DAC4;
+    --rule:#232E4A;
+    --rule-2:#313D5E;
+    --on-dark:#EAEDF4;
+    --on-dark-2:#A6B0CB;
+  }
+}
+:root[data-theme="dark"]{
+  --stone:#0D1424; --paper:#131C30; --sunk:#18223A;
+  --navy:#0F1B3D; --navy-2:#1B2C5E;
+  --ink:#E7EAF3; --ink-2:#AAB4CE; --ink-3:#7B85A2;
+  --teal:#5FCFB6; --teal-lt:#78DAC4;
+  --rule:#232E4A; --rule-2:#313D5E;
+  --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+}
+
+*{box-sizing:border-box}
+html{direction:rtl}
+body{
+  margin:0;
+  background:var(--stone);
+  color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  font-weight:300;
+  font-size:15px;
+  line-height:1.9;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Markazi Text","Vazirmatn",serif;font-weight:600;margin:0;line-height:1.25}
+a{color:inherit;text-decoration:none}
+.num{font-variant-numeric:tabular-nums}
+
+/* ============ SHELL: manuscript margin ============ */
+.shell{
+  max-width:1180px;margin:0 auto;
+  display:grid;
+  grid-template-columns:186px 1fr;
+  gap:0;
+  border-right:1px solid var(--rule);
+  border-left:1px solid var(--rule);
+  background:var(--stone);
+}
+.rail{
+  border-left:1px solid var(--rule);
+  padding:0;
+  position:relative;
+}
+.rail-sticky{position:sticky;top:0;padding:26px 20px 30px}
+.main{min-width:0}
+
+/* ---- letterhead in the rail ---- */
+.mark{display:flex;flex-direction:column;gap:2px;margin-bottom:26px}
+.mark .fa{font-family:"Markazi Text",serif;font-size:30px;font-weight:700;line-height:1;color:var(--ink)}
+.mark .en{font-size:9.5px;letter-spacing:.22em;color:var(--ink-3);font-weight:400;direction:ltr;text-align:right}
+.rail dl{margin:0;display:flex;flex-direction:column;gap:15px}
+.rail dt{font-size:9.5px;letter-spacing:.13em;color:var(--ink-3);font-weight:500;margin-bottom:1px}
+.rail dd{margin:0;font-size:12.5px;line-height:1.65;color:var(--ink-2);font-weight:400}
+.rail dd b{font-weight:700;color:var(--ink);font-size:14px;letter-spacing:.02em}
+.railnav{margin-top:26px;padding-top:20px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:1px}
+.railnav a{font-size:12.5px;color:var(--ink-2);padding:3px 0;transition:color .18s}
+.railnav a:hover,.railnav a:focus-visible{color:var(--teal)}
+
+/* ============ HERO ============ */
+.hero{
+  background:var(--navy);
+  color:var(--on-dark);
+  padding:38px 46px 0;
+  position:relative;
+  overflow:hidden;
+}
+.hero .kicker{
+  font-size:11px;letter-spacing:.15em;color:var(--teal-lt);
+  font-weight:500;margin:0 0 20px;
+}
+.hero h1{
+  font-size:clamp(36px,5vw,54px);
+  font-weight:600;color:var(--on-dark);
+  letter-spacing:-.005em;text-wrap:balance;
+  margin:0 0 12px;max-width:15ch;
+}
+.hero h1 em{font-style:normal;color:var(--teal-lt)}
+.hero .lede{
+  font-size:16px;font-weight:200;line-height:2;
+  color:var(--on-dark-2);max-width:46ch;margin:0 0 22px;
+}
+.hero-acts{display:flex;gap:0;flex-wrap:wrap;align-items:stretch;margin-bottom:24px}
+.btn{
+  font-family:inherit;font-size:14px;font-weight:500;
+  padding:13px 26px;border:1px solid var(--teal-lt);
+  background:var(--teal-lt);color:#10224A;
+  cursor:pointer;transition:background .18s,color .18s;
+}
+.btn:hover,.btn:focus-visible{filter:brightness(1.09)}
+.btn-ghost{
+  background:transparent;color:var(--on-dark);
+  border-color:rgba(234,237,244,.28);border-right:none;
+}
+.btn-ghost:hover,.btn-ghost:focus-visible{background:rgba(234,237,244,.07);color:var(--on-dark)}
+.hero-tel{
+  display:block;font-size:13px;color:var(--on-dark-2);
+  font-weight:300;margin-bottom:22px;
+}
+.hero-tel b{
+  font-size:19px;font-weight:500;color:var(--on-dark);
+  letter-spacing:.03em;display:inline-block;margin-right:8px;
+}
+/* the ECG trace */
+.trace{display:block;height:100px;margin:0 -46px;width:calc(100% + 92px)}
+.trace-cap{
+  position:absolute;bottom:14px;right:46px;
+  font-size:10px;letter-spacing:.12em;color:rgba(166,176,203,.55);
+}
+
+/* ============ SECTIONS ============ */
+.sec{display:grid;grid-template-columns:186px 1fr;border-top:1px solid var(--rule)}
+.sec > .lab{
+  border-left:1px solid var(--rule);
+  padding:30px 20px;
+}
+.sec > .body{padding:30px 46px 44px;min-width:0}
+.lab h2{font-size:27px;font-weight:600;line-height:1.2;margin-bottom:7px}
+.lab p{margin:0;font-size:11.5px;line-height:1.8;color:var(--ink-3)}
+.lab .cnt{
+  display:block;margin-top:12px;font-size:11px;
+  color:var(--teal);letter-spacing:.08em;font-weight:500;
+}
+
+/* ---- prose ---- */
+.prose{max-width:62ch}
+.prose p{margin:0 0 15px;font-size:15.5px;line-height:2.05;color:var(--ink-2)}
+.prose p:last-child{margin-bottom:0}
+.prose strong{font-weight:700;color:var(--ink)}
+.lead{font-family:"Markazi Text",serif;font-size:23px;line-height:1.75;color:var(--ink);font-weight:400;margin-bottom:18px}
+
+/* ---- pillars: rules, not cards ---- */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;margin-top:30px;border-top:1px solid var(--rule)}
+.pillar{padding:16px 20px 4px 14px;border-left:1px solid var(--rule)}
+.pillar:last-child{border-left:none}
+.pillar h3{font-family:"Vazirmatn",sans-serif;font-size:13px;font-weight:700;margin-bottom:5px;color:var(--ink)}
+.pillar p{margin:0;font-size:12.5px;line-height:1.8;color:var(--ink-3)}
+
+/* ---- clinic index ---- */
+.index{display:flex;flex-direction:column}
+.row{
+  display:grid;grid-template-columns:1fr auto;
+  gap:20px;align-items:baseline;
+  padding:15px 0;border-bottom:1px solid var(--rule);
+  transition:padding-right .2s;
+}
+.row:first-child{border-top:1px solid var(--rule)}
+.index a.row:hover,.index a.row:focus-visible{padding-right:9px}
+.row .nm{font-family:"Markazi Text",serif;font-size:24px;font-weight:500;line-height:1.3;color:var(--ink)}
+.row .ds{font-size:12.5px;color:var(--ink-3);line-height:1.7;margin-top:1px;max-width:52ch}
+.row .qt{
+  font-size:11.5px;color:var(--teal);white-space:nowrap;
+  letter-spacing:.05em;font-weight:500;
+}
+.index a.row:hover .nm,.index a.row:focus-visible .nm{color:var(--teal)}
+
+/* ---- doctors ledger ---- */
+.ledger{border-top:1px solid var(--rule)}
+.dr{
+  display:grid;
+  grid-template-columns:1fr 200px 96px;
+  gap:20px;align-items:baseline;
+  padding:13px 0;border-bottom:1px solid var(--rule);
+}
+.dr .nm{font-family:"Markazi Text",serif;font-size:22px;font-weight:500;color:var(--ink);line-height:1.35}
+.dr .sp{font-size:12px;color:var(--ink-2);line-height:1.65}
+.dr .no{
+  font-size:11.5px;color:var(--ink-3);text-align:left;
+  direction:ltr;letter-spacing:.04em;white-space:nowrap;
+}
+.dr .no span{color:var(--ink-3);opacity:.6;margin-left:4px}
+.dr.hd{border-bottom:1px solid var(--rule-2);padding-bottom:7px}
+.dr.hd div{font-size:9.5px;letter-spacing:.13em;color:var(--ink-3);font-weight:500}
+.dr.hd .no{text-align:left}
+
+/* ---- path (a real sequence) ---- */
+.path{position:relative;padding-right:26px;margin-top:4px}
+.path::before{
+  content:"";position:absolute;top:12px;bottom:12px;right:5px;
+  width:1px;background:var(--rule-2);
+}
+.stop{position:relative;padding:0 0 26px}
+.stop:last-child{padding-bottom:0}
+.stop::before{
+  content:"";position:absolute;right:-25px;top:9px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--stone);border:1px solid var(--teal);
+}
+.stop h3{font-family:"Vazirmatn",sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+.stop p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.9;max-width:56ch}
+
+/* ---- articles ---- */
+.arts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));border-top:1px solid var(--rule)}
+.art{
+  padding:16px 20px 20px 14px;
+  border-left:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.art:last-child{border-left:none}
+.art .tp{font-size:10px;letter-spacing:.11em;color:var(--teal);font-weight:500;margin-bottom:7px}
+.art h3{font-family:"Markazi Text",serif;font-size:21px;font-weight:500;line-height:1.4;margin-bottom:7px}
+.art p{margin:0;font-size:12px;color:var(--ink-3);line-height:1.8}
+.art:hover h3,.art:focus-visible h3{color:var(--teal)}
+
+/* ---- CTA band ---- */
+.band{
+  background:var(--navy-2);color:var(--on-dark);
+  padding:36px 46px;
+  display:flex;gap:26px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+}
+.band h2{font-size:31px;font-weight:600;color:var(--on-dark);margin-bottom:5px}
+.band p{margin:0;font-size:13.5px;color:var(--on-dark-2);font-weight:200}
+
+/* ---- footer ---- */
+.foot{
+  border-top:1px solid var(--rule);
+  padding:26px 46px 34px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:26px;
+}
+.foot h4{font-size:9.5px;letter-spacing:.13em;color:var(--ink-3);font-weight:500;margin:0 0 8px}
+.foot p,.foot a{display:block;margin:0 0 3px;font-size:12.5px;color:var(--ink-2);line-height:1.8}
+.foot a:hover{color:var(--teal)}
+.colophon{
+  grid-column:1/-1;border-top:1px solid var(--rule);
+  padding-top:14px;margin-top:4px;
+  font-size:11px;color:var(--ink-3);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+
+/* ---- mockup chrome ---- */
+.note{
+  max-width:1180px;margin:0 auto;padding:12px 24px 10px;
+  font-size:11.5px;color:var(--ink-3);line-height:1.7;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.note b{color:var(--teal);font-weight:500;white-space:nowrap}
+
+@media (max-width:860px){
+  .shell,.sec{grid-template-columns:1fr}
+  .rail{border-left:none;border-bottom:1px solid var(--rule)}
+  .rail-sticky{position:static;padding:20px 22px 22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .mark{grid-column:1/-1;margin-bottom:0}
+  .railnav{grid-column:1/-1;margin-top:6px;padding-top:14px;flex-direction:row;flex-wrap:wrap;gap:14px}
+  .sec > .lab{border-left:none;border-bottom:1px solid var(--rule);padding:22px 22px 16px}
+  .sec > .body{padding:22px 22px 34px}
+  .hero{padding:36px 22px 0}
+  .trace{margin:0 -22px;width:calc(100% + 44px);height:84px}
+  .trace-cap{right:22px}
+  .band,.foot{padding:28px 22px}
+  .dr{grid-template-columns:1fr;gap:2px;padding:14px 0}
+  .dr .no{text-align:right;direction:rtl}
+  .dr.hd{display:none}
+  .pillar,.art{border-left:none;border-bottom:1px solid var(--rule)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<p class="note"><b>طرح پیشنهادی ۱ —</b> صفحه‌ی اصلی. محتوا و اعداد واقعی از سایت فعلی گرفته شده‌اند. رنگ، فونت و چیدمان قابل تنظیم است؛ ساختار همان چیزی است که در PHP پیاده می‌شود.</p>
+
+<div class="shell">
+
+  <!-- ============ RAIL / letterhead ============ -->
+  <aside class="rail">
+    <div class="rail-sticky">
+      <div class="mark">
+        <span class="fa">همراه کلینیک</span>
+        <span class="en">HAMRAH MEDICAL CLINIC</span>
+      </div>
+      <dl>
+        <div>
+          <dt>تماس</dt>
+          <dd><b class="num">۰۲۱۹۱۳۰۳۱۳۲</b></dd>
+        </div>
+        <div>
+          <dt>ساعات مراجعه</dt>
+          <dd class="num">شنبه تا چهارشنبه ۸ تا ۲۰<br>پنجشنبه ۸ تا ۱۳</dd>
+        </div>
+        <div>
+          <dt>نشانی</dt>
+          <dd>تهران، تجریش</dd>
+        </div>
+        <div>
+          <dt>مؤسس</dt>
+          <dd>دکتر محبوبه خلیلی<br><span style="color:var(--ink-3)">فلوشیپ کاردیو آنکولوژی</span></dd>
+        </div>
+      </dl>
+      <nav class="railnav">
+        <a href="#clinics">کلینیک‌ها</a>
+        <a href="#doctors">پزشکان</a>
+        <a href="#path">مسیر درمان</a>
+        <a href="#blog">مقالات</a>
+        <a href="#contact">تماس و نوبت</a>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <p class="kicker">کلینیک فوق تخصصی قلب و عروق و آنکولوژی — تجریش تهران</p>
+      <h1>قلب شما در طول درمان سرطان، <em>تنها نمی‌ماند</em></h1>
+      <p class="lede">همراه کلینیک تنها مرکزی در تهران است که درمان سرطان و مراقبت از قلب را در یک تیم واحد جمع کرده — پنج فلوشیپ کاردیو آنکولوژی از انستیتو قلب شهید رجایی، کنار متخصصان آنکولوژی، تغذیه و روان.</p>
+      <div class="hero-acts">
+        <button class="btn">رزرو نوبت آنلاین</button>
+        <button class="btn btn-ghost">مشاهده ۴۶ خدمت درمانی</button>
+      </div>
+      <span class="hero-tel">پاسخگویی تلفنی، هفت روز هفته <b class="num">۰۲۱۹۱۳۰۳۱۳۲</b></span>
+      <canvas class="trace" id="ecg" aria-hidden="true"></canvas>
+      <span class="trace-cap">II · 25 mm/s</span>
+    </header>
+
+    <!-- ============ WHO ============ -->
+    <section class="sec">
+      <div class="lab">
+        <h2>رویکرد MDT</h2>
+        <p>یک بیمار، یک تیم — نه چند نوبت پراکنده</p>
+      </div>
+      <div class="body">
+        <div class="prose">
+          <p class="lead">شیمی‌درمانی روی قلب اثر می‌گذارد. این جمله‌ی ساده دلیل وجود همراه کلینیک است.</p>
+          <p>در بیشتر مراکز، بیمار سرطانی برای آنکولوژی به یک مطب می‌رود، برای قلب به مطبی دیگر، و برای تغذیه و روان به جای سوم. هیچ‌کدام پرونده‌ی دیگری را نمی‌بینند. ما این مسیر را در یک ساختمان و یک تیم جمع کرده‌ایم: <strong>تیم چندتخصصی (MDT)</strong> که هفتگی درباره‌ی همان یک پرونده تصمیم می‌گیرد.</p>
+          <p>به همین دلیل کاردیو آنکولوژی تخصص محوری ماست — رشته‌ای که دقیقاً در همین نقطه‌ی تلاقی ایستاده است.</p>
+        </div>
+        <div class="pillars">
+          <div class="pillar"><h3>۹ کلینیک تخصصی</h3><p>از قلب و آنکولوژی تا زخم، غدد و عفونی</p></div>
+          <div class="pillar"><h3>۱۲ پزشک متخصص</h3><p>همگی دارای بورد تخصصی و شماره‌ی نظام پزشکی ثبت‌شده</p></div>
+          <div class="pillar"><h3>۴۶ خدمت درمانی</h3><p>هر خدمت با صفحه، شرح و پزشک مشخص</p></div>
+          <div class="pillar"><h3>پشتیبانی شبانه‌روزی</h3><p>پاسخ تلفنی هفت روز هفته</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CLINICS ============ -->
+    <section class="sec" id="clinics">
+      <div class="lab">
+        <h2>کلینیک‌ها</h2>
+        <p>خدمات به تفکیک بخش تخصصی</p>
+        <span class="cnt">۴۶ خدمت</span>
+      </div>
+      <div class="body">
+        <div class="index">
+          <a class="row" href="#"><div><div class="nm">قلب و عروق</div><div class="ds">اکوکاردیوگرافی، قلب جنین، قلب کودکان، کلینیک واریس</div></div><div class="qt num">۴ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">آنکولوژی و هماتولوژی</div><div class="ds">شیمی‌درمانی، رادیوتراپی انکولوژی، بیماری‌های خون</div></div><div class="qt num">۳ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">کلینیک زخم</div><div class="ds">زخم دیابتی، بستر، شریانی، وریدی، سوختگی، جراحی و مزمن</div></div><div class="qt num">۱۰ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">کلینیک غدد</div><div class="ds">تیروئید، دیابت، پوکی استخوان، تخمدان پلی‌کیستیک، هیپوفیز</div></div><div class="qt num">۱۰ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">کلینیک عفونی</div><div class="ds">هپاتیت، سل، عفونت‌های پوستی، تنفسی و ادراری، تب نامشخص</div></div><div class="qt num">۱۰ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">روان‌پزشکی و روان‌شناسی</div><div class="ds">حمایت روانی در دوره‌ی درمان، مدیریت اضطراب</div></div><div class="qt num">۲ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">تغذیه و رژیم‌درمانی</div><div class="ds">تغذیه‌ی دوران شیمی‌درمانی، کنترل وزن، رژیم تخصصی</div></div><div class="qt num">۱ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">طب ایرانی</div><div class="ds">سبک زندگی و مراقبت مکمل</div></div><div class="qt num">۱ خدمت</div></a>
+          <a class="row" href="#"><div><div class="nm">اورولوژی</div><div class="ds">کلیه، مجاری ادراری و تناسلی</div></div><div class="qt num">۱ خدمت</div></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DOCTORS ============ -->
+    <section class="sec" id="doctors">
+      <div class="lab">
+        <h2>پزشکان</h2>
+        <p>هر پرونده با نام و شماره‌ی نظام پزشکی ثبت است</p>
+        <span class="cnt">۱۲ متخصص</span>
+      </div>
+      <div class="body">
+        <div class="ledger">
+          <div class="dr hd"><div>نام</div><div>تخصص</div><div class="no">نظام پزشکی</div></div>
+          <a class="dr" href="#"><div class="nm">دکتر محبوبه خلیلی</div><div class="sp">قلب و عروق — فلوشیپ کاردیو آنکولوژی</div><div class="no num">۹۴۳۶۰</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر احمد مافی</div><div class="sp">رادیوتراپی انکولوژی — دانشیار شهید بهشتی</div><div class="no num">۷۹۰۱۸</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر حسین اصغری‌پور</div><div class="sp">فوق تخصص خون و انکولوژی</div><div class="no num">۱۰۳۸۲۴</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر بهناز بهزادی</div><div class="sp">رادیوانکولوژی — بورد تخصصی</div><div class="no num">—</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر علیرضا تاتینا</div><div class="sp">قلب و عروق — فلوشیپ کاردیو آنکولوژی</div><div class="no num">۹۷۹۹۵</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر مهناز عالم‌زاده بحرینی</div><div class="sp">قلب و عروق — فلوشیپ اکوکاردیوگرافی</div><div class="no num">۱۰۳۹۵۷</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر شادی شکرخوار</div><div class="sp">قلب و عروق — فلوشیپ اکوکاردیوگرافی</div><div class="no num">۱۰۵۴۴۹</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر حسام دانش‌آموز</div><div class="sp">فوق تخصص قلب کودکان</div><div class="no num">—</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر مریم بدیع‌زادگان</div><div class="sp">اعصاب و روان — بورد تخصصی</div><div class="no num">۹۰۶۶۷</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر فاطمه نائینی</div><div class="sp">تغذیه بالینی — شاخص علمی ۲۲H</div><div class="no num">ن.ت ۸۱۶۴</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر غزاله حیدری‌راد</div><div class="sp">MD.PhD طب ایرانی — هیأت علمی شهید بهشتی</div><div class="no num">۱۰۵۹۹۵</div></a>
+          <a class="dr" href="#"><div class="nm">دکتر رضا مقبولی</div><div class="sp">جراحی کلیه و مجاری ادراری</div><div class="no num">۱۸۹۲۵۱</div></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PATH ============ -->
+    <section class="sec" id="path">
+      <div class="lab">
+        <h2>مسیر درمان</h2>
+        <p>از تماس اول تا پیگیری — ترتیب واقعی مراجعه</p>
+      </div>
+      <div class="body">
+        <div class="path">
+          <div class="stop"><h3>تماس و تعیین نوبت</h3><p>تلفنی یا از طریق فرم آنلاین. اگر نمی‌دانید به کدام بخش مراجعه کنید، پذیرش شما را راهنمایی می‌کند.</p></div>
+          <div class="stop"><h3>ویزیت اول و تشکیل پرونده</h3><p>شرح حال کامل، بررسی سوابق و آزمایش‌های قبلی. پرونده‌ی واحد تشکیل می‌شود که همه‌ی بخش‌ها به آن دسترسی دارند.</p></div>
+          <div class="stop"><h3>بررسی در تیم چندتخصصی</h3><p>پرونده‌های نیازمند تصمیم مشترک در جلسه‌ی MDT مطرح می‌شوند — آنکولوژیست، متخصص قلب، تغذیه و روان‌پزشک با هم.</p></div>
+          <div class="stop"><h3>شروع درمان</h3><p>شیمی‌درمانی، مراقبت قلبی یا هر برنامه‌ی دیگر، همراه با پایش هم‌زمان عملکرد قلب در طول دوره.</p></div>
+          <div class="stop"><h3>حمایت موازی</h3><p>مشاوره‌ی تغذیه و روان‌شناسی بخشی از درمان است، نه اضافه بر آن. هر دو از همان روز اول در دسترس‌اند.</p></div>
+          <div class="stop"><h3>پیگیری پس از درمان</h3><p>ویزیت‌های دوره‌ای و پایش بلندمدت قلب، چون برخی عوارض ماه‌ها بعد ظاهر می‌شوند.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BLOG ============ -->
+    <section class="sec" id="blog">
+      <div class="lab">
+        <h2>مقالات</h2>
+        <p>نوشته‌ی پزشکان کلینیک، با امضای نویسنده</p>
+        <span class="cnt">۱۶ مقاله</span>
+      </div>
+      <div class="body">
+        <div class="arts">
+          <a class="art" href="#"><div class="tp">قلب و عروق</div><h3>آیا گرفتگی عروق پا خطرناک است؟</h3><p>دکتر محبوبه خلیلی · ۸ شهریور</p></a>
+          <a class="art" href="#"><div class="tp">شیمی درمانی</div><h3>بهترین صبحانه قبل از شیمی درمانی</h3><p>دکتر فاطمه نائینی · ۲ شهریور</p></a>
+          <a class="art" href="#"><div class="tp">بیماری‌های قلبی</div><h3>فشار دیاستولیک پایین نشانه چیست؟</h3><p>دکتر علیرضا تاتینا · ۲۸ مرداد</p></a>
+          <a class="art" href="#"><div class="tp">روان</div><h3>چرا مغز ما در مواجهه با استرس بیش‌فعال می‌شود؟</h3><p>دکتر مریم بدیع‌زادگان · ۲۱ مرداد</p></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="band" id="contact">
+      <div>
+        <h2>نوبت خود را رزرو کنید</h2>
+        <p>اگر مطمئن نیستید کدام بخش مناسب شماست، تماس بگیرید — راهنمایی می‌کنیم.</p>
+      </div>
+      <div class="hero-acts" style="margin:0">
+        <button class="btn">رزرو نوبت</button>
+        <button class="btn btn-ghost num">۰۲۱۹۱۳۰۳۱۳۲</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div>
+        <h4>کلینیک‌ها</h4>
+        <a href="#">قلب و عروق</a><a href="#">آنکولوژی</a><a href="#">کلینیک زخم</a><a href="#">کلینیک غدد</a><a href="#">کلینیک عفونی</a>
+      </div>
+      <div>
+        <h4>کلینیک</h4>
+        <a href="#">درباره ما</a><a href="#">پزشکان</a><a href="#">گالری</a><a href="#">سؤالات متداول</a><a href="#">تماس با ما</a>
+      </div>
+      <div>
+        <h4>ساعات مراجعه</h4>
+        <p class="num">شنبه تا چهارشنبه: ۸ تا ۲۰</p>
+        <p class="num">پنجشنبه: ۸ تا ۱۳</p>
+        <p style="color:var(--ink-3)">پاسخ تلفنی ۲۴ ساعته</p>
+      </div>
+      <div>
+        <h4>تماس</h4>
+        <p class="num" style="font-size:16px;color:var(--ink)">۰۲۱۹۱۳۰۳۱۳۲</p>
+        <p>تهران، تجریش</p>
+      </div>
+      <div class="colophon">
+        <span>© همراه کلینیک — کلینیک فوق تخصصی قلب و عروق و آنکولوژی</span>
+        <span>طرح پیشنهادی ۱</span>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var c = document.getElementById('ecg');
+  if(!c) return;
+  var ctx = c.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0;
+
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  function size(){
+    var r = c.getBoundingClientRect();
+    W = Math.max(r.width, 1); H = Math.max(r.height, 1);
+    c.width = W * dpr; c.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  // one PQRST beat, y in [-1,1]; t in [0,1]
+  function beat(t){
+    function g(mu, s, a){ return a * Math.exp(-((t-mu)*(t-mu))/(2*s*s)); }
+    return g(0.16,0.022,0.14)      // P
+         - g(0.30,0.008,0.13)      // Q
+         + g(0.33,0.010,1.00)      // R
+         - g(0.365,0.011,0.26)     // S
+         + g(0.55,0.042,0.30);     // T
+  }
+
+  var BEAT_PX = 210;   // px per cardiac cycle
+  var SPEED   = 78;    // px per second
+  var start = null;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function draw(now){
+    if(start === null) start = now;
+    var head = reduce ? W : ((now - start) / 1000) * SPEED;
+
+    ctx.clearRect(0, 0, W, H);
+
+    var mid = H * 0.56;
+    var amp = H * 0.34;
+
+    // faint baseline
+    ctx.strokeStyle = 'rgba(166,176,203,0.16)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, mid + 0.5); ctx.lineTo(W, mid + 0.5); ctx.stroke();
+
+    var teal = css('--teal-lt') || '#4EC3A9';
+    ctx.strokeStyle = teal;
+    ctx.lineWidth = 1.6;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+    // RTL: the trace advances from the right edge leftward
+    var drawn = Math.min(head, W);
+    ctx.beginPath();
+    for(var i = 0; i <= drawn; i++){
+      var x = W - i;
+      var phase = ((head - i) % BEAT_PX + BEAT_PX) % BEAT_PX / BEAT_PX;
+      var y = mid - beat(phase) * amp;
+      if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    if(!reduce){
+      // glowing head
+      var hx = W - drawn;
+      var hp = ((head - drawn) % BEAT_PX + BEAT_PX) % BEAT_PX / BEAT_PX;
+      var hy = mid - beat(hp) * amp;
+      ctx.fillStyle = teal;
+      ctx.beginPath(); ctx.arc(hx, hy, 2.4, 0, Math.PI * 2); ctx.fill();
+      requestAnimationFrame(draw);
+    }
+  }
+
+  size();
+  requestAnimationFrame(draw);
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ size(); start = null; if(reduce) requestAnimationFrame(draw); }, 160);
+  });
+})();
+</script>

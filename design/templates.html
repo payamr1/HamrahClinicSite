@@ -1,0 +1,643 @@
+<title>قالب‌های درونی همراه کلینیک</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&family=Vazirmatn:wght@200;300;400;500;700&display=swap">
+<style>
+:root{
+  --stone:#E8EAEF; --paper:#F4F5F8; --sunk:#DCDFE7;
+  --navy:#24408D; --navy-2:#2F4FA6;
+  --ink:#17224A; --ink-2:#48547A; --ink-3:#79839F;
+  --teal:#1E8570; --teal-lt:#4EC3A9;
+  --rule:#C9CDD9; --rule-2:#AEB5C6;
+  --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --stone:#0D1424; --paper:#131C30; --sunk:#18223A;
+    --navy:#0F1B3D; --navy-2:#1B2C5E;
+    --ink:#E7EAF3; --ink-2:#AAB4CE; --ink-3:#7B85A2;
+    --teal:#5FCFB6; --teal-lt:#78DAC4;
+    --rule:#232E4A; --rule-2:#313D5E;
+    --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+  }
+}
+:root[data-theme="dark"]{
+  --stone:#0D1424; --paper:#131C30; --sunk:#18223A;
+  --navy:#0F1B3D; --navy-2:#1B2C5E;
+  --ink:#E7EAF3; --ink-2:#AAB4CE; --ink-3:#7B85A2;
+  --teal:#5FCFB6; --teal-lt:#78DAC4;
+  --rule:#232E4A; --rule-2:#313D5E;
+  --on-dark:#EAEDF4; --on-dark-2:#A6B0CB;
+}
+
+*{box-sizing:border-box}
+html{direction:rtl;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--stone);color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  font-weight:300;font-size:15px;line-height:1.9;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Markazi Text","Vazirmatn",serif;font-weight:600;margin:0;line-height:1.28}
+a{color:inherit;text-decoration:none}
+.num{font-variant-numeric:tabular-nums}
+
+/* ===== switcher ===== */
+.switch{
+  position:sticky;top:0;z-index:40;
+  background:var(--navy);border-bottom:1px solid rgba(234,237,244,.12);
+}
+.switch-in{
+  max-width:1180px;margin:0 auto;padding:0 24px;
+  display:flex;gap:0;align-items:stretch;flex-wrap:wrap;
+}
+.switch b{
+  font-size:11px;letter-spacing:.13em;color:var(--on-dark-2);
+  font-weight:500;padding:13px 0;margin-left:22px;align-self:center;
+}
+.switch button{
+  font-family:inherit;font-size:13px;font-weight:400;
+  background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--on-dark-2);padding:13px 16px;cursor:pointer;
+  transition:color .18s,border-color .18s;
+}
+.switch button:hover{color:var(--on-dark)}
+.switch button[aria-selected="true"]{color:var(--teal-lt);border-bottom-color:var(--teal)}
+
+.note{
+  max-width:1180px;margin:0 auto;padding:11px 24px 9px;
+  font-size:11.5px;color:var(--ink-3);line-height:1.7;
+}
+.note b{color:var(--teal);font-weight:500}
+
+/* ===== shell ===== */
+.shell{
+  max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:210px 1fr;
+  border-right:1px solid var(--rule);border-left:1px solid var(--rule);
+}
+.rail{border-left:1px solid var(--rule)}
+.rail-in{position:sticky;top:47px;padding:24px 20px 28px}
+.main{min-width:0}
+
+.crumb{font-size:11px;color:var(--ink-3);line-height:1.9;margin:0 0 18px}
+.crumb a:hover{color:var(--teal)}
+.crumb span{opacity:.5;margin:0 4px}
+
+.rblock{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.rblock:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.rblock h4{font-family:"Vazirmatn",sans-serif;font-size:9.5px;letter-spacing:.13em;color:var(--ink-3);font-weight:500;margin:0 0 9px}
+.rblock p{margin:0 0 4px;font-size:12.5px;color:var(--ink-2);line-height:1.75}
+.rblock p b{color:var(--ink);font-weight:700}
+.rblock .big{font-family:"Markazi Text",serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:3px}
+
+.toc{display:flex;flex-direction:column;gap:0}
+.toc a{
+  font-size:12px;color:var(--ink-2);line-height:1.6;
+  padding:5px 10px 5px 0;border-right:1px solid var(--rule);
+  transition:color .18s,border-color .18s;
+}
+.toc a:hover,.toc a.on{color:var(--teal);border-right-color:var(--teal)}
+
+.rcta{display:block;width:100%;text-align:center;
+  font-family:inherit;font-size:13px;font-weight:500;
+  padding:11px 14px;border:1px solid var(--teal-lt);
+  background:var(--teal-lt);color:#10224A;cursor:pointer;
+  transition:background .18s;}
+.rcta:hover{filter:brightness(1.09)}
+.rcta.ghost{background:transparent;color:var(--teal);margin-top:7px}
+.rcta.ghost:hover{background:rgba(30,133,112,.09)}
+
+/* ===== page head ===== */
+.phead{background:var(--navy);color:var(--on-dark);padding:34px 46px 32px}
+.phead .kick{font-size:11px;letter-spacing:.14em;color:var(--teal-lt);font-weight:500;margin:0 0 14px}
+.phead h1{font-size:clamp(30px,4.2vw,46px);color:var(--on-dark);margin:0 0 12px;max-width:20ch;text-wrap:balance}
+.phead .lede{font-size:15.5px;font-weight:200;line-height:2;color:var(--on-dark-2);max-width:52ch;margin:0}
+.phead .meta{display:flex;gap:0;flex-wrap:wrap;margin-top:20px;border-top:1px solid rgba(234,237,244,.14);padding-top:14px}
+.phead .meta div{padding-left:26px;margin-left:26px;border-left:1px solid rgba(234,237,244,.14)}
+.phead .meta div:last-child{border-left:none;padding-left:0;margin-left:0}
+.phead .meta dt{font-size:9.5px;letter-spacing:.12em;color:rgba(166,176,203,.7);margin-bottom:2px}
+.phead .meta dd{margin:0;font-size:13.5px;color:var(--on-dark);font-weight:400}
+
+/* light head (articles) */
+.phead.light{background:var(--stone);color:var(--ink);border-bottom:1px solid var(--rule);padding:30px 46px 26px}
+.phead.light h1{color:var(--ink)}
+.phead.light .kick{color:var(--teal)}
+.phead.light .lede{color:var(--ink-2)}
+.phead.light .meta{border-top-color:var(--rule)}
+.phead.light .meta div{border-left-color:var(--rule)}
+.phead.light .meta dt{color:var(--ink-3)}
+.phead.light .meta dd{color:var(--ink)}
+
+/* ===== body/prose ===== */
+.wrap{padding:34px 46px 46px}
+.prose{max-width:64ch}
+.prose h2{
+  font-size:29px;font-weight:600;margin:36px 0 12px;
+  padding-top:16px;border-top:1px solid var(--rule);
+}
+.prose h2:first-child{margin-top:0;border-top:none;padding-top:0}
+.prose h3{font-family:"Vazirmatn",sans-serif;font-size:15px;font-weight:700;margin:22px 0 6px}
+.prose p{margin:0 0 14px;font-size:15.5px;line-height:2.05;color:var(--ink-2)}
+.prose strong{font-weight:700;color:var(--ink)}
+.prose ul{margin:0 0 16px;padding:0;list-style:none}
+.prose li{
+  position:relative;padding-right:19px;margin-bottom:7px;
+  font-size:15px;line-height:1.95;color:var(--ink-2);
+}
+.prose li::before{
+  content:"";position:absolute;right:2px;top:14px;
+  width:5px;height:1px;background:var(--teal);
+}
+.lead{font-family:"Markazi Text",serif;font-size:23px;line-height:1.75;color:var(--ink);font-weight:400;margin:0 0 20px}
+
+/* typographic callouts — replacing the emoji headings */
+.callout{
+  border-right:2px solid var(--teal);
+  background:var(--paper);
+  padding:16px 20px;margin:0 0 20px;
+}
+.callout .ct{font-size:9.5px;letter-spacing:.13em;color:var(--teal);font-weight:500;margin:0 0 6px}
+.callout p{margin:0;font-size:14.5px;line-height:1.95;color:var(--ink-2)}
+.callout.warn{border-right-color:var(--ink-2);background:var(--sunk)}
+.callout.warn .ct{color:var(--ink-2)}
+
+/* ===== FAQ ===== */
+.faq{border-top:1px solid var(--rule);max-width:64ch}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{
+  list-style:none;cursor:pointer;padding:13px 0 13px 28px;
+  font-family:"Markazi Text",serif;font-size:21px;font-weight:500;
+  color:var(--ink);position:relative;line-height:1.45;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+";position:absolute;left:2px;top:12px;
+  font-family:"Vazirmatn",sans-serif;font-size:17px;font-weight:300;color:var(--teal);
+  transition:transform .2s;
+}
+.faq details[open] summary::after{content:"−"}
+.faq summary:hover{color:var(--teal)}
+.faq .ans{padding:0 0 15px;font-size:14.5px;line-height:2;color:var(--ink-2);max-width:60ch}
+
+/* ===== ledger / rows ===== */
+.secblock{border-top:1px solid var(--rule);padding:26px 46px 32px}
+.secblock > h2{font-size:26px;margin:0 0 4px}
+.secblock > .sh{margin:0 0 16px;font-size:12px;color:var(--ink-3)}
+.ledger{border-top:1px solid var(--rule)}
+.dr{display:grid;grid-template-columns:1fr 210px 92px;gap:18px;align-items:baseline;
+    padding:12px 0;border-bottom:1px solid var(--rule);transition:padding-right .2s}
+.dr:hover{padding-right:8px}
+.dr .nm{font-family:"Markazi Text",serif;font-size:21px;font-weight:500;color:var(--ink);line-height:1.35}
+.dr:hover .nm{color:var(--teal)}
+.dr .sp{font-size:12px;color:var(--ink-2);line-height:1.65}
+.dr .no{font-size:11.5px;color:var(--ink-3);text-align:left;direction:ltr;white-space:nowrap}
+
+.rows{border-top:1px solid var(--rule)}
+.rw{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:baseline;
+    padding:12px 0;border-bottom:1px solid var(--rule);transition:padding-right .2s}
+.rw:hover{padding-right:8px}
+.rw .nm{font-family:"Markazi Text",serif;font-size:21px;font-weight:500;line-height:1.35}
+.rw:hover .nm{color:var(--teal)}
+.rw .ds{font-size:12px;color:var(--ink-3);line-height:1.7;margin-top:1px}
+.rw .qt{font-size:11.5px;color:var(--teal);white-space:nowrap;font-weight:500}
+
+/* ===== record (doctor credentials) ===== */
+.record{border-top:1px solid var(--rule);max-width:66ch}
+.record div{display:grid;grid-template-columns:132px 1fr;gap:18px;
+  padding:11px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.record dt{font-size:10px;letter-spacing:.1em;color:var(--ink-3);font-weight:500}
+.record dd{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.8}
+.record dd b{color:var(--ink);font-weight:700}
+
+/* portrait plate */
+.plate{
+  width:100%;aspect-ratio:4/5;border:1px solid var(--rule-2);
+  background:
+    repeating-linear-gradient(135deg,var(--sunk) 0 9px,var(--paper) 9px 18px);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:12px;margin-bottom:10px;
+}
+.plate span{font-size:10.5px;color:var(--ink-3);background:var(--stone);padding:3px 9px;letter-spacing:.06em}
+
+/* ===== author card ===== */
+.author{
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  padding:20px 0;margin:34px 0 0;max-width:64ch;
+  display:grid;grid-template-columns:74px 1fr;gap:20px;align-items:start;
+}
+.author .mini{
+  width:74px;aspect-ratio:4/5;border:1px solid var(--rule-2);
+  background:repeating-linear-gradient(135deg,var(--sunk) 0 7px,var(--paper) 7px 14px);
+}
+.author h4{font-family:"Markazi Text",serif;font-size:22px;font-weight:600;margin:0 0 2px}
+.author .sp{font-size:12px;color:var(--ink-3);margin:0 0 7px;line-height:1.7}
+.author p{margin:0 0 8px;font-size:13.5px;color:var(--ink-2);line-height:1.9}
+.author a.more{font-size:12.5px;color:var(--teal);font-weight:500}
+.author a.more:hover{text-decoration:underline}
+
+/* ===== CTA band ===== */
+.band{background:var(--navy-2);color:var(--on-dark);padding:30px 46px;
+  display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.band h2{font-size:28px;color:var(--on-dark);margin:0 0 4px}
+.band p{margin:0;font-size:13px;color:var(--on-dark-2);font-weight:200}
+.btn{font-family:inherit;font-size:14px;font-weight:500;padding:12px 24px;
+  border:1px solid var(--teal-lt);background:var(--teal-lt);color:#10224A;cursor:pointer;transition:background .18s}
+.btn:hover{filter:brightness(1.09)}
+.btn.ghost{background:transparent;color:var(--on-dark);border-color:rgba(234,237,244,.28);border-right:none}
+.btn.ghost:hover{background:rgba(234,237,244,.07)}
+.acts{display:flex;flex-wrap:wrap}
+
+/* schema annotation */
+.schema{
+  margin:0;padding:11px 46px;border-top:1px dashed var(--rule);
+  background:var(--paper);font-size:11px;color:var(--ink-3);line-height:1.85;
+}
+.schema b{color:var(--teal);font-weight:500}
+.schema code{font-family:"Vazirmatn",sans-serif;color:var(--ink-2);background:var(--sunk);padding:1px 6px;direction:ltr;display:inline-block}
+
+[hidden]{display:none!important}
+
+@media (max-width:880px){
+  .shell{grid-template-columns:1fr}
+  .rail{border-left:none;border-bottom:1px solid var(--rule)}
+  .rail-in{position:static;padding:20px 22px}
+  .phead,.wrap,.secblock,.band,.schema{padding-left:22px;padding-right:22px}
+  .dr{grid-template-columns:1fr;gap:2px}
+  .dr .no{text-align:right;direction:rtl}
+  .record div{grid-template-columns:1fr;gap:1px}
+  .phead .meta div{padding-left:16px;margin-left:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<nav class="switch">
+  <div class="switch-in">
+    <b>قالب‌های درونی</b>
+    <button id="b-service" aria-selected="true">صفحه‌ی خدمت</button>
+    <button id="b-doctor"  aria-selected="false">صفحه‌ی پزشک</button>
+    <button id="b-article" aria-selected="false">صفحه‌ی مقاله</button>
+  </div>
+</nav>
+
+<p class="note"><b>سه قالب باقی‌مانده.</b> محتوا از صفحات واقعی سایت گرفته شده است. نوار پایین هر صفحه نشان می‌دهد چه اسکیمایی روی آن قالب تولید می‌شود.</p>
+
+<!-- ==================== ۱. SERVICE ==================== -->
+<div class="shell" id="p-service">
+  <aside class="rail">
+    <div class="rail-in">
+      <p class="crumb"><a href="#">خانه</a><span>›</span><a href="#">کلینیک‌ها</a><span>›</span>قلب و عروق</p>
+      <div class="rblock">
+        <h4>در این صفحه</h4>
+        <nav class="toc">
+          <a class="on" href="#">بیماری‌های شایع</a>
+          <a href="#">خدمات تشخیصی</a>
+          <a href="#">انتخاب مرکز مناسب</a>
+          <a href="#">اشتباهات رایج</a>
+          <a href="#">سؤالات متداول</a>
+          <a href="#">پزشکان این بخش</a>
+        </nav>
+      </div>
+      <div class="rblock">
+        <h4>پزشکان این بخش</h4>
+        <p><b>۵ متخصص</b></p>
+        <p>همگی دارای بورد تخصصی قلب و عروق</p>
+      </div>
+      <div class="rblock">
+        <h4>نوبت‌دهی</h4>
+        <button class="rcta">رزرو نوبت این بخش</button>
+        <button class="rcta ghost num">۰۲۱۹۱۳۰۳۱۳۲</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="phead">
+      <p class="kick">کلینیک قلب و عروق</p>
+      <h1>بخش قلب و عروق همراه کلینیک</h1>
+      <p class="lede">تشخیص و درمان بیماری‌های قلبی با تمرکز ویژه بر بیمارانی که هم‌زمان تحت درمان سرطان هستند — کاردیو آنکولوژی.</p>
+      <dl class="meta">
+        <div><dt>پزشکان</dt><dd class="num">۵ متخصص</dd></div>
+        <div><dt>خدمات</dt><dd class="num">۴ خدمت</dd></div>
+        <div><dt>به‌روزرسانی</dt><dd class="num">۵ شهریور ۱۴۰۵</dd></div>
+      </dl>
+    </header>
+
+    <div class="wrap">
+      <div class="prose">
+        <p class="lead">بیماری قلبی در بیمار سرطانی، یک بیماری جداگانه نیست — بخشی از همان پرونده است.</p>
+        <p>برخی داروهای شیمی‌درمانی و رادیوتراپی قفسه‌ی سینه می‌توانند عملکرد قلب را تحت تأثیر قرار دهند. در همراه کلینیک، متخصص قلب از روز اول در تیم درمان حضور دارد و عملکرد قلب در طول دوره پایش می‌شود، نه بعد از بروز علامت.</p>
+
+        <h2>بیماری‌های قلبی و عروقی شایع</h2>
+        <p>بخش قلب و عروق کلینیک، تشخیص و درمان طیف گسترده‌ای از بیماری‌ها را پوشش می‌دهد:</p>
+        <ul>
+          <li>بیماری عروق کرونر و آنژین صدری</li>
+          <li>نارسایی قلبی و کاردیومیوپاتی</li>
+          <li>آریتمی‌های قلبی و اختلالات ریتم</li>
+          <li>فشار خون بالا و عوارض قلبی آن</li>
+          <li>بیماری شریان محیطی و گرفتگی عروق پا</li>
+          <li>واریس و نارسایی وریدی</li>
+        </ul>
+
+        <h2>خدمات تشخیصی و درمانی</h2>
+        <p>تجهیزات و خدمات در دسترس بیماران این بخش:</p>
+        <ul>
+          <li>اکوکاردیوگرافی بزرگسالان و کودکان</li>
+          <li>اکوکاردیوگرافی قلب جنین</li>
+          <li>نوار قلب و تست ورزش</li>
+          <li>هولتر مانیتورینگ ریتم و فشار خون</li>
+          <li>پایش عملکرد قلب در دوره‌ی شیمی‌درمانی</li>
+        </ul>
+
+        <div class="callout">
+          <p class="ct">توصیه‌ی تخصصی</p>
+          <p>اگر تحت شیمی‌درمانی هستید، پیش از شروع دوره یک اکوکاردیوگرافی پایه انجام دهید. این تصویر مبنا به تیم درمان اجازه می‌دهد کوچک‌ترین تغییر عملکرد قلب را در ادامه تشخیص دهد.</p>
+        </div>
+
+        <h2>انتخاب مرکز تخصصی مناسب</h2>
+        <p>پیش از انتخاب مرکز درمانی، این موارد را بررسی کنید:</p>
+        <ul>
+          <li>حضور متخصص دارای بورد و شماره‌ی نظام پزشکی قابل استعلام</li>
+          <li>امکان انجام اکوکاردیوگرافی در همان مرکز، بدون ارجاع</li>
+          <li>دسترسی به تیم چندتخصصی در صورت وجود بیماری زمینه‌ای</li>
+          <li>پیگیری دوره‌ای پس از پایان درمان</li>
+        </ul>
+
+        <div class="callout warn">
+          <p class="ct">هشدار ایمنی</p>
+          <p>درد قفسه‌ی سینه‌ی فشارنده، تنگی نفس ناگهانی یا تعریق سرد را به فردا موکول نکنید. در این موارد به اورژانس مراجعه کنید، نه به نوبت مطب.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>سؤالات متداول</h2>
+      <p class="sh">پرتکرارترین پرسش‌های بیماران این بخش</p>
+      <div class="faq">
+        <details open>
+          <summary>آیا شیمی‌درمانی حتماً به قلب آسیب می‌زند؟</summary>
+          <div class="ans">خیر. برخی داروها چنین احتمالی دارند و برخی ندارند. میزان خطر به نوع دارو، دوز تجمعی، سن و وضعیت قلبی پیش از درمان بستگی دارد. با پایش منظم، بیشتر تغییرات در مرحله‌ای تشخیص داده می‌شوند که هنوز برگشت‌پذیرند.</div>
+        </details>
+        <details>
+          <summary>برای اکوکاردیوگرافی نیاز به ناشتایی هست؟</summary>
+          <div class="ans">خیر. اکوکاردیوگرافی معمولی نیازی به ناشتا بودن یا آمادگی خاص ندارد و حدود ۲۰ تا ۳۰ دقیقه طول می‌کشد.</div>
+        </details>
+        <details>
+          <summary>هر چند وقت یک‌بار باید قلبم را بررسی کنم؟</summary>
+          <div class="ans">در دوره‌ی فعال شیمی‌درمانی معمولاً هر سه ماه، و پس از پایان درمان سالانه. اگر سابقه‌ی بیماری قلبی دارید، پزشک ممکن است فواصل کوتاه‌تری تعیین کند.</div>
+        </details>
+        <details>
+          <summary>آیا برای مراجعه به این بخش نیاز به ارجاع دارم؟</summary>
+          <div class="ans">خیر. می‌توانید مستقیماً نوبت بگیرید. اگر پرونده‌ی درمانی دیگری در کلینیک دارید، سوابق شما در دسترس پزشک قرار می‌گیرد.</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>پزشکان این بخش</h2>
+      <p class="sh">همگی دارای بورد تخصصی</p>
+      <div class="ledger">
+        <a class="dr" href="#"><div class="nm">دکتر محبوبه خلیلی</div><div class="sp">فلوشیپ کاردیو آنکولوژی — شهید رجایی</div><div class="no num">۹۴۳۶۰</div></a>
+        <a class="dr" href="#"><div class="nm">دکتر علیرضا تاتینا</div><div class="sp">فلوشیپ کاردیو آنکولوژی — شهید رجایی</div><div class="no num">۹۷۹۹۵</div></a>
+        <a class="dr" href="#"><div class="nm">دکتر مهناز عالم‌زاده بحرینی</div><div class="sp">فلوشیپ اکوکاردیوگرافی</div><div class="no num">۱۰۳۹۵۷</div></a>
+        <a class="dr" href="#"><div class="nm">دکتر شادی شکرخوار</div><div class="sp">فلوشیپ اکوکاردیوگرافی</div><div class="no num">۱۰۵۴۴۹</div></a>
+        <a class="dr" href="#"><div class="nm">دکتر حسام دانش‌آموز</div><div class="sp">فوق تخصص قلب کودکان</div><div class="no num">—</div></a>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>خدمات این کلینیک</h2>
+      <p class="sh">۴ خدمت زیرمجموعه</p>
+      <div class="rows">
+        <a class="rw" href="#"><div><div class="nm">اکوکاردیوگرافی قلب جنین</div><div class="ds">بررسی ساختار و عملکرد قلب جنین در دوران بارداری</div></div><div class="qt">مشاهده</div></a>
+        <a class="rw" href="#"><div><div class="nm">کلینیک قلب کودکان</div><div class="ds">تشخیص و پیگیری بیماری‌های مادرزادی قلب</div></div><div class="qt">مشاهده</div></a>
+        <a class="rw" href="#"><div><div class="nm">کلینیک واریس</div><div class="ds">درمان واریس و نارسایی وریدی اندام تحتانی</div></div><div class="qt">مشاهده</div></a>
+        <a class="rw" href="#"><div><div class="nm">پایش قلب در شیمی‌درمانی</div><div class="ds">اکوکاردیوگرافی دوره‌ای در طول درمان سرطان</div></div><div class="qt">مشاهده</div></a>
+      </div>
+    </div>
+
+    <section class="band">
+      <div><h2>نوبت بخش قلب و عروق</h2><p>اگر مطمئن نیستید کدام خدمت مناسب شماست، تماس بگیرید.</p></div>
+      <div class="acts"><button class="btn">رزرو نوبت</button><button class="btn ghost num">۰۲۱۹۱۳۰۳۱۳۲</button></div>
+    </section>
+
+    <p class="schema"><b>اسکیمای این قالب:</b> <code>MedicalClinic</code> · <code>MedicalWebPage</code> · <code>FAQPage</code> (از بخش سؤالات متداول) · <code>BreadcrumbList</code> · <code>Physician</code> برای هر پزشک فهرست‌شده. بخش سؤالات متداول شانس نمایش در نتایج غنی گوگل را دارد.</p>
+  </div>
+</div>
+
+<!-- ==================== ۲. DOCTOR ==================== -->
+<div class="shell" id="p-doctor" hidden>
+  <aside class="rail">
+    <div class="rail-in">
+      <p class="crumb"><a href="#">خانه</a><span>›</span><a href="#">پزشکان</a><span>›</span>دکتر محبوبه خلیلی</p>
+      <div class="rblock">
+        <div class="plate"><span>تصویر پزشک</span></div>
+      </div>
+      <div class="rblock">
+        <h4>نظام پزشکی</h4>
+        <p class="big num">۹۴۳۶۰</p>
+        <p style="font-size:11px;color:var(--ink-3)">قابل استعلام از سامانه‌ی نظام پزشکی</p>
+      </div>
+      <div class="rblock">
+        <h4>حضور در کلینیک</h4>
+        <p class="num">شنبه، دوشنبه، چهارشنبه</p>
+        <p class="num" style="color:var(--ink-3)">۹ تا ۱۴</p>
+      </div>
+      <div class="rblock">
+        <h4>نوبت‌دهی</h4>
+        <button class="rcta">رزرو نوبت با ایشان</button>
+        <button class="rcta ghost num">۰۲۱۹۱۳۰۳۱۳۲</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="phead">
+      <p class="kick">متخصص قلب و عروق · مدیر و مؤسس کلینیک</p>
+      <h1>دکتر محبوبه خلیلی</h1>
+      <p class="lede">متخصص قلب و عروق از دانشگاه علوم پزشکی شهید بهشتی، دارای بورد تخصصی، با فلوشیپ کاردیو آنکولوژی از انستیتو قلب و عروق شهید رجایی.</p>
+      <dl class="meta">
+        <div><dt>تخصص</dt><dd>قلب و عروق</dd></div>
+        <div><dt>فلوشیپ</dt><dd>کاردیو آنکولوژی</dd></div>
+        <div><dt>نظام پزشکی</dt><dd class="num">۹۴۳۶۰</dd></div>
+      </dl>
+    </header>
+
+    <div class="wrap">
+      <div class="prose">
+        <p class="lead">همراه کلینیک را با یک باور ساده تأسیس کردم: بیمار سرطانی نباید برای قلبش به جای دیگری فرستاده شود.</p>
+        <p>در دوره‌ی فلوشیپ کاردیو آنکولوژی در انستیتو شهید رجایی، بارها با بیمارانی روبه‌رو شدم که درمان سرطانشان موفق بود اما عارضه‌ی قلبی، کیفیت زندگی‌شان را از بین برده بود. بیشتر این عوارض قابل پیش‌بینی و قابل پیشگیری بودند — به شرط آنکه کسی از ابتدا قلب را زیر نظر می‌گرفت.</p>
+        <p>همراه کلینیک برای همین ساخته شد: مرکزی که در آن آنکولوژیست، متخصص قلب، متخصص تغذیه و روان‌پزشک به یک پرونده‌ی مشترک نگاه می‌کنند و هفتگی درباره‌اش تصمیم می‌گیرند.</p>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>سوابق</h2>
+      <p class="sh">تحصیلات، بورد و عضویت‌ها</p>
+      <dl class="record">
+        <div><dt>تخصص</dt><dd><b>قلب و عروق</b> — دانشگاه علوم پزشکی شهید بهشتی</dd></div>
+        <div><dt>بورد</dt><dd>دارای بورد تخصصی قلب و عروق</dd></div>
+        <div><dt>فلوشیپ</dt><dd><b>کاردیو آنکولوژی</b> — انستیتو قلب و عروق شهید رجایی</dd></div>
+        <div><dt>سمت</dt><dd>مدیر و مؤسس همراه کلینیک</dd></div>
+        <div><dt>نظام پزشکی</dt><dd class="num">۹۴۳۶۰</dd></div>
+      </dl>
+    </div>
+
+    <div class="secblock">
+      <h2>خدمات ایشان</h2>
+      <p class="sh">بخش‌هایی که در آن‌ها ویزیت دارند</p>
+      <div class="rows">
+        <a class="rw" href="#"><div><div class="nm">بخش قلب و عروق</div><div class="ds">ویزیت، اکوکاردیوگرافی، پیگیری دوره‌ای</div></div><div class="qt">مشاهده</div></a>
+        <a class="rw" href="#"><div><div class="nm">پایش قلب در شیمی‌درمانی</div><div class="ds">ارزیابی پایه و پایش دوره‌ای عملکرد قلب</div></div><div class="qt">مشاهده</div></a>
+        <a class="rw" href="#"><div><div class="nm">کلینیک واریس</div><div class="ds">نارسایی وریدی اندام تحتانی</div></div><div class="qt">مشاهده</div></a>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>نوشته‌های ایشان</h2>
+      <p class="sh">۳ مقاله</p>
+      <div class="rows">
+        <a class="rw" href="#"><div><div class="nm">آیا گرفتگی عروق پا خطرناک است؟</div><div class="ds">۸ شهریور ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+        <a class="rw" href="#"><div><div class="nm">۱۰ نشانه‌ی پنهان بیماری قلبی که نباید نادیده گرفت</div><div class="ds">۱۴ مرداد ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+        <a class="rw" href="#"><div><div class="nm">تشخیص آریتمی قلبی در خانه</div><div class="ds">۳ مرداد ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+      </div>
+    </div>
+
+    <section class="band">
+      <div><h2>رزرو نوبت با دکتر خلیلی</h2><p class="num">حضور: شنبه، دوشنبه، چهارشنبه — ۹ تا ۱۴</p></div>
+      <div class="acts"><button class="btn">رزرو نوبت</button><button class="btn ghost num">۰۲۱۹۱۳۰۳۱۳۲</button></div>
+    </section>
+
+    <p class="schema"><b>اسکیمای این قالب:</b> <code>Physician</code> با <code>medicalSpecialty</code>، <code>memberOf</code> و شماره‌ی نظام پزشکی · <code>BreadcrumbList</code>. برای حوزه‌ی سلامت، این صفحه مهم‌ترین سیگنال E-E-A-T سایت است — گوگل نویسنده‌ی محتوای پزشکی را از همین‌جا تأیید می‌کند.</p>
+  </div>
+</div>
+
+<!-- ==================== ۳. ARTICLE ==================== -->
+<div class="shell" id="p-article" hidden>
+  <aside class="rail">
+    <div class="rail-in">
+      <p class="crumb"><a href="#">خانه</a><span>›</span><a href="#">مقالات</a><span>›</span>قلب و عروق</p>
+      <div class="rblock">
+        <h4>نویسنده</h4>
+        <p class="big">دکتر محبوبه خلیلی</p>
+        <p style="font-size:11.5px;color:var(--ink-3)">متخصص قلب و عروق · نظام پزشکی <span class="num">۹۴۳۶۰</span></p>
+      </div>
+      <div class="rblock">
+        <h4>انتشار</h4>
+        <p class="num">۸ شهریور ۱۴۰۵</p>
+        <p class="num" style="color:var(--ink-3)">حدود ۹ دقیقه مطالعه</p>
+      </div>
+      <div class="rblock">
+        <h4>در این مقاله</h4>
+        <nav class="toc">
+          <a class="on" href="#">این بیماری چیست؟</a>
+          <a href="#">علائم هشداردهنده</a>
+          <a href="#">مراحل پیشرفت</a>
+          <a href="#">چه کسانی در خطرند؟</a>
+          <a href="#">روش‌های تشخیص</a>
+          <a href="#">گزینه‌های درمانی</a>
+        </nav>
+      </div>
+      <div class="rblock">
+        <button class="rcta">مشاوره با متخصص قلب</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="phead light">
+      <p class="kick">قلب و عروق</p>
+      <h1>آیا گرفتگی عروق پا خطرناک است؟</h1>
+      <p class="lede">بیماری شریان محیطی یک وضعیت پیشرونده است که در صورت درمان‌نشدن می‌تواند به زخم مزمن و گنگرن منجر شود. علائم اولیه اغلب با خستگی معمولی اشتباه گرفته می‌شوند.</p>
+      <dl class="meta">
+        <div><dt>نویسنده</dt><dd>دکتر محبوبه خلیلی</dd></div>
+        <div><dt>انتشار</dt><dd class="num">۸ شهریور ۱۴۰۵</dd></div>
+        <div><dt>مطالعه</dt><dd class="num">۹ دقیقه</dd></div>
+      </dl>
+    </header>
+
+    <div class="wrap">
+      <div class="prose">
+        <div class="callout">
+          <p class="ct">نکته‌ی کلیدی</p>
+          <p>گرفتگی عروق پا (بیماری شریان محیطی) یک وضعیت جدی و پیشرونده است که در صورت عدم درمان می‌تواند به زخم‌های مزمن، گنگرن و در موارد پیشرفته قطع عضو منجر شود. تشخیص زودهنگام، مسیر بیماری را کاملاً تغییر می‌دهد.</p>
+        </div>
+
+        <h2>گرفتگی عروق پا چیست و چرا اتفاق می‌افتد؟</h2>
+        <p>در بیماری شریان محیطی، رسوب چربی و پلاک در دیواره‌ی شریان‌های اندام تحتانی باعث تنگ شدن مسیر خون می‌شود. عضلات پا در هنگام فعالیت به اکسیژن بیشتری نیاز دارند و وقتی این اکسیژن نمی‌رسد، درد ایجاد می‌شود.</p>
+        <p>همان فرایندی که عروق کرونر قلب را درگیر می‌کند، اینجا هم در جریان است. به همین دلیل <strong>وجود گرفتگی در عروق پا، یک هشدار جدی درباره‌ی وضعیت قلب هم هست</strong> — بسیاری از این بیماران، تنگی عروق قلبی تشخیص‌داده‌نشده هم دارند.</p>
+
+        <h2>علائم هشداردهنده | بدن شما چه پیامی می‌فرستد؟</h2>
+        <p>این علائم اغلب تدریجی ظاهر می‌شوند و به همین دلیل نادیده گرفته می‌شوند:</p>
+        <h3>لنگش متناوب</h3>
+        <p>درد یا گرفتگی عضلات ساق پا هنگام راه رفتن که با چند دقیقه استراحت برطرف می‌شود. شاخص‌ترین علامت این بیماری است و معمولاً اولین نشانه.</p>
+        <h3>سردی غیرطبیعی و تغییرات پوستی</h3>
+        <p>یک پا به‌طور محسوس سردتر از پای دیگر باشد، پوست براق و نازک شود، یا موهای ساق بریزند.</p>
+        <h3>زخم‌های دیردرمان</h3>
+        <p>زخمی روی پا یا انگشتان که هفته‌ها طول می‌کشد تا بهبود یابد یا اصلاً بهبود نمی‌یابد. این علامت نیازمند بررسی فوری است.</p>
+
+        <div class="callout warn">
+          <p class="ct">چه زمانی فوراً مراجعه کنید</p>
+          <p>درد پا در حالت استراحت یا هنگام خواب، زخم بازی که بهبود نمی‌یابد، یا تغییر رنگ انگشتان به آبی و سیاه — این‌ها نشانه‌ی مرحله‌ی پیشرفته‌اند و مراجعه‌ی فوری لازم دارند.</p>
+        </div>
+
+        <h2>چه کسانی بیشتر در معرض خطرند؟</h2>
+        <ul>
+          <li>افراد بالای ۵۰ سال، به‌ویژه با سابقه‌ی مصرف دخانیات</li>
+          <li>بیماران دیابتی — خطر چند برابر است</li>
+          <li>افراد با فشار خون یا کلسترول بالا</li>
+          <li>بیماران با سابقه‌ی بیماری قلبی یا سکته</li>
+          <li>سابقه‌ی خانوادگی بیماری عروقی</li>
+        </ul>
+
+        <h2>روش‌های تشخیص</h2>
+        <p>تشخیص معمولاً ساده و غیرتهاجمی است. شاخص فشار مچ پا به بازو (ABI) یک آزمون بدون درد و چنددقیقه‌ای است که در همان ویزیت اول انجام می‌شود. در صورت نیاز، سونوگرافی داپلر تصویر دقیق‌تری از محل و شدت تنگی می‌دهد.</p>
+
+        <h2>گزینه‌های درمانی</h2>
+        <p>درمان بسته به مرحله‌ی بیماری از تغییر سبک زندگی تا مداخله‌ی جراحی متغیر است. در مراحل اولیه، ترک دخانیات، برنامه‌ی پیاده‌روی منظم و کنترل قند و چربی خون می‌توانند پیشرفت بیماری را متوقف کنند. در مراحل پیشرفته‌تر، آنژیوپلاستی یا جراحی بای‌پس مطرح می‌شود.</p>
+      </div>
+
+      <div class="author">
+        <div class="mini"></div>
+        <div>
+          <h4>دکتر محبوبه خلیلی</h4>
+          <p class="sp">متخصص قلب و عروق · فلوشیپ کاردیو آنکولوژی · نظام پزشکی <span class="num">۹۴۳۶۰</span></p>
+          <p>مدیر و مؤسس همراه کلینیک. حوزه‌ی کاری: بیماری‌های عروقی و مراقبت قلبی بیماران تحت درمان سرطان.</p>
+          <a class="more" href="#">مشاهده‌ی پروفایل و نوبت‌دهی ←</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="secblock">
+      <h2>مقالات مرتبط</h2>
+      <p class="sh">در همین موضوع</p>
+      <div class="rows">
+        <a class="rw" href="#"><div><div class="nm">روغن سیاه‌دانه برای واریس پا</div><div class="ds">قلب و عروق · ۲۹ مرداد ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+        <a class="rw" href="#"><div><div class="nm">۱۰ نشانه‌ی پنهان بیماری قلبی</div><div class="ds">بیماری‌های قلبی · ۱۴ مرداد ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+        <a class="rw" href="#"><div><div class="nm">فشار دیاستولیک پایین نشانه چیست؟</div><div class="ds">بیماری‌های قلبی · ۲۸ مرداد ۱۴۰۵</div></div><div class="qt">خواندن</div></a>
+      </div>
+    </div>
+
+    <section class="band">
+      <div><h2>نگران علائمی که خواندید هستید؟</h2><p>ارزیابی اولیه در بخش قلب و عروق کلینیک انجام می‌شود.</p></div>
+      <div class="acts"><button class="btn">رزرو نوبت</button><button class="btn ghost num">۰۲۱۹۱۳۰۳۱۳۲</button></div>
+    </section>
+
+    <p class="schema"><b>اسکیمای این قالب:</b> <code>MedicalWebPage</code> · <code>Article</code> با <code>author</code> متصل به <code>Physician</code> · <code>BreadcrumbList</code>. اتصال نویسنده به پروفایل پزشک، همان چیزی است که گوگل برای محتوای سلامت (YMYL) بررسی می‌کند.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var pages = {service:'p-service', doctor:'p-doctor', article:'p-article'};
+  var btns  = {service:'b-service', doctor:'b-doctor', article:'b-article'};
+  function show(key){
+    Object.keys(pages).forEach(function(k){
+      document.getElementById(pages[k]).hidden = (k !== key);
+      document.getElementById(btns[k]).setAttribute('aria-selected', String(k === key));
+    });
+    window.scrollTo({top:0, behavior:'auto'});
+  }
+  Object.keys(btns).forEach(function(k){
+    document.getElementById(btns[k]).addEventListener('click', function(){ show(k); });
+  });
+})();
+</script>

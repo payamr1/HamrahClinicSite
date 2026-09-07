@@ -1,0 +1,41 @@
+---
+# ============================================================
+#  استقرار خودکار cPanel
+#
+#  با هر بار زدن دکمه‌ی «Update from Remote» یا «Deploy HEAD Commit»
+#  در cPanel ▸ Git Version Control، این وظیفه‌ها اجرا می‌شوند.
+#
+#  ساختار روی سرور:
+#    ~/new.hamrahclinic.ir/   ← ریشه‌ی وب (محتوای public/)
+#    ~/hamrah-app/            ← کد برنامه، بیرون از دسترس مرورگر
+#    ~/hamrah-app/config.php  ← رمز دیتابیس؛ دست‌نخورده می‌ماند
+#
+#  ⚠ WEBROOT را با مقدار واقعی چک کنید:
+#     cPanel ▸ Domains ▸ روی new.hamrahclinic.ir ▸ Document Root
+#     اگر چیز دیگری بود، فقط همین یک خط را عوض کنید.
+# ============================================================
+deployment:
+  tasks:
+    - export WEBROOT=$HOME/new.hamrahclinic.ir
+    - export APPROOT=$HOME/hamrah-app
+
+    # پوشه‌ها
+    - /bin/mkdir -p $WEBROOT
+    - /bin/mkdir -p $APPROOT/app $APPROOT/db $APPROOT/logs $APPROOT/cache
+
+    # کد برنامه — بیرون از ریشه‌ی وب
+    - /bin/cp -R app/. $APPROOT/app/
+    - /bin/cp -R db/. $APPROOT/db/
+    - /bin/cp config.php.example $APPROOT/config.php.example
+
+    # ریشه‌ی وب — شامل .htaccess
+    - /bin/cp -R public/. $WEBROOT/
+
+    # دسترسی‌ها
+    - /bin/find $WEBROOT -type d -exec /bin/chmod 755 {} +
+    - /bin/find $WEBROOT -type f -exec /bin/chmod 644 {} +
+    - /bin/chmod 700 $APPROOT
+    - /bin/chmod 600 $APPROOT/config.php || /bin/true
+
+    # نشانه‌ی زمان آخرین استقرار — صفحه‌ی سلامت آن را نشان می‌دهد
+    - /bin/date -u +%Y-%m-%dT%H:%M:%SZ > $WEBROOT/.deployed
