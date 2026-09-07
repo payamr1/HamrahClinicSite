@@ -100,10 +100,31 @@ if ($db instanceof PDO) {
             $pageCount . ' از ۸۲' . ($pageCount === 82 ? '' : ' — فایل db/seed/01-pages.sql را اجرا کنید'),
             $pageCount > 0 && $pageCount < 82);
 
-        // مسیر فارسی درست ذخیره شده؟
-        $sample = $db->query("SELECT path FROM pages WHERE path LIKE '/service/%' AND path NOT REGEXP '^/service/[a-z-]+/$' LIMIT 1")->fetchColumn();
-        $add('سالم بودن مسیرهای فارسی', is_string($sample) && str_contains($sample, 'ق'),
-            is_string($sample) ? $sample : 'نمونه‌ای پیدا نشد');
+        /*
+         * سالم بودن UTF-8 مسیرها.
+         *
+         * نسخه‌ی قبلی این چک اولین ردیفی را برمی‌داشت که با الگوی
+         * لاتین نمی‌خواند و به /service/ (صفحه‌ی آرشیو) می‌رسید که
+         * اصلاً حرف فارسی ندارد — پس همیشه رد می‌شد در حالی که
+         * داده‌ها سالم بودند.
+         *
+         * حالا دو مسیر مشخص را مستقیم می‌سنجد. اگر import کاراکترها
+         * را خراب کرده باشد، این تطبیق‌ها شکست می‌خورند.
+         */
+        $st = $db->prepare('SELECT COUNT(*) FROM pages WHERE path = ?');
+
+        $st->execute(['/service/قلب-و-عروق/']);
+        $fa = (int) $st->fetchColumn();
+
+        // این یکی با «ك» و «ي» عربی ایندکس شده، نه فارسی
+        $st->execute(['/team/دكتر-فاطمه-نائيني/']);
+        $ar = (int) $st->fetchColumn();
+
+        $add('سالم بودن مسیر فارسی', $fa === 1,
+            $fa === 1 ? '/service/قلب-و-عروق/ پیدا شد' : 'پیدا نشد — کاراکترها هنگام import خراب شده‌اند');
+
+        $add('سالم بودن مسیر با حروف عربی', $ar === 1,
+            $ar === 1 ? '/team/دكتر-فاطمه-نائيني/ دست‌نخورده مانده' : 'پیدا نشد — این آدرس ایندکس‌شده از دست می‌رود');
     }
 }
 
