@@ -6,17 +6,18 @@
 #  در cPanel ▸ Git Version Control، این وظیفه‌ها اجرا می‌شوند.
 #
 #  ساختار روی سرور:
-#    ~/new.hamrahclinic.ir/   ← ریشه‌ی وب (محتوای public/)
+#    ~/public_html/           ← ریشه‌ی وب (محتوای public/)
 #    ~/hamrah-app/            ← کد برنامه، بیرون از دسترس مرورگر
 #    ~/hamrah-app/config.php  ← رمز دیتابیس؛ دست‌نخورده می‌ماند
 #
 #  ⚠ WEBROOT را با مقدار واقعی چک کنید:
-#     cPanel ▸ Domains ▸ روی new.hamrahclinic.ir ▸ Document Root
+#     تأییدشده از cPanel ▸ Domains: ریشه‌ی وب /public_html است،
+#     چون new.hamrahclinic.ir دامنه‌ی اصلی همین اکانت است.
 #     اگر چیز دیگری بود، فقط همین یک خط را عوض کنید.
 # ============================================================
 deployment:
   tasks:
-    - export WEBROOT=$HOME/new.hamrahclinic.ir
+    - export WEBROOT=$HOME/public_html
     - export APPROOT=$HOME/hamrah-app
 
     # پوشه‌ها

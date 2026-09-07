@@ -22,7 +22,7 @@ design/          ماکاپ‌های تأییدشده و توکن‌های رن�
 روی سرور، کد برنامه بیرون از ریشه‌ی وب قرار می‌گیرد:
 
 ```
-~/new.hamrahclinic.ir/     ← محتوای public/
+~/public_html/             ← محتوای public/
 ~/hamrah-app/app/          ← کد
 ~/hamrah-app/db/           ← اسکیما و seed
 ~/hamrah-app/config.php    ← رمز دیتابیس (در مخزن نیست)
@@ -65,7 +65,7 @@ cPanel ▸ **Git Version Control** ▸ Create:
 ### ۴. مسیر ریشه‌ی وب را چک کنید
 
 cPanel ▸ **Domains** ▸ روی `new.hamrahclinic.ir` ▸ مقدار Document Root.
-اگر چیزی جز `~/new.hamrahclinic.ir` بود، فقط خط `WEBROOT` در `.cpanel.yml`
+ریشه‌ی وب این اکانت `/public_html` است و در `.cpanel.yml` تنظیم شده. اگر عوض شد، فقط خط `WEBROOT`
 را عوض کنید و دوباره deploy بزنید.
 
 ### ۵. config.php را پر کنید

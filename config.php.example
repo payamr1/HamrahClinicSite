@@ -58,7 +58,7 @@ return [
 
     // ---- مسیرها -------------------------------------------------
     'paths' => [
-        'uploads' => __DIR__ . '/../new.hamrahclinic.ir/assets/uploads',
+        'uploads' => __DIR__ . '/../public_html/assets/uploads',
         'cache'   => __DIR__ . '/cache',
         'logs'    => __DIR__ . '/logs',
     ],
