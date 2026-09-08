@@ -69,6 +69,29 @@ ON DUPLICATE KEY UPDATE
 --  شماره‌ی نظام پزشکی از سایت فعلی برداشته شده و سیگنال
 --  اصلی E-E-A-T برای محتوای سلامت است.
 -- ------------------------------------------------------------
+--  پاک‌سازی تکراری‌های import های قبلی
+--
+--  جدول doctors در نسخه‌ی اول کلید یکتا نداشت، پس هر بار اجرای
+--  این فایل ۱۲ پزشک تازه اضافه می‌کرد. اثرش روی سایت این بود که
+--  صفحه‌ی اصلی شش کارت نشان می‌داد ولی فقط سه پزشک — هر کدام
+--  دو بار — و همین باعث می‌شد به نظر برسد عکس‌ها با اسم‌ها
+--  نمی‌خوانند.
+--
+--  اول تکراری‌ها حذف می‌شوند (قدیمی‌ترین ردیف می‌ماند)، بعد کلید
+--  یکتا اضافه می‌شود تا دیگر تکرار نشود.
+-- ------------------------------------------------------------
+DELETE d FROM doctors d
+  JOIN doctors keep ON keep.name = d.name AND keep.id < d.id;
+
+SET @k := (SELECT COUNT(*) FROM information_schema.STATISTICS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'doctors' AND INDEX_NAME = 'uq_doctor_name');
+SET @sql := IF(@k = 0,
+  'ALTER TABLE doctors ADD UNIQUE KEY uq_doctor_name (name)',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+-- ------------------------------------------------------------
 INSERT INTO doctors (page_id, name, specialty, fellowship, university, license_no, schedule, is_founder, sort) VALUES
   ((SELECT id FROM pages WHERE path = '/team/دکتر-محبوبه-خلیلی/'),
    'دکتر محبوبه خلیلی', 'متخصص قلب و عروق',

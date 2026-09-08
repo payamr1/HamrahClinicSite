@@ -135,6 +135,10 @@ CREATE TABLE IF NOT EXISTS doctors (
   sort          SMALLINT     NOT NULL DEFAULT 0,
   is_active     TINYINT(1)   NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
+  -- بدون این کلید یکتا، ON DUPLICATE KEY UPDATE در فایل داده
+  -- هیچ تکراری تشخیص نمی‌دهد و هر بار import، ۱۲ پزشک تازه
+  -- اضافه می‌شود.
+  UNIQUE KEY uq_doctor_name (name),
   KEY idx_doctor_sort (sort),
   KEY idx_doctor_page (page_id),
   CONSTRAINT fk_doctor_page FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
