@@ -44,4 +44,4 @@ deployment:
     - /bin/chmod 775 $WEBROOT/assets/cache $WEBROOT/assets/cache/img
 
     # نشانه‌ی زمان آخرین استقرار — صفحه‌ی سلامت آن را نشان می‌دهد
-    - /bin/date -u +%Y-%m-%dT%H:%M:%SZ > $WEBROOT/.deployed
+    - /bin/date -u +%Y-%m-%dT%H:%M:%SZ > $WEBROOT/deployed.txt

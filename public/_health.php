@@ -128,6 +128,24 @@ if ($db instanceof PDO) {
     }
 }
 
+// ---- ۵.۵ بهینه‌ساز تصویر ----------------------------------------
+// اگر هر یک از این سه شرط برقرار نباشد، img() بی‌صدا آدرس اصلی را
+// برمی‌گرداند و عکس‌ها بهینه نمی‌شوند — بدون هیچ خطایی.
+$add('افزونه‌ی GD', extension_loaded('gd'), 'ساخت نسخه‌ی کوچک‌شده');
+$add('پشتیبانی WebP', function_exists('imagewebp'), 'در صورت نبود، JPEG ساخته می‌شود', true);
+
+$docRoot = rtrim((string) ($_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+$sample  = $docRoot . '/assets/img/doctors/khalili.jpg';
+$add('یافتن فایل اصلی تصویر', is_file($sample),
+    is_file($sample) ? $sample : 'پیدا نشد: ' . ($sample ?: 'DOCUMENT_ROOT خالی است'));
+
+$cacheDir = $docRoot . '/assets/cache/img';
+$canWrite = is_dir($cacheDir)
+    ? is_writable($cacheDir)
+    : (@mkdir($cacheDir, 0755, true) || is_dir($cacheDir));
+$add('نوشتن در پوشه‌ی کش تصویر', $canWrite,
+    $canWrite ? $cacheDir : 'قابل ساخت یا نوشتن نیست: ' . $cacheDir);
+
 // ---- ۶. noindex ------------------------------------------------
 $env    = $config['env'] ?? 'staging';
 $forced = !empty($config['force_noindex']);
@@ -145,7 +163,7 @@ $add('mod_rewrite', function_exists('apache_get_modules')
     : true,
     function_exists('apache_get_modules') ? '' : 'قابل تشخیص نیست — با باز شدن صفحه‌ی اصلی تأیید می‌شود', true);
 
-$deployed = @file_get_contents(__DIR__ . '/.deployed');
+$deployed = @file_get_contents(__DIR__ . '/deployed.txt');
 
 $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
 ?><!doctype html>
