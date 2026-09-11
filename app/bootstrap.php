@@ -77,7 +77,11 @@ try {
 // ---- پیامک -----------------------------------------------------
 // بعد از خواندن settings، چون نام سایت در متن پیامکِ حالت ارسال
 // ساده می‌آید
-$sms = new Sms(($config['sms'] ?? []) + ['site_name' => $settings['site_name'] ?? 'همراه کلینیک']);
+$sms = new Sms(($config['sms'] ?? []) + [
+    'site_name' => $settings['site_name'] ?? 'همراه کلینیک',
+    // در حالت debug، پیام خطای خام کاوه‌نگار هم نشان داده می‌شود
+    'debug'     => $debug,
+]);
 
 return [
     'config'   => $config,

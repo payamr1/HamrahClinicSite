@@ -162,6 +162,33 @@ $add('حالت اضطراری ورود', !$smsEmerg,
     $smsEmerg);
 $add('cURL', function_exists('curl_init'), 'برای تماس با کاوه‌نگار', true);
 
+// ---- ۵.۳ تاریخچه‌ی ارسال کد --------------------------------------
+// پیام خطای خود کاوه‌نگار در audit_log می‌نشیند. بدون نشان دادنش
+// اینجا، برای دیدنش باید لاگ خطای PHP را از File Manager بیرون
+// کشید — و کسی که نمی‌تواند وارد پنل شود، وقت این کار را ندارد.
+$otpLog = [];
+if ($db instanceof PDO) {
+    try {
+        $q = $db->query(
+            "SELECT action, detail, created_at FROM audit_log
+              WHERE action LIKE 'otp%' OR action = 'login'
+              ORDER BY id DESC LIMIT 8"
+        );
+        $otpLog = $q ? $q->fetchAll(PDO::FETCH_ASSOC) : [];
+    } catch (Throwable) {
+        // جدول هنوز نیست
+    }
+
+    $lastFail = null;
+    foreach ($otpLog as $row) {
+        if ($row['action'] === 'otp_send_failed') { $lastFail = $row; break; }
+    }
+    if ($lastFail !== null) {
+        $add('آخرین خطای ارسال', false,
+            $lastFail['created_at'] . ' — ' . (string) $lastFail['detail']);
+    }
+}
+
 // ---- ۵.۵ بهینه‌ساز تصویر ----------------------------------------
 // اگر هر یک از این سه شرط برقرار نباشد، img() بی‌صدا آدرس اصلی را
 // برمی‌گرداند و عکس‌ها بهینه نمی‌شوند — بدون هیچ خطایی.
@@ -215,6 +242,7 @@ $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
   header{background:var(--navy);color:#fff;padding:30px 0;margin-bottom:26px}
   header .wrap{padding-bottom:0}
   h1{margin:0 0 6px;font-size:26px}
+  h2.sub{margin:26px 0 8px;font-size:16px;font-weight:700}
   header p{margin:0;color:#C3CEE6;font-size:14px}
   .banner{border-radius:10px;padding:16px 20px;margin:0 0 24px;font-weight:600}
   .banner.ok{background:#E6F4EE;color:var(--ok);border:1px solid var(--ok)}
@@ -254,7 +282,31 @@ $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
   <?php endforeach; ?>
 </table>
 
+<?php if ($otpLog !== []): ?>
+<h2 class="sub">آخرین رویدادهای ورود</h2>
+<table>
+  <tr><th>زمان</th><th>رویداد</th><th>جزئیات</th></tr>
+  <?php
+    $label = [
+      'otp_sent'          => 'کد فرستاده شد',
+      'otp_send_failed'   => 'ارسال کد ناموفق',
+      'otp_failed'        => 'کد اشتباه وارد شد',
+      'otp_unknown_phone' => 'شماره‌ی ناشناس',
+      'login'             => 'ورود موفق',
+    ];
+  ?>
+  <?php foreach ($otpLog as $row): ?>
+  <tr>
+    <td class="d"><?= htmlspecialchars((string) $row['created_at'], ENT_QUOTES, 'UTF-8') ?></td>
+    <td><?= htmlspecialchars($label[$row['action']] ?? $row['action'], ENT_QUOTES, 'UTF-8') ?></td>
+    <td class="d"><?= htmlspecialchars((string) ($row['detail'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
+  </tr>
+  <?php endforeach; ?>
+</table>
+<?php endif; ?>
+
 <p class="meta">
+
   آخرین استقرار: <code><?= $deployed ? htmlspecialchars(trim($deployed), ENT_QUOTES, 'UTF-8') : 'نامشخص' ?></code><br>
   ریشه‌ی وب: <code><?= htmlspecialchars(__DIR__, ENT_QUOTES, 'UTF-8') ?></code><br>
   پوشه‌ی برنامه: <code><?= htmlspecialchars($appRoot, ENT_QUOTES, 'UTF-8') ?></code><br>
