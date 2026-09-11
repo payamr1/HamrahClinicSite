@@ -50,6 +50,64 @@ final class Sms
         return 'شماره‌ی خط را در config.php ▸ sms ▸ sender بگذارید.';
     }
 
+    /**
+     * سلامت کلید.
+     *
+     * کلید عیناً داخل مسیر URL می‌نشیند. اگر نویسه‌ای داشته باشد
+     * که در URL جا ندارد — فاصله، حرف فارسی، خط جدید — وب‌سرور
+     * کاوه‌نگار درخواست را بدشکل می‌بیند و «۴۰۰ با بدنه‌ی خالی»
+     * برمی‌گرداند؛ یعنی همان چیزی که هیچ توضیحی همراهش نیست.
+     *
+     * @return array{ok:bool, bytes:int, chars:int, bad:array, note:string}
+     */
+    public static function inspectKey(string $key): array
+    {
+        $bad = [];
+        $len = mb_strlen($key);
+
+        for ($i = 0; $i < $len; $i++) {
+            $ch = mb_substr($key, $i, 1);
+            if (preg_match('~^[A-Za-z0-9+/=_-]$~', $ch) === 1) {
+                continue;
+            }
+            $cp    = mb_ord($ch, 'UTF-8');
+            $bad[] = [
+                'pos'  => $i + 1,
+                'char' => match (true) {
+                    $ch === ' '  => 'فاصله',
+                    $ch === "\t" => 'تب',
+                    $ch === "\n" => 'خط جدید',
+                    $ch === "\r" => 'کاراکتر بازگشت',
+                    $cp === 0x200C => 'نیم‌فاصله',
+                    $cp === 0xFEFF => 'BOM',
+                    $cp < 0x20   => 'نویسه‌ی کنترلی',
+                    default      => "«$ch»",
+                },
+                'code' => 'U+' . strtoupper(str_pad(dechex($cp), 4, '0', STR_PAD_LEFT)),
+            ];
+            if (count($bad) >= 8) {
+                break;
+            }
+        }
+
+        $note = '';
+        if ($key === '') {
+            $note = 'کلید خالی است.';
+        } elseif ($bad !== []) {
+            $note = 'کلید نویسه‌ای دارد که در نشانی اینترنتی جا نمی‌شود.';
+        } elseif ($len < 20) {
+            $note = 'کلید کوتاه‌تر از حد انتظار است؛ شاید ناقص کپی شده.';
+        }
+
+        return [
+            'ok'    => $key !== '' && $bad === [] && $len >= 20,
+            'bytes' => strlen($key),
+            'chars' => $len,
+            'bad'   => $bad,
+            'note'  => $note,
+        ];
+    }
+
     /** کدام راه ارسال فعال است — برای صفحه‌ی سلامت */
     public function mode(): string
     {
@@ -169,6 +227,21 @@ final class Sms
         // کاوه‌نگار هم همین کار را می‌کند. encode کردنش کلیدهایی
         // را که نویسه‌ی خاص دارند می‌شکند.
         $key = trim((string) ($this->cfg['api_key'] ?? ''));
+
+        // پیش از فرستادن، خود کلید را می‌سنجیم. کلید بدشکل باعث
+        // «۴۰۰ با بدنه‌ی خالی» می‌شود که هیچ نمی‌گوید چه خبر است؛
+        // بهتر است همین‌جا با پیام روشن شکست بخورد.
+        $k = self::inspectKey($key);
+        if (!$k['ok']) {
+            $where = implode('، ', array_map(
+                fn(array $b) => "جایگاه {$b['pos']}: {$b['char']}",
+                array_slice($k['bad'], 0, 3)
+            ));
+            return 'کلید وب‌سرویس کاوه‌نگار درست نیست — ' . $k['note']
+                 . ($where !== '' ? " ($where)" : '')
+                 . ' مقدار api_key را در config.php دوباره از پنل کاوه‌نگار کپی کنید.';
+        }
+
         $url = self::BASE . "/$key/$endpoint";
 
         [$body, $httpCode, $netError] = $this->post($url, $params);
@@ -352,13 +425,21 @@ final class Sms
     public function diagnose(): array
     {
         $key = trim((string) ($this->cfg['api_key'] ?? ''));
+        $k   = self::inspectKey($key);
+
         $out = [
-            'key_length'  => strlen($key),
-            'key_clean'   => preg_match('~^[A-Za-z0-9+/=_-]+$~', $key) === 1,
-            'key_preview' => $key === '' ? '—' : substr($key, 0, 4) . '…' . substr($key, -4),
+            'key'         => $k,
+            // mb_substr نه substr: نویسه‌ی چندبایتی را نصف نمی‌کند
+            'key_preview' => $key === '' ? '—' : mb_substr($key, 0, 4) . '…' . mb_substr($key, -4),
             'dns'         => gethostbyname('api.kavenegar.com'),
             'attempts'    => [],
         ];
+
+        // کلید بدشکل را اصلاً نمی‌فرستیم؛ پاسخش چیزی جز همان ۴۰۰
+        // بی‌توضیح نیست و فقط گمراه‌کننده است
+        if (!$k['ok']) {
+            return $out;
+        }
 
         $url = self::BASE . "/$key/account/info.json";
 

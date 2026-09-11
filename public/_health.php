@@ -303,13 +303,37 @@ $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
 <h2 class="sub">آزمون اتصال به کاوه‌نگار</h2>
 <table>
   <tr><th>مورد</th><th>مقدار</th></tr>
-  <tr><td>طول کلید</td><td class="d"><?= (int) $smsDiag['key_length'] ?> نویسه
-    <?= $smsDiag['key_clean'] ? '' : '— ⚠ نویسه‌ی غیرمنتظره دارد' ?></td></tr>
-  <tr><td>کلید</td><td class="d"><?= htmlspecialchars($smsDiag['key_preview'], ENT_QUOTES, 'UTF-8') ?></td></tr>
+  <tr>
+    <td>کلید</td>
+    <td class="d">
+      <?= htmlspecialchars($smsDiag['key_preview'], ENT_QUOTES, 'UTF-8') ?>
+      — <?= (int) $smsDiag['key']['chars'] ?> نویسه
+      <?php if ($smsDiag['key']['bytes'] !== $smsDiag['key']['chars']): ?>
+        (<?= (int) $smsDiag['key']['bytes'] ?> بایت)
+      <?php endif; ?>
+      <?php if (!$smsDiag['key']['ok']): ?>
+        <br><b style="color:var(--bad)">⚠ <?= htmlspecialchars($smsDiag['key']['note'], ENT_QUOTES, 'UTF-8') ?></b>
+      <?php endif; ?>
+    </td>
+  </tr>
+  <?php if ($smsDiag['key']['bad'] !== []): ?>
+  <tr>
+    <td>نویسه‌های نامعتبر</td>
+    <td class="d">
+      <?php foreach ($smsDiag['key']['bad'] as $b): ?>
+        جایگاه <?= (int) $b['pos'] ?>: <?= htmlspecialchars($b['char'], ENT_QUOTES, 'UTF-8') ?>
+        (<?= htmlspecialchars($b['code'], ENT_QUOTES, 'UTF-8') ?>)<br>
+      <?php endforeach; ?>
+    </td>
+  </tr>
+  <?php endif; ?>
   <tr><td>DNS</td><td class="d">api.kavenegar.com →
     <?= htmlspecialchars($smsDiag['dns'], ENT_QUOTES, 'UTF-8') ?></td></tr>
 </table>
 
+<?php if ($smsDiag['attempts'] === []): ?>
+  <p class="meta">چون کلید بدشکل است، درخواستی به کاوه‌نگار فرستاده نشد.</p>
+<?php else: ?>
 <table style="margin-top:12px">
   <tr><th>روش</th><th>HTTP</th><th>پاسخ‌دهنده</th><th>نتیجه</th></tr>
   <?php foreach ($smsDiag['attempts'] as $at): ?>
@@ -334,6 +358,7 @@ $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
   </tr>
   <?php endforeach; ?>
 </table>
+<?php endif; ?>
 <?php endif; ?>
 
 <?php if ($otpLog !== []): ?>
