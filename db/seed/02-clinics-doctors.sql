@@ -393,3 +393,7 @@ INSERT INTO booking_links (clinic_id, label, url, sort)
 INSERT INTO booking_links (clinic_id, label, url, sort)
   SELECT id, 'دکتر زهرا جلیلیان', 'https://book.hamrahclinic.ir/?doctor=1220', 20
     FROM clinics WHERE slug = 'endocrine';
+
+-- عکس دو پزشک تازه
+UPDATE doctors SET photo = 'doctors/mehravaran.jpg' WHERE name = 'دکتر الهام مهرآوران';
+UPDATE doctors SET photo = 'doctors/mohseni.jpg'    WHERE name = 'دکتر شهرزاد محسنی';
