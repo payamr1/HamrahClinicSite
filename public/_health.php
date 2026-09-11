@@ -162,6 +162,23 @@ $add('حالت اضطراری ورود', !$smsEmerg,
     $smsEmerg);
 $add('cURL', function_exists('curl_init'), 'برای تماس با کاوه‌نگار', true);
 
+// ---- ۵.۲۵ آزمون اتصال به کاوه‌نگار -------------------------------
+// فقط با ?sms=1 اجرا می‌شود. account/info هیچ پیامکی نمی‌فرستد و
+// اعتباری خرج نمی‌کند، ولی کل مسیر را می‌سنجد: DNS، TLS، خروجی
+// سرور، و درستی خود کلید.
+$smsDiag = null;
+if (isset($_GET['sms']) && $smsCfg !== [] && is_file($appRoot . '/app/Sms.php')) {
+    require_once $appRoot . '/app/Sms.php';
+    $smsDiag = (new Sms($smsCfg))->diagnose();
+
+    $anyJson = false;
+    foreach ($smsDiag['attempts'] as $at) {
+        if ($at['is_json']) { $anyJson = true; }
+    }
+    $add('رسیدن به API کاوه‌نگار', $anyJson,
+        $anyJson ? 'پاسخ معتبر گرفته شد' : 'هیچ پاسخ JSON نیامد — جدول پایین را ببینید');
+}
+
 // ---- ۵.۳ تاریخچه‌ی ارسال کد --------------------------------------
 // پیام خطای خود کاوه‌نگار در audit_log می‌نشیند. بدون نشان دادنش
 // اینجا، برای دیدنش باید لاگ خطای PHP را از File Manager بیرون
@@ -281,6 +298,43 @@ $fails = count(array_filter($checks, fn($c) => !$c['ok'] && !$c['warn']));
   </tr>
   <?php endforeach; ?>
 </table>
+
+<?php if ($smsDiag !== null): ?>
+<h2 class="sub">آزمون اتصال به کاوه‌نگار</h2>
+<table>
+  <tr><th>مورد</th><th>مقدار</th></tr>
+  <tr><td>طول کلید</td><td class="d"><?= (int) $smsDiag['key_length'] ?> نویسه
+    <?= $smsDiag['key_clean'] ? '' : '— ⚠ نویسه‌ی غیرمنتظره دارد' ?></td></tr>
+  <tr><td>کلید</td><td class="d"><?= htmlspecialchars($smsDiag['key_preview'], ENT_QUOTES, 'UTF-8') ?></td></tr>
+  <tr><td>DNS</td><td class="d">api.kavenegar.com →
+    <?= htmlspecialchars($smsDiag['dns'], ENT_QUOTES, 'UTF-8') ?></td></tr>
+</table>
+
+<table style="margin-top:12px">
+  <tr><th>روش</th><th>HTTP</th><th>پاسخ‌دهنده</th><th>نتیجه</th></tr>
+  <?php foreach ($smsDiag['attempts'] as $at): ?>
+  <tr>
+    <td><?= htmlspecialchars($at['method'], ENT_QUOTES, 'UTF-8') ?></td>
+    <td><?= (int) $at['http'] ?></td>
+    <td class="d">
+      <?= htmlspecialchars($at['server'] ?: '—', ENT_QUOTES, 'UTF-8') ?>
+      <?php if ($at['ip']): ?><br><?= htmlspecialchars($at['ip'], ENT_QUOTES, 'UTF-8') ?><?php endif; ?>
+    </td>
+    <td class="d">
+      <?php if ($at['error']): ?>
+        خطای شبکه: <?= htmlspecialchars($at['error'], ENT_QUOTES, 'UTF-8') ?>
+      <?php elseif ($at['is_json']): ?>
+        status=<?= (int) $at['status'] ?> · <?= htmlspecialchars($at['message'], ENT_QUOTES, 'UTF-8') ?>
+        <?php if ($at['credit'] !== null): ?><br>اعتبار: <?= htmlspecialchars($at['credit'], ENT_QUOTES, 'UTF-8') ?><?php endif; ?>
+      <?php else: ?>
+        پاسخ JSON نبود —
+        «<?= htmlspecialchars($at['snippet'] ?: '(خالی)', ENT_QUOTES, 'UTF-8') ?>»
+      <?php endif; ?>
+    </td>
+  </tr>
+  <?php endforeach; ?>
+</table>
+<?php endif; ?>
 
 <?php if ($otpLog !== []): ?>
 <h2 class="sub">آخرین رویدادهای ورود</h2>

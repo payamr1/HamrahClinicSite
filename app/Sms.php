@@ -252,26 +252,61 @@ final class Sms
      */
     private function post(string $url, array $params): array
     {
+        $r = $this->request($url, $params);
+        return [$r['body'], $r['http'], $r['error']];
+    }
+
+    /**
+     * یک درخواست، با همه‌ی چیزهایی که برای عیب‌یابی لازم است.
+     *
+     * وقتی پاسخ ۴۰۰ با بدنه‌ی خالی می‌آید، باید بشود فهمید اصلاً
+     * به کاوه‌نگار رسیده یا چیزی سر راه جوابش را داده — هدر Server
+     * و نشانی IP طرف مقابل همین را می‌گویند.
+     *
+     * @return array{body:?string, http:int, error:?string, headers:string, ip:string, method:string}
+     */
+    public function request(string $url, array $params, string $method = 'POST'): array
+    {
         $payload = http_build_query($params);
 
         if (function_exists('curl_init')) {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_POST           => true,
-                CURLOPT_POSTFIELDS     => $payload,
+            $target = $method === 'GET' ? $url . '?' . $payload : $url;
+            $ch     = curl_init($target);
+
+            $opts = [
                 CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER         => true,
                 CURLOPT_TIMEOUT        => self::TIMEOUT,
                 CURLOPT_CONNECTTIMEOUT => 5,
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_SSL_VERIFYHOST => 2,
-                CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
-            ]);
-            $body = curl_exec($ch);
-            $err  = curl_errno($ch) !== 0 ? curl_error($ch) : null;
-            $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                CURLOPT_USERAGENT      => 'HamrahClinic/1.0',
+            ];
+            if ($method === 'POST') {
+                $opts[CURLOPT_POST]       = true;
+                $opts[CURLOPT_POSTFIELDS] = $payload;
+                $opts[CURLOPT_HTTPHEADER] = ['Content-Type: application/x-www-form-urlencoded'];
+            }
+            curl_setopt_array($ch, $opts);
+
+            $raw     = curl_exec($ch);
+            $err     = curl_errno($ch) !== 0 ? curl_error($ch) . ' (' . curl_errno($ch) . ')' : null;
+            $code    = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $hdrSize = (int) curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+            $ip      = (string) (curl_getinfo($ch, CURLINFO_PRIMARY_IP) ?: '');
             curl_close($ch);
 
-            return [$body === false ? null : (string) $body, $code, $err];
+            if ($raw === false) {
+                return ['body' => null, 'http' => $code, 'error' => $err, 'headers' => '', 'ip' => $ip, 'method' => $method];
+            }
+            return [
+                'body'    => substr((string) $raw, $hdrSize),
+                'http'    => $code,
+                'error'   => $err,
+                'headers' => substr((string) $raw, 0, $hdrSize),
+                'ip'      => $ip,
+                'method'  => $method,
+            ];
         }
 
         $ctx = stream_context_create([
@@ -285,14 +320,74 @@ final class Sms
             'ssl' => ['verify_peer' => true, 'verify_peer_name' => true],
         ]);
 
-        $body = @file_get_contents($url, false, $ctx);
+        $body = @file_get_contents($method === 'GET' ? $url . '?' . $payload : $url, false, $ctx);
         $code = 0;
-        foreach ($http_response_header ?? [] as $h) {
+        $hdrs = $http_response_header ?? [];
+        foreach ($hdrs as $h) {
             if (preg_match('~^HTTP/\S+\s+(\d{3})~', $h, $m)) {
                 $code = (int) $m[1];
             }
         }
-        return [$body === false ? null : $body, $code, $body === false ? 'file_get_contents failed' : null];
+        return [
+            'body'    => $body === false ? null : $body,
+            'http'    => $code,
+            'error'   => $body === false ? 'file_get_contents ناموفق' : null,
+            'headers' => implode("\n", $hdrs),
+            'ip'      => '',
+            'method'  => $method,
+        ];
+    }
+
+    /**
+     * آزمون اتصال — بدون فرستادن پیامک و بدون خرج اعتبار.
+     *
+     * account/info فقط اطلاعات حساب را برمی‌گرداند. اگر این کار
+     * کند یعنی DNS و TLS و خروجی سرور و خود کلید همه درست‌اند و
+     * ایراد جای دیگری است. اگر کار نکند، همین‌جا معلوم می‌شود
+     * کجای مسیر شکسته.
+     *
+     * هر دو روش POST و GET امتحان می‌شوند، چون بعضی فایروال‌ها
+     * فقط بدنه‌ی POST را می‌بندند.
+     */
+    public function diagnose(): array
+    {
+        $key = trim((string) ($this->cfg['api_key'] ?? ''));
+        $out = [
+            'key_length'  => strlen($key),
+            'key_clean'   => preg_match('~^[A-Za-z0-9+/=_-]+$~', $key) === 1,
+            'key_preview' => $key === '' ? '—' : substr($key, 0, 4) . '…' . substr($key, -4),
+            'dns'         => gethostbyname('api.kavenegar.com'),
+            'attempts'    => [],
+        ];
+
+        $url = self::BASE . "/$key/account/info.json";
+
+        foreach (['POST', 'GET'] as $method) {
+            $r    = $this->request($url, [], $method);
+            $json = json_decode((string) $r['body'], true);
+            $ret  = is_array($json) ? ($json['return'] ?? null) : null;
+
+            $server = '';
+            if (preg_match('~^Server:\s*(.+)$~mi', $r['headers'], $m)) {
+                $server = trim($m[1]);
+            }
+
+            $out['attempts'][] = [
+                'method'   => $method,
+                'http'     => $r['http'],
+                'error'    => $r['error'],
+                'ip'       => $r['ip'],
+                'server'   => $server,
+                'is_json'  => $ret !== null,
+                'status'   => is_array($ret) ? (int) ($ret['status'] ?? 0) : 0,
+                'message'  => is_array($ret) ? (string) ($ret['message'] ?? '') : '',
+                'credit'   => is_array($json) && isset($json['entries']['remaincredit'])
+                    ? (string) $json['entries']['remaincredit'] : null,
+                'snippet'  => mb_substr(trim((string) $r['body']), 0, 200),
+            ];
+        }
+
+        return $out;
     }
 
     // ---------------------------------------------------------------
