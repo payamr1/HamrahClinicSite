@@ -35,7 +35,8 @@ final class Media
     public function __construct(
         private Database $db,
         private string $uploadDir,              // مسیر مطلق روی دیسک
-        private string $uploadUrl = '/assets/uploads'
+        private string $uploadUrl = '/assets/uploads',
+        private ?Images $images = null          // برای پردازش هنگام بارگذاری
     ) {}
 
     // ---------------------------------------------------------------
@@ -278,9 +279,40 @@ final class Media
         if ($info === false || !isset(self::IMAGE_TYPES[$info[2]])) {
             throw new RuntimeException('این فایل عکس معتبر نیست. فقط JPG و PNG و WebP پذیرفته می‌شود.');
         }
-        [$ext, $mime] = self::IMAGE_TYPES[$info[2]];
 
-        $sub  = 'gallery/' . date('Y/m');
+        $sub = 'gallery/' . date('Y/m');
+
+        // عکس خام ذخیره نمی‌شود: اول چرخانده، کوچک و بازفشرده
+        // می‌شود. پسوند نهایی را خود پردازش تعیین می‌کند، چون
+        // ممکن است PNGِ بدون شفافیت به JPEG تبدیل شود.
+        if ($this->images !== null) {
+            // نام موقت با نقطه شروع می‌شود تا اگر کار نیمه‌کاره ماند،
+            // ‎.htaccess اصلی جلوی سرو شدنش را بگیرد
+            $stage = $this->uploadDir . '/' . $sub . '/.ingest-' . bin2hex(random_bytes(6));
+            $out   = $this->images->ingest($file['tmp_name'], $stage);
+
+            if ($out !== null) {
+                // پسوند نهایی را پردازش تعیین کرده، پس نام یکتا
+                // بعد از آن انتخاب می‌شود
+                $name = $this->uniqueName($sub, $meta['slug'] ?? 'img', $out['ext']);
+                if (@rename($stage, $this->uploadDir . '/' . $sub . '/' . $name)) {
+                    return $this->record([
+                        'kind'     => 'image',
+                        'filename' => $sub . '/' . $name,
+                        'mime'     => $out['mime'],
+                        'width'    => $out['width'],
+                        'height'   => $out['height'],
+                        'bytes'    => $out['bytes'],
+                    ], $meta, $adminId);
+                }
+            }
+            @unlink($stage);
+        }
+
+        // GD نبود یا پردازش شکست خورد — فایل اصلی ذخیره می‌شود تا
+        // بارگذاری بی‌صدا از دست نرود. نسخه‌های کوچک همچنان در
+        // لحظه ساخته می‌شوند.
+        [$ext, $mime] = self::IMAGE_TYPES[$info[2]];
         $name = $this->uniqueName($sub, $meta['slug'] ?? 'img', $ext);
         $this->moveInto($file['tmp_name'], $sub . '/' . $name);
 

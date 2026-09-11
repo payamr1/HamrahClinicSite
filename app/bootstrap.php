@@ -61,7 +61,7 @@ img_init($images);
 // ---- کتابخانه‌ی رسانه ------------------------------------------
 // uploads کنار assets/img می‌نشیند تا Images بتواند از همان‌جا
 // نسخه‌ی کوچک‌شده بسازد
-$media = new Media($db, $webRoot . '/assets/uploads');
+$media = new Media($db, $webRoot . '/assets/uploads', '/assets/uploads', $images);
 media_init($media);
 
 // ---- تنظیمات عمومی از دیتابیس ---------------------------------
