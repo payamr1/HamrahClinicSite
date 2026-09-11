@@ -198,6 +198,30 @@ final class Repository
         );
     }
 
+    // ---- لینک نوبت‌دهی ----------------------------------------------
+
+    /**
+     * لینک‌های نوبت‌دهی یک صفحه.
+     *
+     * اول لینک‌های مخصوص همان صفحه، بعد لینک‌های کل کلینیک.
+     * اگر صفحه لینک اختصاصی داشته باشد، همان کافی است و لینک
+     * عمومی کلینیک نمایش داده نمی‌شود.
+     */
+    public function bookingLinks(int $pageId, ?int $clinicId): array
+    {
+        $own = $this->db->all(
+            'SELECT label, url FROM booking_links WHERE page_id = ? ORDER BY sort ASC, id ASC',
+            [$pageId]
+        );
+        if ($own !== [] || $clinicId === null) {
+            return $own;
+        }
+        return $this->db->all(
+            'SELECT label, url FROM booking_links WHERE clinic_id = ? ORDER BY sort ASC, id ASC',
+            [$clinicId]
+        );
+    }
+
     // ---- سؤالات متداول ---------------------------------------------
 
     public function faqs(int $pageId): array

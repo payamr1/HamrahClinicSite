@@ -47,6 +47,9 @@ if ($trail !== []) {
 <?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
 
+<link rel="icon" href="/assets/img/brand/mark.jpg" type="image/jpeg">
+<link rel="apple-touch-icon" href="/assets/img/brand/mark.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap">
@@ -76,12 +79,8 @@ if ($trail !== []) {
 
 <header class="nav">
   <div class="in">
-    <a class="brand" href="/">
-      <svg class="mk" viewBox="0 0 34 38" fill="none" aria-hidden="true">
-        <path d="M15 37 12 12c-3.5-.6-9-2.4-10.4-6.4C.4 2.6 3 .6 6 1.4c3.3.9 6.6 4.6 8.4 8.6" stroke="#4EC3A9" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M14.5 22C21 20 27 15 28.4 9.6 29.6 4.8 26.5.6 22.8 2.4c-3.4 1.7-5.6 7-6.4 12.6" stroke="#4EC3A9" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span><b><?= e($siteName) ?></b><span>HAMRAH MEDICAL CLINIC</span></span>
+    <a class="brand" href="/" aria-label="<?= e($siteName) ?>">
+      <img src="<?= e(img('brand/logo.png', 600)) ?>" alt="<?= e($siteName) ?>" width="196" height="75">
     </a>
 
     <nav class="menu" aria-label="منوی اصلی">
@@ -114,6 +113,8 @@ if ($trail !== []) {
   <div class="in">
     <div class="fgrid">
       <div>
+        <?php // نشان سبز روی زمینه‌ی سرمه‌ای خوانا است؛ لوگوتایپ سرمه‌ای نه ?>
+        <img class="fmark" src="<?= e(img('brand/mark.jpg', 400)) ?>" alt="" width="46" height="46">
         <b class="fname"><?= e($siteName) ?></b>
         <span class="fen">HAMRAH MEDICAL CLINIC</span>
         <p>کلینیک فوق تخصصی قلب و عروق و آنکولوژی در تجریش تهران، با رویکرد تیم درمان چندتخصصی.</p>

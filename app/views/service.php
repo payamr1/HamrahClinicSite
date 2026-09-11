@@ -11,6 +11,7 @@ $faqs    = $repo->faqs((int) $page['id']);
 $docs    = $clinic ? $repo->doctorsOfClinic((int) $clinic['id']) : [];
 $sibling = $clinic ? $repo->servicesOfClinic((int) $clinic['id'], 8) : [];
 $sibling = array_values(array_filter($sibling, fn($s) => (int) $s['id'] !== (int) $page['id']));
+$booking = $repo->bookingLinks((int) $page['id'], isset($page['clinic_id']) ? (int) $page['clinic_id'] : null);
 
 $phone = $app['settings']['phone']     ?? '۰۲۱۹۱۳۰۳۱۳۲';
 $tel   = $app['settings']['phone_raw'] ?? '02191303132';
@@ -61,8 +62,20 @@ ob_start(); ?>
   <aside class="side">
     <div class="sbox hi">
       <h4>رزرو نوبت این بخش</h4>
-      <p>اگر مطمئن نیستید کدام خدمت مناسب شماست، تماس بگیرید.</p>
-      <a class="b b-teal b-full" href="<?= url('/contact-us/') ?>">رزرو نوبت آنلاین</a>
+      <?php if (count($booking) > 1): ?>
+        <p>پزشک مورد نظر را انتخاب کنید:</p>
+        <?php foreach ($booking as $b): ?>
+          <a class="b b-teal b-full b-stack" href="<?= e($b['url']) ?>"
+             target="_blank" rel="noopener"><?= e($b['label'] ?: 'رزرو نوبت آنلاین') ?></a>
+        <?php endforeach; ?>
+      <?php elseif ($booking !== []): ?>
+        <p>نوبت خود را آنلاین و در چند دقیقه ثبت کنید.</p>
+        <a class="b b-teal b-full" href="<?= e($booking[0]['url']) ?>"
+           target="_blank" rel="noopener">رزرو نوبت آنلاین<?= $booking[0]['label'] ? ' — ' . e($booking[0]['label']) : '' ?></a>
+      <?php else: ?>
+        <p>اگر مطمئن نیستید کدام خدمت مناسب شماست، تماس بگیرید.</p>
+        <a class="b b-teal b-full" href="<?= url('/contact-us/') ?>">رزرو نوبت</a>
+      <?php endif; ?>
       <a class="sbox-tel" href="tel:<?= e($tel) ?>"><?= e($phone) ?></a>
     </div>
 

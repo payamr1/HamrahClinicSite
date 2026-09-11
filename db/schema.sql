@@ -166,6 +166,30 @@ CREATE TABLE IF NOT EXISTS page_author (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- لینک نوبت‌دهی روی صفحه یا کلینیک
+--
+-- بعضی بخش‌ها بیش از یک پزشک نوبت‌دهنده دارند و بیمار باید
+-- انتخاب کند، پس جدول جداگانه لازم است نه یک ستون.
+--
+-- اگر label خالی باشد، دکمه بدون نام پزشک نمایش داده می‌شود —
+-- برای وقتی که فقط باید بتوانند نوبت بگیرند.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS booking_links (
+  id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  page_id    INT UNSIGNED     NULL  COMMENT 'روی یک صفحه خدمت مشخص',
+  clinic_id  INT UNSIGNED     NULL  COMMENT 'یا روی کل یک کلینیک',
+  label      VARCHAR(160)     NULL  COMMENT 'نام پزشک؛ خالی یعنی بدون نام',
+  url        VARCHAR(255) NOT NULL,
+  sort       SMALLINT     NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_bl (page_id, clinic_id, url),
+  KEY idx_bl_page (page_id, sort),
+  KEY idx_bl_clinic (clinic_id, sort),
+  CONSTRAINT fk_bl_page   FOREIGN KEY (page_id)   REFERENCES pages(id)   ON DELETE CASCADE,
+  CONSTRAINT fk_bl_clinic FOREIGN KEY (clinic_id) REFERENCES clinics(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- سؤالات متداول — منبع اسکیمای FAQPage
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS faqs (

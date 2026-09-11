@@ -313,3 +313,83 @@ UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1165' WHE
 UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1163' WHERE name = 'دکتر احمد مافی';
 UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1215' WHERE name = 'دکتر رضا مقبولی';
 UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1162' WHERE name = 'دکتر فاطمه نائینی';
+
+-- ============================================================
+--  پزشکان تازه، لینک نوبت‌دهی بخش‌ها و اصلاحات
+-- ============================================================
+
+-- ------------------------------------------------------------
+--  دکتر محبوبه خلیلی
+--  در سامانه‌ی نوبت‌دهی با نام «فرناز خلیلی» ثبت شده ولی همان
+--  فرد است؛ نام رسمی محبوبه است و روی سایت همان می‌ماند.
+-- ------------------------------------------------------------
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1156'
+  WHERE name = 'دکتر محبوبه خلیلی';
+
+-- ------------------------------------------------------------
+--  دو پزشک تازه
+--  صفحه‌ی این دو در سایت قبلی وجود نداشت، پس آدرس تازه‌اند و
+--  قرارداد ۸۲ آدرس را نقض نمی‌کنند.
+--  عکسشان بعداً اضافه می‌شود؛ تا آن موقع قالب گرادیان می‌گذارد.
+-- ------------------------------------------------------------
+INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc, sort) VALUES
+  ('/team/دکتر-الهام-مهرآوران/', '/team/دکتر-الهام-مهرآوران/', 'doctor', 'دکتر-الهام-مهرآوران',
+   'دکتر الهام مهرآوران',
+   'دکتر الهام مهرآوران | متخصص رادیوتراپی انکولوژی',
+   'دکتر الهام مهرآوران، متخصص رادیوتراپی انکولوژی در بخش آنکولوژی همراه کلینیک تجریش تهران. رزرو نوبت آنلاین و مشاوره تخصصی درمان سرطان.',
+   125),
+  ('/team/دکتر-شهرزاد-محسنی/', '/team/دکتر-شهرزاد-محسنی/', 'doctor', 'دکتر-شهرزاد-محسنی',
+   'دکتر شهرزاد محسنی',
+   'دکتر شهرزاد محسنی | متخصص قلب و فلوشیپ نارسایی قلب',
+   'دکتر شهرزاد محسنی، متخصص قلب و عروق با فلوشیپ نارسایی قلب، در بخش قلب و عروق همراه کلینیک تجریش تهران. رزرو نوبت آنلاین.',
+   75)
+ON DUPLICATE KEY UPDATE title = VALUES(title),
+  meta_title = VALUES(meta_title), meta_desc = VALUES(meta_desc), sort = VALUES(sort);
+
+INSERT INTO doctors (page_id, name, specialty, fellowship, university, booking_url, sort) VALUES
+  ((SELECT id FROM pages WHERE path = '/team/دکتر-الهام-مهرآوران/'),
+   'دکتر الهام مهرآوران', 'متخصص رادیوتراپی انکولوژی',
+   NULL, 'دانشگاه علوم پزشکی شهید بهشتی',
+   'https://book.hamrahclinic.ir/?doctor=1232', 125),
+  ((SELECT id FROM pages WHERE path = '/team/دکتر-شهرزاد-محسنی/'),
+   'دکتر شهرزاد محسنی', 'متخصص قلب و عروق',
+   'فلوشیپ نارسایی قلب', NULL,
+   'https://book.hamrahclinic.ir/?doctor=1224', 75)
+ON DUPLICATE KEY UPDATE
+  specialty = VALUES(specialty), fellowship = VALUES(fellowship),
+  university = VALUES(university), booking_url = VALUES(booking_url),
+  page_id = VALUES(page_id), sort = VALUES(sort);
+
+INSERT INTO doctor_clinic (doctor_id, clinic_id)
+SELECT d.id, c.id FROM doctors d, clinics c WHERE
+     (d.name = 'دکتر الهام مهرآوران' AND c.slug IN ('oncology', 'chemotherapy'))
+  OR (d.name = 'دکتر شهرزاد محسنی'   AND c.slug = 'cardiology')
+ON DUPLICATE KEY UPDATE doctor_id = VALUES(doctor_id);
+
+-- ------------------------------------------------------------
+--  لینک نوبت‌دهی بخش‌ها
+--
+--  اجرای مکرر نباید تکراری بسازد.
+-- ------------------------------------------------------------
+DELETE FROM booking_links;
+
+-- دکتر نیلوفر آخوندزاده: فقط امکان گرفتن نوبت، بدون نمایش نام
+INSERT INTO booking_links (page_id, label, url, sort)
+  SELECT id, NULL, 'https://book.hamrahclinic.ir/?doctor=1238', 10
+    FROM pages WHERE path = '/service/اکوکاردیوگرافی-قلب-جنین/';
+INSERT INTO booking_links (page_id, label, url, sort)
+  SELECT id, NULL, 'https://book.hamrahclinic.ir/?doctor=1238', 10
+    FROM pages WHERE path = '/service/کلینیک-قلب-کودکان/';
+
+-- کلینیک عفونی → دکتر منیره کمالی
+INSERT INTO booking_links (clinic_id, label, url, sort)
+  SELECT id, 'دکتر منیره کمالی', 'https://book.hamrahclinic.ir/?doctor=1216', 10
+    FROM clinics WHERE slug = 'infectious';
+
+-- کلینیک غدد → دو پزشک، بیمار انتخاب می‌کند
+INSERT INTO booking_links (clinic_id, label, url, sort)
+  SELECT id, 'دکتر زهرا قائم‌مقامی', 'https://book.hamrahclinic.ir/?doctor=1219', 10
+    FROM clinics WHERE slug = 'endocrine';
+INSERT INTO booking_links (clinic_id, label, url, sort)
+  SELECT id, 'دکتر زهرا جلیلیان', 'https://book.hamrahclinic.ir/?doctor=1220', 20
+    FROM clinics WHERE slug = 'endocrine';

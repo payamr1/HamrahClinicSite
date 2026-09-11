@@ -76,12 +76,7 @@ svg{display:block}
 .nav{background:var(--ground);border-bottom:1px solid var(--rule);
   position:sticky;top:0;z-index:30}
 .nav .in{display:flex;align-items:center;gap:26px;height:74px}
-.brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
-.brand .mk{width:34px;height:38px;flex-shrink:0}
-.brand b{display:block;font-size:19px;font-weight:800;color:var(--navy);
-  line-height:1.2;letter-spacing:-.01em}
-.brand span span{display:block;font-size:8px;letter-spacing:.19em;
-  color:var(--ink-3);direction:ltr;font-weight:500}
+.brand{display:flex;align-items:center;flex-shrink:0}
 .menu{display:flex;gap:2px;margin-inline-start:auto}
 .menu a{padding:9px 13px;font-size:14px;font-weight:500;color:var(--ink-2);
   border-radius:var(--r-s)}
@@ -467,3 +462,11 @@ svg{display:block}
   .author .av{width:76px}
   .stats{padding:26px 20px;gap:20px}
 }
+
+/* ---- لوگو ---------------------------------------------------- */
+.brand img{display:block;height:46px;width:auto}
+.brand span{display:none}          /* لاک‌آپ متنی دیگر لازم نیست */
+.fmark{display:block;height:46px;width:auto;margin-bottom:10px;border-radius:6px}
+@media (max-width:760px){ .brand img{height:38px} }
+.b-stack{margin-bottom:8px}
+.b-stack:last-of-type{margin-bottom:0}
