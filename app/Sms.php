@@ -45,9 +45,18 @@ final class Sms
     public function configHint(): string
     {
         if (trim((string) ($this->cfg['api_key'] ?? '')) === '') {
-            return 'کلید وب‌سرویس کاوه‌نگار در config.php پر نشده است.';
+            return 'کلید وب‌سرویس کاوه‌نگار در config.php ▸ sms ▸ api_key پر نشده است.';
         }
-        return 'در config.php یا نام الگوی verify را بگذارید یا شماره‌ی خط را.';
+        return 'شماره‌ی خط را در config.php ▸ sms ▸ sender بگذارید.';
+    }
+
+    /** کدام راه ارسال فعال است — برای صفحه‌ی سلامت */
+    public function mode(): string
+    {
+        if (!empty($this->cfg['emergency_log_code'])) {
+            return 'emergency';
+        }
+        return trim((string) ($this->cfg['template'] ?? '')) !== '' ? 'template' : 'sender';
     }
 
     /**
@@ -104,12 +113,48 @@ final class Sms
 
     private function plain(string $phone, string $code): ?string
     {
-        $name = $this->cfg['site_name'] ?? 'همراه کلینیک';
         return $this->call('sms/send.json', [
             'receptor' => $phone,
-            'sender'   => (string) $this->cfg['sender'],
-            'message'  => "کد ورود شما به پنل {$name}: {$code}\nاین کد تا ۳ دقیقه معتبر است.",
+            'sender'   => trim((string) $this->cfg['sender']),
+            'message'  => $this->buildMessage($code),
         ]);
+    }
+
+    /**
+     * متن پیامک.
+     *
+     * درباره‌ی طول: پیامک فارسی با UTF-16 شمرده می‌شود، یعنی هر
+     * صفحه فقط ۷۰ نویسه. یک نویسه بیشتر و پیام دو صفحه می‌شود و
+     * هزینه دو برابر. متن پیش‌فرض حدود ۵۰ نویسه است تا جا داشته
+     * باشد، و نام سایت هم کوتاه می‌شود که اگر روزی طولانی شد از
+     * یک صفحه بیرون نزند.
+     */
+    private function buildMessage(string $code): string
+    {
+        $custom = trim((string) ($this->cfg['message'] ?? ''));
+        if ($custom !== '') {
+            // متن دلخواه، برای وقتی محتوای خط باید با چیزی که در
+            // کاوه‌نگار تأیید شده جور باشد
+            return str_replace(['{code}', '{کد}'], $code, $custom);
+        }
+
+        $name = mb_substr(trim((string) ($this->cfg['site_name'] ?? 'همراه کلینیک')), 0, 20);
+        return "کد ورود پنل {$name}: {$code}" . "\n" . 'تا ۳ دقیقه معتبر است.';
+    }
+
+    /**
+     * طول پیام بر حسب صفحه‌ی پیامک — پنل سلامت نشانش می‌دهد.
+     *
+     * فارسی ۷۰ نویسه در صفحه‌ی اول و ۶۷ در صفحه‌های بعد.
+     * برای نمونه یک کد شش‌رقمی فرضی گذاشته می‌شود.
+     */
+    public function messagePreview(): array
+    {
+        $text = $this->buildMessage('123456');
+        $len  = mb_strlen($text);
+        $pages = $len <= 70 ? 1 : (int) ceil(($len - 70) / 67) + 1;
+
+        return ['text' => $text, 'length' => $len, 'pages' => $pages];
     }
 
     /**

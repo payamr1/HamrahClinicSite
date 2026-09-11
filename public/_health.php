@@ -139,9 +139,24 @@ $smsEmerg = !empty($smsCfg['emergency_log_code']);
 
 $add('کلید کاوه‌نگار', $smsKey !== '',
     $smsKey !== '' ? 'ثبت شده' : 'در config.php ▸ sms ▸ api_key پر نشده');
-$add('راه ارسال کد', $smsTpl !== '' || $smsFrom !== '',
-    $smsTpl !== '' ? "الگوی verify: $smsTpl"
-                   : ($smsFrom !== '' ? "شماره‌ی خط: $smsFrom" : 'نه الگو و نه شماره‌ی خط'));
+$add('شماره‌ی خط', $smsFrom !== '' || $smsTpl !== '',
+    $smsFrom !== '' ? "ارسال از خط $smsFrom"
+                    : ($smsTpl !== '' ? "الگوی وریفای: $smsTpl" : 'در config.php ▸ sms ▸ sender پر نشده'));
+
+// طول متن پیامک — فارسی هر صفحه ۷۰ نویسه، و یک نویسه بیشتر یعنی
+// دو برابر هزینه در هر بار ورود
+if ($smsFrom !== '' && $smsTpl === '') {
+    $appDirH = $appRoot . '/app';
+    if (is_file($appDirH . '/Sms.php')) {
+        require_once $appDirH . '/Sms.php';
+        require_once $appDirH . '/helpers.php';
+        $smsObj = new Sms($smsCfg + ['site_name' => 'همراه کلینیک']);
+        $prev   = $smsObj->messagePreview();
+        $add('طول متن پیامک', $prev['pages'] === 1,
+            sprintf('%d نویسه، %d صفحه — «%s»', $prev['length'], $prev['pages'], $prev['text']),
+            $prev['pages'] > 1);
+    }
+}
 $add('حالت اضطراری ورود', !$smsEmerg,
     $smsEmerg ? 'روشن است — کد در لاگ نوشته می‌شود، نه پیامک. خاموشش کنید.' : 'خاموش',
     $smsEmerg);
