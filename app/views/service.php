@@ -110,7 +110,6 @@ ob_start(); ?>
   <div class="shead">
     <span class="lbl">تیم این بخش</span>
     <h2>پزشکان <?= e($clinic['name'] ?? '') ?></h2>
-    <p>همگی دارای بورد تخصصی و شماره‌ی نظام پزشکی قابل استعلام.</p>
   </div>
   <div class="dgrid">
     <?php foreach ($docs as $d): ?>

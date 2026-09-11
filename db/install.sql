@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS doctors (
   license_no    VARCHAR(30)      NULL  COMMENT 'شماره نظام پزشکی',
   bio           TEXT             NULL,
   photo         VARCHAR(255)     NULL,
+  booking_url   VARCHAR(255)     NULL  COMMENT 'لینک نوبت‌دهی آنلاین در book.hamrahclinic.ir',
   schedule      VARCHAR(255)     NULL  COMMENT 'مثل: شنبه، دوشنبه، چهارشنبه ۹ تا ۱۴',
   is_founder    TINYINT(1)   NOT NULL DEFAULT 0,
   sort          SMALLINT     NOT NULL DEFAULT 0,
@@ -875,7 +876,7 @@ INSERT INTO settings (k, v) VALUES
   ('site_name',      'همراه کلینیک'),
   ('phone',          '۰۲۱۹۱۳۰۳۱۳۲'),
   ('phone_raw',      '02191303132'),
-  ('address',        'تهران، خیابان شریعتی، نرسیده به میدان قدس، کوچه مهنا ۱، پلاک ۶'),
+  ('address',        'تهران، تجریش، خیابان شریعتی، نرسیده به میدان قدس، کوچه مهنا ۱، پلاک ۶'),
   ('hours',          'شنبه تا چهارشنبه ۸ تا ۲۰ · پنجشنبه ۸ تا ۱۳'),
   ('canonical_host', 'hamrahclinic.ir')
 ON DUPLICATE KEY UPDATE v = VALUES(v);
@@ -885,11 +886,6 @@ ON DUPLICATE KEY UPDATE v = VALUES(v);
 --  فایل‌ها در public/assets/img/ هستند و همراه مخزن استقرار
 --  می‌شوند. عکس‌های باکیفیت‌تر بعداً از پنل جایگزین می‌شوند.
 -- ------------------------------------------------------------
-UPDATE clinics SET image = 'clinics/cardiology.jpg'  WHERE slug IN ('cardiology','chemotherapy');
-UPDATE clinics SET image = 'clinics/oncology.webp'   WHERE slug = 'oncology';
-UPDATE clinics SET image = 'clinics/wound.jpg'       WHERE slug = 'wound';
-UPDATE clinics SET image = 'clinics/endocrine.jpg'   WHERE slug IN ('endocrine','nutrition');
-UPDATE clinics SET image = 'clinics/infectious.jpg'  WHERE slug IN ('infectious','urology','mental-health','persian-medicine');
 
 UPDATE pages SET hero_image = 'hero-reception.jpg' WHERE path = '/';
 
@@ -912,6 +908,57 @@ UPDATE doctors SET photo = 'doctors/danesh-amooz.jpg' WHERE name = 'دکتر ح�
 UPDATE doctors SET photo = 'doctors/badiezadegan.jpg' WHERE name = 'دکتر مریم بدیع‌زادگان';
 UPDATE doctors SET photo = 'doctors/heydari-rad.jpg' WHERE name = 'دکتر غزاله حیدری‌راد';
 UPDATE doctors SET photo = 'doctors/moghbouli.jpg' WHERE name = 'دکتر رضا مقبولی';
+
+-- ------------------------------------------------------------
+--  تصویر کلینیک‌ها
+--
+--  از تگ og:image صفحه‌ی هر کلینیک در سایت اصلی گرفته شده.
+--  کلینیک غدد و اورولوژی در سایت اصلی تصویر شاخص ندارند و
+--  خالی می‌مانند؛ قالب برایشان زمینه‌ی گرادیان می‌گذارد.
+-- ------------------------------------------------------------
+UPDATE clinics SET image = 'clinics/cardiology.jpg' WHERE slug = 'cardiology';
+UPDATE clinics SET image = 'clinics/chemotherapy.jpg' WHERE slug = 'chemotherapy';
+UPDATE clinics SET image = 'clinics/infectious.webp' WHERE slug = 'infectious';
+UPDATE clinics SET image = 'clinics/mental-health.jpg' WHERE slug = 'mental-health';
+UPDATE clinics SET image = 'clinics/nutrition.jpg' WHERE slug = 'nutrition';
+UPDATE clinics SET image = 'clinics/oncology.webp' WHERE slug = 'oncology';
+UPDATE clinics SET image = 'clinics/persian-medicine.jpg' WHERE slug = 'persian-medicine';
+UPDATE clinics SET image = 'clinics/wound.webp' WHERE slug = 'wound';
+UPDATE clinics SET image = NULL WHERE slug IN ('endocrine', 'urology');
+
+-- ------------------------------------------------------------
+--  لینک نوبت‌دهی آنلاین
+--
+--  از فهرست book.hamrahclinic.ir. فقط ۹ پزشکی که نامشان قطعاً
+--  با ردیف سایت می‌خواند اینجا آمده‌اند.
+--
+--  چهار مورد عمداً خالی مانده چون ابهام دارد و حدس زدن همان
+--  اشتباهی است که سر عکس‌ها کردم:
+--    · محبوبه خلیلی — در فهرست نوبت‌دهی «فرناز خلیلی» هست،
+--      نام کوچک فرق دارد؛ معلوم نیست یک نفرند یا دو نفر
+--    · مهناز عالم‌زاده بحرینی — در فهرست نوبت‌دهی نیست
+--    · حسام دانش‌آموز — در فهرست نوبت‌دهی نیست
+--  و هشت پزشک فهرست نوبت‌دهی که اصلاً صفحه‌ای در سایت ندارند.
+--
+--  ستون اضافه می‌شود اگر نباشد، تا روی دیتابیس موجود هم کار کند.
+-- ------------------------------------------------------------
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'doctors' AND COLUMN_NAME = 'booking_url');
+SET @sql := IF(@c = 0,
+  'ALTER TABLE doctors ADD COLUMN booking_url VARCHAR(255) NULL AFTER photo',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1214' WHERE name = 'دکتر حسین اصغری‌پور';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1158' WHERE name = 'دکتر مریم بدیع‌زادگان';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1221' WHERE name = 'دکتر بهناز بهزادی';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1168' WHERE name = 'دکتر علیرضا تاتینا';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1180' WHERE name = 'دکتر غزاله حیدری‌راد';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1165' WHERE name = 'دکتر شادی شکرخوار';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1163' WHERE name = 'دکتر احمد مافی';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1215' WHERE name = 'دکتر رضا مقبولی';
+UPDATE doctors SET booking_url = 'https://book.hamrahclinic.ir/?doctor=1162' WHERE name = 'دکتر فاطمه نائینی';
 
 -- ##### db/seed/03-content.sql #####
 

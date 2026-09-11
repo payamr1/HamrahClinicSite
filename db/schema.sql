@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS doctors (
   license_no    VARCHAR(30)      NULL  COMMENT 'شماره نظام پزشکی',
   bio           TEXT             NULL,
   photo         VARCHAR(255)     NULL,
+  booking_url   VARCHAR(255)     NULL  COMMENT 'لینک نوبت‌دهی آنلاین در book.hamrahclinic.ir',
   schedule      VARCHAR(255)     NULL  COMMENT 'مثل: شنبه، دوشنبه، چهارشنبه ۹ تا ۱۴',
   is_founder    TINYINT(1)   NOT NULL DEFAULT 0,
   sort          SMALLINT     NOT NULL DEFAULT 0,

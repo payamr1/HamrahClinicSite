@@ -6,7 +6,7 @@
 /** @var Seo $seo */
 
 $clinics = $repo->clinics();
-$doctors = array_slice($repo->doctors(), 0, 6);
+$doctors = $repo->doctors();   // همه‌ی پزشکان، نه فقط شش تای اول
 $posts   = $repo->posts(4);
 
 $nClinics = count($clinics);
@@ -146,7 +146,6 @@ ob_start(); ?>
   <div class="shead">
     <span class="lbl">تیم درمان</span>
     <h2>پزشکان همراه کلینیک</h2>
-    <p>همگی دارای بورد تخصصی و شماره‌ی نظام پزشکی قابل استعلام.</p>
   </div>
   <div class="dgrid">
     <?php foreach ($doctors as $d): ?>
@@ -170,7 +169,7 @@ ob_start(); ?>
     <?php endforeach; ?>
   </div>
   <p class="sec-more">
-    <a class="b b-out" href="<?= url('/team/') ?>">مشاهده‌ی همه‌ی <?= fa((string) $nDoctors) ?> پزشک</a>
+    <a class="b b-out" href="<?= url('/team/') ?>">صفحه‌ی پزشکان</a>
   </p>
 </div></section>
 <?php endif; ?>

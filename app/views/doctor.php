@@ -60,8 +60,14 @@ ob_start(); ?>
           <?php endif; ?>
         </div>
 
+        <?php // اگر پزشک نوبت‌دهی آنلاین دارد، مستقیم به آن برود ?>
         <div class="dhero-acts">
-          <a class="b b-teal" href="<?= url('/contact-us/') ?>">رزرو نوبت با ایشان</a>
+          <?php if (!empty($doc['booking_url'])): ?>
+            <a class="b b-teal" href="<?= e($doc['booking_url']) ?>"
+               target="_blank" rel="noopener">رزرو نوبت آنلاین</a>
+          <?php else: ?>
+            <a class="b b-teal" href="<?= url('/contact-us/') ?>">رزرو نوبت با ایشان</a>
+          <?php endif; ?>
           <a class="b b-ghost" href="tel:<?= e($tel) ?>"><?= e($phone) ?></a>
         </div>
       </div>
@@ -111,7 +117,12 @@ ob_start(); ?>
       <?php else: ?>
         <p>برای هماهنگی زمان ویزیت تماس بگیرید.</p>
       <?php endif; ?>
-      <a class="b b-teal b-full" href="<?= url('/contact-us/') ?>">انتخاب ساعت</a>
+      <?php if (!empty($doc['booking_url'])): ?>
+        <a class="b b-teal b-full" href="<?= e($doc['booking_url']) ?>"
+           target="_blank" rel="noopener">انتخاب ساعت آنلاین</a>
+      <?php else: ?>
+        <a class="b b-teal b-full" href="<?= url('/contact-us/') ?>">انتخاب ساعت</a>
+      <?php endif; ?>
       <a class="sbox-tel" href="tel:<?= e($tel) ?>"><?= e($phone) ?></a>
     </div>
 
