@@ -25,7 +25,7 @@ ob_start(); ?>
           <h3><?= e($d['name']) ?></h3>
           <span class="sp"><?= e($d['specialty']) ?></span>
           <?php if (!empty($d['fellowship'])): ?><span class="sub"><?= e(excerpt($d['fellowship'], 70)) ?></span><?php endif; ?>
-          <?php if (!empty($d['license_no'])): ?><span class="no">نظام پزشکی <?= e(fa($d['license_no'])) ?></span><?php endif; ?>
+          <?php if (!empty($d['license_no'])): ?><span class="no"><?= licenseLine($d) ?></span><?php endif; ?>
         </span>
       </a>
     <?php endforeach; ?>

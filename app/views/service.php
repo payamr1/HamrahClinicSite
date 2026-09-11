@@ -136,7 +136,7 @@ ob_start(); ?>
             <span class="sub"><?= e(excerpt($d['fellowship'], 70)) ?></span>
           <?php endif; ?>
           <?php if (!empty($d['license_no'])): ?>
-            <span class="no">نظام پزشکی <?= e(fa($d['license_no'])) ?></span>
+            <span class="no"><?= licenseLine($d) ?></span>
           <?php endif; ?>
         </span>
       </a>

@@ -53,6 +53,6 @@ OUT=db/install.sql
 printf 'install.sql ساخته شد: %s\n' "$(du -h "$OUT" | cut -f1)"
 printf '  جدول‌ها: %s   صفحات: %s   متن: %s   سؤالات: %s\n' \
   "$(grep -c 'CREATE TABLE' "$OUT")" \
-  "$(grep -c 'INSERT INTO pages' "$OUT")" \
+  "$(grep -cE '^  \(./' "$OUT")" \
   "$(grep -c 'UPDATE pages SET body' "$OUT")" \
   "$(grep -c 'INSERT INTO faqs' "$OUT")"

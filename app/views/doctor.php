@@ -10,7 +10,7 @@
 
 $doc = $repo->doctorByPageId((int) $page['id']);
 if ($doc === null) {
-    $doc = ['name' => $page['title'], 'specialty' => '', 'photo' => null, 'license_no' => null];
+    $doc = ['name' => $page['title'], 'specialty' => '', 'photo' => null, 'license_no' => null, 'license_label' => null, 'is_physician' => 1];
 }
 $clinics  = !empty($doc['id']) ? $repo->clinicsOfDoctor((int) $doc['id']) : [];
 $articles = !empty($doc['id']) ? $repo->postsByDoctor((int) $doc['id'], 6) : [];
@@ -56,7 +56,7 @@ ob_start(); ?>
             <span class="tag"><?= e(excerpt($doc['fellowship'], 46)) ?></span>
           <?php endif; ?>
           <?php if (!empty($doc['license_no'])): ?>
-            <span class="tag">نظام پزشکی <?= e(fa($doc['license_no'])) ?></span>
+            <span class="tag"><?= licenseLine($doc) ?></span>
           <?php endif; ?>
         </div>
 
@@ -84,7 +84,7 @@ ob_start(); ?>
       <?= $page['body'] ?>
     <?php else: ?>
       <div class="empty-note">
-        <p><b>شرح حال این پزشک هنوز نوشته نشده است.</b></p>
+        <p><b>شرح حال ایشان هنوز نوشته نشده است.</b></p>
         <p>سوابق تحصیلی در جدول زیر آمده؛ متن معرفی از پنل مدیریت اضافه می‌شود.</p>
       </div>
     <?php endif; ?>
@@ -92,16 +92,16 @@ ob_start(); ?>
     <h2>سوابق</h2>
     <dl class="rec">
       <?php if (!empty($doc['specialty'])): ?>
-        <div><dt>تخصص</dt><dd><b><?= e($doc['specialty']) ?></b></dd></div>
+        <div><dt><?= empty($doc['is_physician']) ? 'عنوان' : 'تخصص' ?></dt><dd><b><?= e($doc['specialty']) ?></b></dd></div>
       <?php endif; ?>
       <?php if (!empty($doc['university'])): ?>
         <div><dt>دانشگاه</dt><dd><?= e($doc['university']) ?></dd></div>
       <?php endif; ?>
       <?php if (!empty($doc['fellowship'])): ?>
-        <div><dt>فلوشیپ</dt><dd><?= e($doc['fellowship']) ?></dd></div>
+        <div><dt><?= empty($doc['is_physician']) ? 'مدارک' : 'فلوشیپ' ?></dt><dd><?= e($doc['fellowship']) ?></dd></div>
       <?php endif; ?>
       <?php if (!empty($doc['license_no'])): ?>
-        <div><dt>نظام پزشکی</dt><dd><?= e(fa($doc['license_no'])) ?></dd></div>
+        <div><dt><?= e(($doc['license_label'] ?? '') ?: 'نظام پزشکی') ?></dt><dd><?= e(fa($doc['license_no'])) ?></dd></div>
       <?php endif; ?>
       <?php if (!empty($doc['schedule'])): ?>
         <div><dt>حضور در کلینیک</dt><dd><?= e($doc['schedule']) ?></dd></div>
@@ -181,7 +181,10 @@ $content = ob_get_clean();
 $trail   = ['پزشکان' => '/team/', $doc['name'] => null];
 
 $phys = $seo->physicianSchema(array_merge($doc, ['path' => $page['path']]));
-if ($clinics !== []) {
+$phys['@id'] = $seo->canonicalUrl($page) . '#person';
+
+// medicalSpecialty فقط روی Physician معنا دارد، نه روی Person
+if ($clinics !== [] && $phys['@type'] === 'Physician') {
     $phys['medicalSpecialty'] = array_values(array_map(fn($c) => $c['name'], $clinics));
 }
 $schema = [
@@ -190,7 +193,7 @@ $schema = [
         '@type'      => 'ProfilePage',
         'name'       => $page['title'],
         'url'        => $seo->canonicalUrl($page),
-        'mainEntity' => ['@type' => 'Physician', 'name' => $doc['name']],
+        'mainEntity' => ['@id' => $phys['@id']],
     ],
 ];
 

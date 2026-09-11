@@ -10,7 +10,7 @@ $doctors = $repo->doctors();   // همه‌ی پزشکان، نه فقط شش ت
 $posts   = $repo->posts(4);
 
 $nClinics = count($clinics);
-$nDoctors = $repo->countOfType('doctor');
+$nDoctors = $repo->countPhysicians();
 $nService = $repo->countOfType('service');
 
 $hero  = $page['hero_image'] ?: 'hero-reception.jpg';
@@ -106,7 +106,7 @@ ob_start(); ?>
 
 <section class="sec"><div class="in"><div class="stats">
   <div class="stat"><b><?= fa((string) $nClinics) ?></b><span>کلینیک تخصصی</span></div>
-  <div class="stat"><b><?= fa((string) $nDoctors) ?></b><span>پزشک با بورد تخصصی</span></div>
+  <div class="stat"><b><?= fa((string) $nDoctors) ?></b><span>پزشک متخصص و فوق‌تخصص</span></div>
   <div class="stat"><b><?= fa((string) $nService) ?></b><span>خدمت درمانی</span></div>
   <div class="stat"><b><?= fa('5') ?></b><span>فلوشیپ کاردیو آنکولوژی و اکو</span></div>
 </div></div></section>
@@ -162,7 +162,7 @@ ob_start(); ?>
             <span class="sub"><?= e(excerpt($d['fellowship'], 70)) ?></span>
           <?php endif; ?>
           <?php if (!empty($d['license_no'])): ?>
-            <span class="no">نظام پزشکی <?= e(fa($d['license_no'])) ?></span>
+            <span class="no"><?= licenseLine($d) ?></span>
           <?php endif; ?>
         </span>
       </a>

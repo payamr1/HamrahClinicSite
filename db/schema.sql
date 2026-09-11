@@ -127,7 +127,10 @@ CREATE TABLE IF NOT EXISTS doctors (
   specialty     VARCHAR(200) NOT NULL  COMMENT 'مثل: متخصص قلب و عروق',
   fellowship    VARCHAR(255)     NULL,
   university    VARCHAR(255)     NULL,
-  license_no    VARCHAR(30)      NULL  COMMENT 'شماره نظام پزشکی',
+  license_no    VARCHAR(30)      NULL  COMMENT 'شماره پروانه؛ نوعش در license_label',
+  license_label VARCHAR(60)      NULL  COMMENT 'مثل «نظام پزشکی» یا «نظام روان‌شناسی»؛ خالی یعنی نظام پزشکی',
+  is_physician  TINYINT(1)   NOT NULL DEFAULT 1
+                COMMENT '۰ برای مشاور و روان‌شناس — اسکیمای Physician نمی‌گیرند',
   bio           TEXT             NULL,
   photo         VARCHAR(255)     NULL,
   booking_url   VARCHAR(255)     NULL  COMMENT 'لینک نوبت‌دهی آنلاین در book.hamrahclinic.ir',
@@ -144,6 +147,26 @@ CREATE TABLE IF NOT EXISTS doctors (
   KEY idx_doctor_page (page_id),
   CONSTRAINT fk_doctor_page FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- CREATE TABLE IF NOT EXISTS روی جدول موجود کاری نمی‌کند، پس این
+-- دو ستون برای دیتابیسی که قبلاً ساخته شده باید جداگانه اضافه
+-- شوند. MySQL برای ADD COLUMN گزینه‌ی IF NOT EXISTS ندارد، پس
+-- مثل کلیدها با information_schema نگهبانی می‌شود.
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'doctors' AND COLUMN_NAME = 'license_label');
+SET @sql := IF(@c = 0,
+  'ALTER TABLE doctors ADD COLUMN license_label VARCHAR(60) NULL AFTER license_no',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'doctors' AND COLUMN_NAME = 'is_physician');
+SET @sql := IF(@c = 0,
+  'ALTER TABLE doctors ADD COLUMN is_physician TINYINT(1) NOT NULL DEFAULT 1 AFTER license_label',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
 
 -- یک پزشک می‌تواند در چند کلینیک ویزیت داشته باشد
 CREATE TABLE IF NOT EXISTS doctor_clinic (

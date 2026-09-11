@@ -40,6 +40,20 @@ final class Repository
         );
     }
 
+    /**
+     * فقط پزشکان — مشاور روان‌شناس شمرده نمی‌شود.
+     *
+     * عدد این متد در صفحه‌ی اصلی زیر عنوان «پزشک متخصص» می‌آید و
+     * ادعای صلاحیت پزشکی است؛ شمردن غیرپزشک در آن، ادعای نادرست
+     * درباره‌ی تیم درمان می‌سازد.
+     */
+    public function countPhysicians(): int
+    {
+        return (int) $this->db->value(
+            'SELECT COUNT(*) FROM doctors WHERE is_active = 1 AND is_physician = 1'
+        );
+    }
+
     /** آدرس همه‌ی صفحات منتشرشده — برای sitemap */
     public function allPublishedPaths(): array
     {

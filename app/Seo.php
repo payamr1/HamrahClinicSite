@@ -129,21 +129,33 @@ final class Seo
         ];
     }
 
+    /**
+     * اسکیمای یک عضو تیم درمان.
+     *
+     * فقط پزشکان نوع Physician می‌گیرند. مشاور روان‌شناس پزشک
+     * نیست و معرفی‌اش به‌عنوان Physician هم به گوگل سیگنال
+     * نادرست می‌دهد و هم برای بیمار گمراه‌کننده است — به‌خصوص در
+     * حوزه‌ی سلامت که معیار E-E-A-T سخت‌گیرانه اعمال می‌شود.
+     */
     public function physicianSchema(array $doc): array
     {
-        $host = $this->canonicalHost();
+        $host       = $this->canonicalHost();
+        $isPhysician = !isset($doc['is_physician']) || (int) $doc['is_physician'] === 1;
+
         $s = [
-            '@type'    => 'Physician',
+            '@type'    => $isPhysician ? 'Physician' : 'Person',
             'name'     => $doc['name'],
             'jobTitle' => $doc['specialty'],
-            'memberOf' => ['@id' => "https://$host/#clinic"],
         ];
-        if (!empty($doc['path']))       { $s['url']   = "https://$host" . $this->encodePath($doc['path']); }
-        if (!empty($doc['photo']))      { $s['image'] = "https://$host/assets/uploads/" . $doc['photo']; }
+        $s[$isPhysician ? 'memberOf' : 'worksFor'] = ['@id' => "https://$host/#clinic"];
+
+        if (!empty($doc['path']))  { $s['url']   = "https://$host" . $this->encodePath($doc['path']); }
+        if (!empty($doc['photo'])) { $s['image'] = "https://$host/assets/img/" . $doc['photo']; }
+
         if (!empty($doc['license_no'])) {
             $s['identifier'] = [
                 '@type' => 'PropertyValue',
-                'name'  => 'شماره نظام پزشکی',
+                'name'  => ($doc['license_label'] ?? '') ?: 'شماره نظام پزشکی',
                 'value' => $doc['license_no'],
             ];
         }

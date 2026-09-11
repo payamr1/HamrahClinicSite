@@ -40,7 +40,7 @@ ob_start(); ?>
         <span class="who">
           <b><?= e($author['name']) ?></b>
           <span><?= e($author['specialty']) ?><?php if (!empty($author['license_no'])): ?>
-            · نظام پزشکی <?= e(fa($author['license_no'])) ?><?php endif; ?></span>
+            · <?= licenseLine($author) ?><?php endif; ?></span>
         </span>
       <?php endif; ?>
       <span class="when">
@@ -82,7 +82,7 @@ ob_start(); ?>
       <div>
         <h4><?= e($author['name']) ?></h4>
         <p class="sp"><?= e($author['specialty']) ?><?php if (!empty($author['license_no'])): ?>
-          · نظام پزشکی <?= e(fa($author['license_no'])) ?><?php endif; ?></p>
+          · <?= licenseLine($author) ?><?php endif; ?></p>
         <?php if (!empty($author['fellowship'])): ?>
           <p><?= e($author['fellowship']) ?></p>
         <?php endif; ?>

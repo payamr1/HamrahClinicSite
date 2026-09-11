@@ -168,3 +168,22 @@ function view(string $viewDir, string $name, array $vars = []): string
     require $file;
     return (string) ob_get_clean();
 }
+
+/**
+ * خط شماره‌ی پروانه، با نام درستِ مرجع صادرکننده.
+ *
+ * همه‌ی اعضای تیم پزشک نیستند؛ مشاور روان‌شناس شماره‌ی عضویت
+ * سازمان نظام روان‌شناسی و مشاوره دارد نه نظام پزشکی. برچسب را
+ * از خود ردیف می‌خوانیم تا کسی با عنوان اشتباه معرفی نشود.
+ * خالی بودن ستون یعنی پیش‌فرض: نظام پزشکی.
+ *
+ * خروجی برای چاپ مستقیم آماده است (escape شده).
+ */
+function licenseLine(array $doc): string
+{
+    if (empty($doc['license_no'])) {
+        return '';
+    }
+    $label = trim((string) ($doc['license_label'] ?? '')) ?: 'نظام پزشکی';
+    return e($label) . ' ' . e(fa((string) $doc['license_no']));
+}
