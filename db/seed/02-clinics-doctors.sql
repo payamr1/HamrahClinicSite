@@ -397,3 +397,31 @@ INSERT INTO booking_links (clinic_id, label, url, sort)
 -- عکس دو پزشک تازه
 UPDATE doctors SET photo = 'doctors/mehravaran.jpg' WHERE name = 'دکتر الهام مهرآوران';
 UPDATE doctors SET photo = 'doctors/mohseni.jpg'    WHERE name = 'دکتر شهرزاد محسنی';
+
+-- ------------------------------------------------------------
+--  دکتر کیارا رضایی کلانتری
+--  صفحه‌ی تازه است و جزو ۸۲ آدرس ایندکس‌شده نیست.
+-- ------------------------------------------------------------
+INSERT INTO pages (path, path_norm, type, slug, title, lede, meta_title, meta_desc, sort) VALUES
+  ('/team/دکتر-کیارا-رضایی-کلانتری/', '/team/دکتر-کیارا-رضایی-کلانتری/', 'doctor',
+   'دکتر-کیارا-رضایی-کلانتری',
+   'دکتر کیارا رضایی کلانتری',
+   'فوق‌تخصص اینترونشنال رادیولوژی و تصویربرداری قلب و عروق (CT, MRI). تشخیص دقیق، توضیح شفاف نتیجه‌ی آزمایش‌ها و همراهی بیمار در مسیر درمان.',
+   'دکتر کیارا رضایی کلانتری | فوق‌تخصص اینترونشنال رادیولوژی',
+   'دکتر کیارا رضایی کلانتری، فوق‌تخصص اینترونشنال رادیولوژی و تصویربرداری قلب و عروق (CT و MRI) در همراه کلینیک تجریش تهران. نظام پزشکی ۱۱۲۴۲۸.',
+   35)
+ON DUPLICATE KEY UPDATE title = VALUES(title), lede = VALUES(lede),
+  meta_title = VALUES(meta_title), meta_desc = VALUES(meta_desc), sort = VALUES(sort);
+
+INSERT INTO doctors (page_id, name, specialty, fellowship, license_no, bio, sort) VALUES
+  ((SELECT id FROM pages WHERE path = '/team/دکتر-کیارا-رضایی-کلانتری/'),
+   'دکتر کیارا رضایی کلانتری',
+   'فوق‌تخصص اینترونشنال رادیولوژی',
+   'فوق‌تخصص تصویربرداری قلب و عروق (CT, MRI)',
+   '112428',
+   '<p>دکتر کیارا رضایی کلانتری، فوق‌تخصص اینترونشنال رادیولوژی و تصویربرداری قلب و عروق (CT, MRI) در تهران. تشخیص دقیق، توضیح شفاف نتیجه آزمایش‌ها و همراهی بیمار در مسیر درمان — از سونوگرافی و ماموگرافی تا مداخله‌های هدایت‌شده با تصویر.</p>',
+   35)
+ON DUPLICATE KEY UPDATE
+  specialty = VALUES(specialty), fellowship = VALUES(fellowship),
+  license_no = VALUES(license_no), bio = VALUES(bio),
+  page_id = VALUES(page_id), sort = VALUES(sort);
