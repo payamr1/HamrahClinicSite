@@ -3,6 +3,7 @@
 /** @var Repository $repo */
 /** @var Seo $seo */
 $doctors = $repo->doctors(40);
+$prof    = $app['media']->profilesFor('doctor', array_column($doctors, 'id'));
 ob_start(); ?>
 
 <header class="phead">
@@ -19,8 +20,7 @@ ob_start(); ?>
   <div class="dgrid">
     <?php foreach ($doctors as $d): ?>
       <a class="doc" href="<?= url($d['path'] ?? '/team/') ?>">
-        <span class="ph<?= empty($d['photo']) ? ' ph-empty' : '' ?>"
-          <?php if (!empty($d['photo'])): ?>style="background-image:url('<?= e(img($d['photo'], 400)) ?>')"<?php endif; ?>></span>
+        <?= profileBox($prof[(int) $d['id']] ?? [], $d['photo'], 400, 'ph', $d['name']) ?>
         <span class="bd">
           <h3><?= e($d['name']) ?></h3>
           <span class="sp"><?= e($d['specialty']) ?></span>

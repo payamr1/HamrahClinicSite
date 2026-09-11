@@ -1,0 +1,340 @@
+/* ============================================================
+   پنل مدیریت همراه کلینیک
+
+   جدا از site.css نوشته شده و عمداً هم‌خانواده‌اش نیست: پنل ابزار
+   کار است نه ویترین، پس تراکم اطلاعات بالاتر و تزیین کمتر است.
+   فقط پالت رنگ مشترک است تا بیگانه به نظر نرسد.
+   ============================================================ */
+
+:root{
+  --navy:#24408D; --navy-d:#1B3272;
+  --teal:#4EC3A9; --teal-d:#1E8570; --teal-dd:#176B5A;
+  --ground:#FFFFFF; --soft:#F4F6F9; --soft-2:#E8EDF3;
+  --ink:#16203F; --ink-2:#4A5673; --ink-3:#7C88A3;
+  --rule:#DCE3EC;
+  --bad:#B4342B; --bad-bg:#FDEDEC;
+  --ok-bg:#E8F6F1;
+  --warn:#8A6100; --warn-bg:#FDF4E0;
+  --r:9px; --r-s:5px;
+  --sh:0 1px 2px rgba(22,32,63,.05), 0 8px 22px -12px rgba(22,32,63,.22);
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#111827; --soft:#171F31; --soft-2:#1F293E;
+    --ink:#E8EDF6; --ink-2:#A9B4C9; --ink-3:#7A869E;
+    --rule:#2A3448;
+    --bad:#F3877E; --bad-bg:#2C1A19;
+    --ok-bg:#132A25; --warn:#E0B45E; --warn-bg:#2A2313;
+    --sh:0 1px 2px rgba(0,0,0,.3), 0 8px 22px -12px rgba(0,0,0,.6);
+  }
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--soft);
+  color:var(--ink);
+  font:14.5px/1.75 "Vazirmatn","IRANSans",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+body.plain{display:grid;place-items:center;min-height:100vh;padding:24px}
+
+a{color:var(--teal-dd);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{margin:0;line-height:1.4;font-weight:700;color:var(--ink)}
+h1{font-size:21px}
+h2{font-size:17px;margin:30px 0 12px}
+h2 small,h1 small{font-size:13px;font-weight:500;color:var(--ink-3);margin-inline-start:8px}
+p{margin:0 0 12px}
+
+/* ---- سربرگ ------------------------------------------------- */
+.top{
+  display:flex;align-items:center;gap:22px;
+  padding:0 22px;height:56px;
+  background:var(--ground);border-bottom:1px solid var(--rule);
+  position:sticky;top:0;z-index:20;
+}
+.top .brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--ink);flex:none}
+.top .brand img{border-radius:6px}
+.top .brand span{font-size:14px}
+
+.nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nav a{
+  display:flex;align-items:center;gap:7px;white-space:nowrap;
+  padding:7px 12px;border-radius:var(--r-s);
+  color:var(--ink-2);font-weight:600;font-size:13.5px;
+}
+.nav a:hover{background:var(--soft);text-decoration:none;color:var(--ink)}
+.nav a.on{background:var(--navy);color:#fff}
+.nav svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.me{display:flex;align-items:center;gap:14px;font-size:13px;flex:none}
+.me a{color:var(--ink-2)}
+.me .site{color:var(--teal-dd)}
+.me form{margin:0}
+.me button{
+  border:1px solid var(--rule);background:var(--ground);color:var(--ink-2);
+  padding:5px 11px;border-radius:var(--r-s);font:inherit;font-size:12.5px;cursor:pointer;
+}
+.me button:hover{border-color:var(--bad);color:var(--bad)}
+
+/* ---- چیدمان ------------------------------------------------ */
+.wrap{max-width:1220px;margin:0 auto;padding:26px 22px 70px}
+.centre{width:100%;max-width:420px}
+
+.head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+
+/* ---- کارت و فرم -------------------------------------------- */
+.card{
+  background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);box-shadow:var(--sh);padding:30px;
+}
+.card.auth{text-align:center}
+.card.auth .logo{margin-bottom:18px;height:auto}
+.card.auth h1{margin-bottom:18px;font-size:19px}
+.card.auth form{text-align:start}
+
+fieldset{
+  border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--ground);padding:18px 20px 20px;margin:0 0 18px;
+}
+legend{padding:0 8px;font-weight:700;font-size:13.5px;color:var(--ink-2)}
+
+label{display:block;margin-bottom:15px}
+label > span{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+label small,.fine{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.7;margin-top:5px}
+.fine{margin:0 0 14px}
+
+input[type=text],input[type=search],input[type=password],input[type=number],
+input[type=date],input:not([type]),select,textarea{
+  width:100%;padding:9px 11px;
+  border:1px solid var(--rule);border-radius:var(--r-s);
+  background:var(--ground);color:var(--ink);font:inherit;font-size:14px;
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal);
+}
+textarea{resize:vertical;line-height:1.8}
+
+label.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;margin-bottom:0}
+label.chk input{width:auto;margin:0}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.b{
+  display:inline-block;border:0;cursor:pointer;
+  background:var(--teal-d);color:#fff;
+  padding:10px 20px;border-radius:var(--r-s);
+  font:inherit;font-weight:700;font-size:14px;
+}
+.b:hover{background:var(--teal-dd);text-decoration:none;color:#fff}
+.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--rule)}
+.b.ghost:hover{background:var(--soft);color:var(--ink)}
+.b.danger{background:transparent;color:var(--bad);border:1px solid var(--bad)}
+.b.danger:hover{background:var(--bad);color:#fff}
+.card.auth .b{width:100%;margin-top:4px}
+
+/* ---- پیام‌ها ------------------------------------------------ */
+.note{
+  padding:11px 14px;border-radius:var(--r-s);
+  border:1px solid var(--rule);background:var(--soft);
+  font-size:13.5px;line-height:1.8;margin-bottom:16px;
+}
+.note.ok{background:var(--ok-bg);border-color:var(--teal);color:var(--teal-dd)}
+.note.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.note.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+
+/* ---- کاشی‌های آمار ----------------------------------------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-bottom:8px}
+.tile{
+  display:block;background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);padding:16px 14px;text-align:center;color:var(--ink);
+}
+.tile:hover{border-color:var(--teal);text-decoration:none}
+.tile b{display:block;font-size:26px;line-height:1.2;font-weight:700}
+.tile span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.tile.warn b{color:var(--warn)}
+.tile.mute{opacity:.75}
+.tile.mute:hover{border-color:var(--rule)}
+
+/* ---- فیلترها ------------------------------------------------ */
+.filters{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);padding:12px 14px;margin-bottom:18px;
+}
+.filters input[type=search]{flex:1;min-width:180px}
+.filters select{width:auto}
+.filters .clear{font-size:12.5px;color:var(--ink-3)}
+
+/* ---- شبکه‌ی رسانه ------------------------------------------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px}
+.mcard{
+  display:block;background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);overflow:hidden;color:var(--ink);
+}
+.mcard:hover{border-color:var(--teal);text-decoration:none;box-shadow:var(--sh)}
+.mcard.off{opacity:.55}
+.mcard .thumb{
+  display:block;position:relative;aspect-ratio:1/1;
+  background:var(--soft-2);overflow:hidden;
+}
+.mcard .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.mcard .vbox{
+  display:grid;place-items:center;height:100%;
+  background:linear-gradient(135deg,var(--navy-d),var(--navy));
+  color:#fff;font-size:12.5px;font-weight:600;text-align:center;padding:10px;
+}
+.mcard .badge{
+  position:absolute;inset-block-start:7px;inset-inline-end:7px;
+  background:rgba(22,32,63,.82);color:#fff;
+  font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;
+}
+.mcard .badge.off{inset-inline-end:auto;inset-inline-start:7px;background:var(--bad)}
+.mcard .bd{display:block;padding:9px 11px 11px}
+.mcard b{display:block;font-size:13px;font-weight:600;line-height:1.5;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mcard small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
+
+.pager{display:flex;gap:5px;flex-wrap:wrap;margin-top:22px}
+.pager a{
+  padding:6px 12px;border:1px solid var(--rule);border-radius:var(--r-s);
+  background:var(--ground);color:var(--ink-2);font-size:13px;
+}
+.pager a.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.pager a:hover{text-decoration:none;border-color:var(--teal)}
+
+/* ---- خالی --------------------------------------------------- */
+.empty{
+  background:var(--ground);border:1px dashed var(--rule);
+  border-radius:var(--r);padding:40px 24px;text-align:center;color:var(--ink-3);
+}
+.empty.small{padding:22px;font-size:13.5px}
+.empty p{margin-bottom:14px}
+.empty.small p{margin:0}
+
+/* ---- فرم دوستونی -------------------------------------------- */
+.form.two{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.form.one{max-width:560px}
+.form .col{min-width:0}
+.form .actions{
+  grid-column:1/-1;display:flex;gap:12px;align-items:center;
+  padding-top:4px;
+}
+.form .actions .danger{margin-inline-start:auto}
+
+@media (max-width:860px){
+  .form.two{grid-template-columns:1fr}
+}
+
+/* ---- ناحیه‌ی رهاکردن فایل ----------------------------------- */
+.drop{
+  display:block;position:relative;
+  border:2px dashed var(--rule);border-radius:var(--r);
+  background:var(--soft);padding:28px 20px;text-align:center;cursor:pointer;
+  margin-bottom:14px;
+}
+.drop:hover,.drop.over{border-color:var(--teal);background:var(--ok-bg)}
+.drop input{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;cursor:pointer;
+}
+.drop b{display:block;font-size:14.5px;margin-bottom:6px}
+.drop small{color:var(--ink-3);font-size:12.5px;line-height:1.8}
+.drop.has b{color:var(--teal-dd)}
+
+.or{
+  text-align:center;font-size:12.5px;color:var(--ink-3);
+  margin:6px 0 14px;position:relative;
+}
+
+/* ---- انتخاب تگ ---------------------------------------------- */
+.tags{position:sticky;top:76px}
+.site-tag{
+  display:flex;align-items:flex-start;gap:10px;
+  border:1px solid var(--rule);border-radius:var(--r-s);
+  padding:11px 13px;margin-bottom:14px;background:var(--soft);cursor:pointer;
+}
+.site-tag.on,.site-tag:has(input:checked){border-color:var(--teal);background:var(--ok-bg)}
+.site-tag input{width:auto;margin:2px 0 0}
+.site-tag b{display:block;font-size:13.5px}
+.site-tag small{display:block;color:var(--ink-3);font-size:12px;margin:0}
+
+.tag-filter{margin-bottom:12px}
+
+.tgroup{margin-bottom:16px}
+.tgroup h4{font-size:12.5px;color:var(--ink-3);margin-bottom:7px;font-weight:700}
+.tlist{list-style:none;margin:0;padding:0;
+  max-height:270px;overflow-y:auto;
+  border:1px solid var(--rule);border-radius:var(--r-s);background:var(--ground)}
+
+.trow{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 11px;border-bottom:1px solid var(--rule);
+}
+.trow:last-child{border-bottom:0}
+.trow.on{background:var(--ok-bg)}
+.trow.hide{display:none}
+
+.tpick{display:flex;align-items:center;gap:8px;margin:0;flex:1;min-width:0;cursor:pointer}
+.tpick input{width:auto;margin:0;flex:none}
+.tpick span{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.roles{display:flex;gap:10px;flex:none;opacity:.4}
+.trow.on .roles{opacity:1}
+.roles label{display:flex;align-items:center;gap:4px;margin:0;font-size:12px;
+  font-weight:600;color:var(--ink-2);cursor:pointer}
+.roles input{width:auto;margin:0}
+
+/* ---- پیش‌نمایش ---------------------------------------------- */
+.preview{
+  background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);padding:14px;margin-bottom:18px;
+}
+.preview img,.preview video{
+  display:block;width:100%;height:auto;max-height:380px;object-fit:contain;
+  background:var(--soft-2);border-radius:var(--r-s);
+}
+.preview .vbox{
+  padding:26px;text-align:center;background:var(--soft-2);
+  border-radius:var(--r-s);word-break:break-all;
+}
+
+.meta{margin:14px 0 0;font-size:13px}
+.meta > div{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--rule)}
+.meta > div:last-child{border-bottom:0}
+.meta dt{flex:none;width:88px;color:var(--ink-3)}
+.meta dd{margin:0;min-width:0}
+.meta .path{word-break:break-all;font-size:12px;color:var(--ink-3)}
+
+/* ---- فهرست موجودیت‌ها --------------------------------------- */
+.tgt{list-style:none;margin:0 0 8px;padding:0;
+  border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--ground);overflow:hidden}
+.tgt li{border-bottom:1px solid var(--rule)}
+.tgt li:last-child{border-bottom:0}
+.tgt a{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 15px;color:var(--ink);
+}
+.tgt a:hover{background:var(--soft);text-decoration:none}
+.tgt .nm{font-weight:600;font-size:13.5px;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tgt .cnt{display:flex;gap:8px;flex:none}
+.tgt .cnt b{
+  font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:100px;
+  background:var(--soft-2);color:var(--ink-2);
+}
+.tgt .cnt b.ok{background:var(--ok-bg);color:var(--teal-dd)}
+.tgt .cnt b.none{background:var(--warn-bg);color:var(--warn)}
+
+@media (max-width:620px){
+  .top{gap:12px;padding:0 14px}
+  .top .brand span{display:none}
+  .wrap{padding:18px 14px 60px}
+  .row{grid-template-columns:1fr}
+  .me .site{display:none}
+}

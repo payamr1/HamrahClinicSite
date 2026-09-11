@@ -49,9 +49,23 @@ final class Images
             return $this->srcDir . '/' . $rel;
         }
 
+        // مسیر باید داخل ریشه‌ی وب بماند. از وقتی رسانه‌ی پنل هم از
+        // همین‌جا رد می‌شود، $rel می‌تواند از دیتابیس بیاید و
+        // «..» داشته باشد — پس فرض نمی‌کنیم بی‌خطر است.
+        $real = realpath($src);
+        $root = realpath($this->webRoot);
+        if ($real === false || $root === false || !str_starts_with($real, $root . DIRECTORY_SEPARATOR)) {
+            return $this->srcDir . '/' . $rel;
+        }
+
         $w   = $this->snap($w);
         $ext = self::supportsWebp() ? 'webp' : $this->sourceExt($src);
-        $out = sprintf('%s/%d/%s.%s', $this->cacheDir, $w, $this->stripExt($rel), $ext);
+
+        // کلید کش نباید «..» داشته باشد، وگرنه فایل کش بیرون از
+        // پوشه‌ی کش نوشته می‌شود. مسیرِ uploads که با ../ می‌آید
+        // اینجا صاف می‌شود.
+        $key = str_replace(['../', './'], ['_', ''], $rel);
+        $out = sprintf('%s/%d/%s.%s', $this->cacheDir, $w, $this->stripExt($key), $ext);
         $abs = $this->webRoot . $out;
 
         // کش معتبر است اگر بعد از فایل اصلی ساخته شده باشد

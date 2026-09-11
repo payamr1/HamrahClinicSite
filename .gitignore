@@ -21,3 +21,8 @@ Desktop.ini
 
 # کش تصویر — در زمان اجرا ساخته می‌شود
 public/assets/cache/
+
+# فایل‌هایی که از پنل بالا می‌روند — روی سرور می‌مانند، در مخزن نه
+public/assets/uploads/*
+!public/assets/uploads/.htaccess
+!public/assets/uploads/index.html

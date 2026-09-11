@@ -482,3 +482,115 @@ svg{display:block}
 @media (max-width:760px){ .brand img{height:38px} }
 .b-stack{margin-bottom:8px}
 .b-stack:last-of-type{margin-bottom:0}
+
+/* ---- عکس پروفایل چرخشی -------------------------------------
+   وقتی یک پزشک یا بخش چند عکس پروفایل دارد، عکس‌ها روی هم چیده
+   می‌شوند و نوبتی محو و ظاهر می‌شوند. کل کار با CSS انجام می‌شود
+   چون انیمیشن محض است و مرورگر بهتر از جاوااسکریپت اجرایش می‌کند.
+
+   هر عکس با تأخیر منفیِ متناسب با جایگاهش شروع می‌شود، پس در هر
+   لحظه یکی دیده می‌شود. اگر کاربر «کاهش حرکت» را روشن کرده باشد،
+   چرخش متوقف می‌شود و فقط عکس اول می‌ماند.
+--------------------------------------------------------------- */
+.rot{position:relative;overflow:hidden;background-color:var(--soft-2)}
+.rot img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center top;opacity:0;
+  animation-duration:var(--cycle,15s);animation-iteration-count:infinite;
+  animation-timing-function:linear;
+  animation-delay:calc(var(--i) * var(--step,5s) * -1)}
+
+.rot[data-n="2"]{--cycle:10s;--step:5s}
+.rot[data-n="3"]{--cycle:15s;--step:5s}
+.rot[data-n="4"]{--cycle:20s;--step:5s}
+.rot[data-n="5"]{--cycle:25s;--step:5s}
+.rot[data-n="6"]{--cycle:30s;--step:5s}
+
+.rot[data-n="2"] img{animation-name:rot2}
+.rot[data-n="3"] img{animation-name:rot3}
+.rot[data-n="4"] img{animation-name:rot4}
+.rot[data-n="5"] img{animation-name:rot5}
+.rot[data-n="6"] img{animation-name:rot6}
+
+@keyframes rot2{0%,44%{opacity:1}50%,94%{opacity:0}100%{opacity:1}}
+@keyframes rot3{0%,30%{opacity:1}33.33%,96%{opacity:0}100%{opacity:1}}
+@keyframes rot4{0%,22%{opacity:1}25%,97%{opacity:0}100%{opacity:1}}
+@keyframes rot5{0%,17%{opacity:1}20%,97.6%{opacity:0}100%{opacity:1}}
+@keyframes rot6{0%,14%{opacity:1}16.66%,98%{opacity:0}100%{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  .rot img{animation:none;opacity:0}
+  .rot img:first-child{opacity:1}
+}
+
+/* ---- گالری --------------------------------------------------
+   شبکه‌ی masonry نمی‌گذاریم: عکس‌های کلینیک نسبت‌های متفاوتی
+   دارند و ستون‌های نامرتب بیشتر شلوغ به نظر می‌رسند تا زنده.
+   نسبت ثابت ۴:۳ با object-fit، آرام‌تر و قابل پیش‌بینی‌تر است.
+--------------------------------------------------------------- */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
+
+.gitem{margin:0;background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--r);overflow:hidden}
+.gitem > a{display:block;line-height:0}
+.gitem img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
+  background:var(--soft-2);transition:transform .35s}
+.gitem > a:hover img{transform:scale(1.03)}
+.gitem video{width:100%;aspect-ratio:16/9;display:block;background:#000}
+
+.gitem figcaption{display:block;padding:11px 14px 13px;font-size:13px;line-height:1.7}
+.gitem figcaption b{display:block;font-weight:700;color:var(--ink)}
+.gitem figcaption span{display:block;color:var(--ink-2);margin-top:2px}
+.gitem figcaption time{display:block;color:var(--ink-3);font-size:12px;margin-top:5px}
+
+/* دکمه‌ی پخش ویدیوی آپارات و یوتیوب — تا کلیک نشود iframe نمی‌آید */
+.gitem.vid{position:relative}
+.gitem iframe{width:100%;aspect-ratio:16/9;display:block;border:0}
+.vplay{
+  position:relative;display:block;width:100%;aspect-ratio:16/9;
+  border:0;padding:0;cursor:pointer;overflow:hidden;
+  background:linear-gradient(135deg,var(--navy-d),var(--navy));
+  font:inherit;color:#fff;
+}
+.vplay .vicon{
+  position:absolute;inset-block-start:50%;inset-inline-start:50%;
+  transform:translate(50%,-50%);
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.7);
+  transition:background .2s,transform .2s;
+}
+.vplay .vicon::after{
+  content:"";position:absolute;inset-block-start:50%;inset-inline-start:50%;
+  transform:translate(50%,-50%);
+  border-style:solid;border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent #fff;
+}
+html[dir="rtl"] .vplay .vicon::after{transform:translate(50%,-50%) scaleX(-1)}
+.vplay:hover .vicon{background:rgba(78,195,169,.45);transform:translate(50%,-50%) scale(1.08)}
+.vplay .vtxt{
+  position:absolute;inset-inline:0;inset-block-end:0;
+  padding:26px 14px 12px;font-size:13.5px;font-weight:600;text-align:start;
+  background:linear-gradient(to top,rgba(0,0,0,.6),transparent);
+}
+
+/* نوار فیلتر گالری */
+.galbar{
+  display:flex;flex-direction:column;gap:11px;
+  background:var(--soft);border:1px solid var(--rule);
+  border-radius:var(--r);padding:15px 18px;margin:26px 0 18px;
+}
+.grow{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.glbl{font-size:12.5px;font-weight:700;color:var(--ink-3);min-width:52px}
+.gchip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 13px;border-radius:100px;
+  border:1px solid var(--rule);background:var(--ground);
+  font-size:13px;font-weight:600;color:var(--ink-2);
+}
+.gchip:hover{border-color:var(--teal);color:var(--teal-dd)}
+.gchip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.gchip .gn{font-size:11.5px;font-weight:500;opacity:.7}
+.gclear{font-size:12.5px;color:var(--ink-3);align-self:flex-start}
+.gnote{font-size:13.5px;color:var(--ink-2);margin:0 0 18px}
+
+/* قاب پرتره باید بلوک باشد چون profileBox یک span برمی‌گرداند */
+.dhero .por{display:block}

@@ -27,6 +27,16 @@ function img_init(?Images $i = null): ?Images
     return $inst;
 }
 
+/** نگهدارنده‌ی نمونه‌ی Media برای توابع نما — هم‌شکل img_init */
+function media_init(?Media $m = null): ?Media
+{
+    static $inst = null;
+    if ($m !== null) {
+        $inst = $m;
+    }
+    return $inst;
+}
+
 /**
  * آدرس نسخه‌ی بهینه‌ی یک تصویر.
  *
@@ -186,4 +196,48 @@ function licenseLine(array $doc): string
     }
     $label = trim((string) ($doc['license_label'] ?? '')) ?: 'نظام پزشکی';
     return e($label) . ' ' . e(fa((string) $doc['license_no']));
+}
+
+/**
+ * قاب عکس پروفایل، با پشتیبانی از چند عکس.
+ *
+ * اگر یک موجودیت بیش از یک عکس پروفایل داشته باشد، عکس‌ها روی هم
+ * چیده می‌شوند و با CSS نوبتی محو و ظاهر می‌شوند — بدون ذره‌ای
+ * جاوااسکریپت، چون این کار انیمیشن محض است و مرورگر خودش بهتر از
+ * ما انجامش می‌دهد.
+ *
+ * اگر هیچ عکسی نباشد، همان باکس خالی با نشانه‌ی آدم برمی‌گردد.
+ *
+ * @param array  $list  ردیف‌های media (از Media::profiles)
+ * @param string $fall  عکس ذخیره‌شده در ستون photo، اگر رسانه‌ای نبود
+ * @param string $cls   کلاس پایه‌ی قاب: ph یا por
+ */
+function profileBox(array $list, ?string $fall, int $w, string $cls = 'ph', string $alt = ''): string
+{
+    $media = media_init();
+
+    // بیش از شش عکس در یک چرخه بی‌معنی است و فقط پهنای باند می‌برد
+    $list = array_slice($list, 0, 6);
+    $n    = count($list);
+
+    if ($n === 0) {
+        return $fall
+            ? '<span class="' . e($cls) . '" style="background-image:url(\'' . e(img($fall, $w)) . '\')"'
+              . ($alt !== '' ? ' role="img" aria-label="' . e($alt) . '"' : ' aria-hidden="true"') . '></span>'
+            : '<span class="' . e($cls) . ' ' . e($cls) . '-empty" aria-hidden="true"></span>';
+    }
+
+    if ($n === 1 || $media === null) {
+        $one = $media ? $media->imagePath($list[0]) : (string) $fall;
+        return '<span class="' . e($cls) . '" style="background-image:url(\'' . e(img($one, $w)) . '\')"'
+             . ' role="img" aria-label="' . e($list[0]['alt'] ?: $alt) . '"></span>';
+    }
+
+    $out = '<span class="' . e($cls) . ' rot" data-n="' . $n . '"'
+         . ' role="img" aria-label="' . e($alt) . '">';
+    foreach ($list as $i => $m) {
+        $out .= '<img src="' . e(img($media->imagePath($m), $w)) . '" alt=""'
+              . ' loading="lazy" decoding="async" style="--i:' . $i . '">';
+    }
+    return $out . '</span>';
 }

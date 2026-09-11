@@ -541,3 +541,12 @@ ON DUPLICATE KEY UPDATE doctor_id = VALUES(doctor_id);
 UPDATE doctors SET photo = 'doctors/rezaei-kalantari.jpg' WHERE name = 'دکتر کیارا رضایی کلانتری';
 UPDATE doctors SET photo = 'doctors/tadayon.jpg'          WHERE name = 'دکتر نیکی تدین';
 UPDATE doctors SET photo = 'doctors/shafiei-sabet.jpg'    WHERE name = 'دکتر مهدی شفیعی ثابت';
+
+-- ------------------------------------------------------------
+--  صفحه‌ی گالری
+--
+--  ‎/گالری/ از قبل جزو ۸۲ آدرس ایندکس‌شده بود ولی محتوایی نداشت.
+--  آدرس همان می‌ماند؛ فقط نوعش عوض می‌شود تا قالب گالری بگیرد و
+--  رسانه‌های تگ‌خورده به «کل کلینیک» را نشان دهد.
+-- ------------------------------------------------------------
+UPDATE pages SET type = 'gallery' WHERE path = '/گالری/';

@@ -43,5 +43,14 @@ deployment:
     - /bin/mkdir -p $WEBROOT/assets/cache/img
     - /bin/chmod 775 $WEBROOT/assets/cache $WEBROOT/assets/cache/img
 
+    # پوشه‌ی بارگذاری پنل
+    #
+    # این پوشه محتوایش در مخزن نیست — عکس‌هایی که از پنل بالا
+    # می‌روند اینجا می‌نشینند. cp چیزی را پاک نمی‌کند، پس با هر
+    # استقرار سالم می‌ماند؛ فقط دسترسی نوشتن باید بعد از chmod
+    # عمومی دوباره داده شود.
+    - /bin/mkdir -p $WEBROOT/assets/uploads/gallery $WEBROOT/assets/uploads/video
+    - /bin/chmod 775 $WEBROOT/assets/uploads $WEBROOT/assets/uploads/gallery $WEBROOT/assets/uploads/video
+
     # نشانه‌ی زمان آخرین استقرار — صفحه‌ی سلامت آن را نشان می‌دهد
     - /bin/date -u +%Y-%m-%dT%H:%M:%SZ > $WEBROOT/deployed.txt

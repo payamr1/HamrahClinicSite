@@ -15,6 +15,13 @@ if ($doc === null) {
 $clinics  = !empty($doc['id']) ? $repo->clinicsOfDoctor((int) $doc['id']) : [];
 $articles = !empty($doc['id']) ? $repo->postsByDoctor((int) $doc['id'], 6) : [];
 
+// رسانه‌ی این پزشک: عکس پروفایل برای سربرگ، گالری برای پایین صفحه
+$mediaLib = $app['media'];
+$docId    = (int) ($doc['id'] ?? 0);
+$profiles = $docId ? $mediaLib->profiles('doctor', $docId) : [];
+$gPhotos  = $docId ? $mediaLib->forEntity('doctor', $docId, 'gallery', 'image') : [];
+$gVideos  = $docId ? $mediaLib->forEntity('doctor', $docId, 'gallery', 'video') : [];
+
 $phone = $app['settings']['phone']     ?? '۰۲۱۹۱۳۰۳۱۳۲';
 $tel   = $app['settings']['phone_raw'] ?? '02191303132';
 $hero  = $page['hero_image'] ?: 'hero-reception.jpg';
@@ -26,12 +33,7 @@ ob_start(); ?>
   <div class="veil" aria-hidden="true"></div>
   <div class="in">
     <div class="dhero">
-      <?php if (!empty($doc['photo'])): ?>
-        <div class="por" style="background-image:url('<?= e(img($doc['photo'], 600)) ?>')"
-             role="img" aria-label="<?= e($doc['name']) ?>"></div>
-      <?php else: ?>
-        <div class="por por-empty" aria-hidden="true"></div>
-      <?php endif; ?>
+      <?= profileBox($profiles, $doc['photo'], 600, 'por', $doc['name']) ?>
 
       <div>
         <?php if (!empty($doc['is_founder'])): ?>
@@ -164,6 +166,13 @@ ob_start(); ?>
   </div>
 </div></section>
 <?php endif; ?>
+
+<?php
+  $items   = array_merge($gPhotos, $gVideos);
+  $heading = 'تصاویر و ویدیوهای ' . $doc['name'];
+  $lead    = '';
+  require __DIR__ . '/_gallery.php';
+?>
 
 <section class="sec"><div class="in"><div class="band">
   <div>

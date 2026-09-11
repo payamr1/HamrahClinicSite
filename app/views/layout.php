@@ -43,7 +43,7 @@ if ($trail !== []) {
 <meta property="og:description" content="<?= e($page['meta_desc']) ?>">
 <meta property="og:url" content="<?= e($seo->canonicalUrl($page)) ?>">
 <?php if (!empty($page['og_image']) || !empty($page['hero_image'])): ?>
-<meta property="og:image" content="https://<?= e($seo->canonicalHost()) ?>/assets/uploads/<?= e($page['og_image'] ?: $page['hero_image']) ?>">
+<meta property="og:image" content="https://<?= e($seo->canonicalHost()) ?>/assets/img/<?= e($page['og_image'] ?: ($page['hero_image'] ?: 'hero-reception.jpg')) ?>">
 <?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
 

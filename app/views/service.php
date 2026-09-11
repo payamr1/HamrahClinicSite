@@ -12,6 +12,24 @@ $docs    = $clinic ? $repo->doctorsOfClinic((int) $clinic['id']) : [];
 $sibling = $clinic ? $repo->servicesOfClinic((int) $clinic['id'], 8) : [];
 $sibling = array_values(array_filter($sibling, fn($s) => (int) $s['id'] !== (int) $page['id']));
 $booking = $repo->bookingLinks((int) $page['id'], isset($page['clinic_id']) ? (int) $page['clinic_id'] : null);
+$prof    = $app['media']->profilesFor('doctor', array_column($docs, 'id'));
+
+// رسانه‌ی این صفحه: هم آنچه به خود صفحه تگ خورده و هم آنچه به
+// بخشش. یک صفحه‌ی خدمت ممکن است ردیف clinic داشته باشد یا نه،
+// پس هر دو خوانده و یکی می‌شوند.
+$mediaLib = $app['media'];
+$gItems   = $mediaLib->forEntity('page', (int) $page['id'], 'gallery', 'all');
+if ($clinic) {
+    $gItems = array_merge($gItems, $mediaLib->forEntity('clinic', (int) $clinic['id'], 'gallery', 'all'));
+}
+// همان فایل ممکن است به هر دو تگ خورده باشد
+$seenMedia = [];
+$gItems = array_values(array_filter($gItems, function ($m) use (&$seenMedia) {
+    $id = (int) $m['id'];
+    if (isset($seenMedia[$id])) { return false; }
+    $seenMedia[$id] = true;
+    return true;
+}));
 
 $phone = $app['settings']['phone']     ?? '۰۲۱۹۱۳۰۳۱۳۲';
 $tel   = $app['settings']['phone_raw'] ?? '02191303132';
@@ -127,8 +145,7 @@ ob_start(); ?>
   <div class="dgrid">
     <?php foreach ($docs as $d): ?>
       <a class="doc" href="<?= url($d['path'] ?? '/team/') ?>">
-        <span class="ph<?= empty($d['photo']) ? ' ph-empty' : '' ?>"
-          <?php if (!empty($d['photo'])): ?>style="background-image:url('<?= e(img($d['photo'], 400)) ?>')"<?php endif; ?>></span>
+        <?= profileBox($prof[(int) $d['id']] ?? [], $d['photo'], 400, 'ph', $d['name']) ?>
         <span class="bd">
           <h3><?= e($d['name']) ?></h3>
           <span class="sp"><?= e($d['specialty']) ?></span>
@@ -164,6 +181,13 @@ ob_start(); ?>
   </div>
 </div></section>
 <?php endif; ?>
+
+<?php
+  $items   = $gItems;
+  $heading = 'تصاویر ' . $page['title'];
+  $lead    = '';
+  require __DIR__ . '/_gallery.php';
+?>
 
 <section class="sec"><div class="in"><div class="band">
   <div>

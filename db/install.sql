@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS pages (
   path          VARCHAR(255) NOT NULL  COMMENT 'مسیر ایندکس‌شده — تغییر ممنوع',
   path_norm     VARCHAR(255) NOT NULL  COMMENT 'فرم یکسان‌شده، فقط برای تطبیق',
 
-  type          ENUM('home','page','service','doctor','post','archive') NOT NULL,
+  type          ENUM('home','page','service','doctor','post','archive','gallery') NOT NULL,
   slug          VARCHAR(191) NOT NULL,
 
   title         VARCHAR(255) NOT NULL  COMMENT 'همان H1 صفحه',
@@ -100,6 +100,13 @@ CREATE TABLE IF NOT EXISTS pages (
   KEY idx_page_parent (parent_id),
   KEY idx_page_published (published_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- مقدار gallery بعداً به این ENUM اضافه شد و CREATE TABLE IF NOT
+-- EXISTS روی جدول موجود کاری نمی‌کند. MODIFY خودش بی‌خطرِ تکرار
+-- است: اگر ستون از قبل همین تعریف را داشته باشد، عملاً کاری
+-- نمی‌کند — پس نگهبان لازم ندارد.
+ALTER TABLE pages MODIFY COLUMN type
+  ENUM('home','page','service','doctor','post','archive','gallery') NOT NULL;
 
 -- ------------------------------------------------------------
 --  کلیدهای خارجی حلقوی
@@ -275,6 +282,18 @@ CREATE TABLE IF NOT EXISTS not_found_log (
 
 -- ------------------------------------------------------------
 -- رسانه
+--
+-- یک جدول برای عکس و ویدیو، و یک جدول اتصال که می‌گوید هر فایل
+-- به چه چیزی تعلق دارد و در چه نقشی. همین دو جدول همه‌ی حالت‌ها
+-- را پوشش می‌دهد:
+--
+--   عکس پروفایل پزشک   → media_tag(doctor, 5, profile)
+--   عکس گالری با سه پزشک تگ‌شده → سه ردیف با role = gallery
+--   گالری یک بخش        → media_tag(clinic, 2, gallery)
+--   گالری عمومی کلینیک  → media_tag(site, 0, gallery)
+--
+-- یک موجودیت می‌تواند چند عکس پروفایل داشته باشد؛ در فهرست‌ها
+-- نوبتی نمایش داده می‌شوند.
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS media (
   id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -287,6 +306,58 @@ CREATE TABLE IF NOT EXISTS media (
   created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_media_filename (filename)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ستون‌های تازه‌ی media برای دیتابیسی که از قبل ساخته شده.
+-- CREATE TABLE IF NOT EXISTS روی جدول موجود کاری نمی‌کند و MySQL
+-- برای ADD COLUMN گزینه‌ی IF NOT EXISTS ندارد، پس نگهبانی لازم است.
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'media' AND COLUMN_NAME = 'kind');
+SET @sql := IF(@c = 0, "ALTER TABLE media
+  ADD COLUMN kind        ENUM('image','video') NOT NULL DEFAULT 'image' AFTER id,
+  ADD COLUMN title       VARCHAR(200)      NULL AFTER alt,
+  ADD COLUMN description TEXT              NULL AFTER title,
+  ADD COLUMN embed_url   VARCHAR(500)      NULL COMMENT 'آپارات یا یوتیوب؛ جایگزین فایل برای ویدیو' AFTER description,
+  ADD COLUMN poster      VARCHAR(255)      NULL COMMENT 'تصویر پوستر ویدیو' AFTER embed_url,
+  ADD COLUMN taken_on    DATE              NULL COMMENT 'تاریخ ثبت عکس، اگر با تاریخ بارگذاری فرق دارد' AFTER bytes,
+  ADD COLUMN sort        SMALLINT      NOT NULL DEFAULT 0 AFTER taken_on,
+  ADD COLUMN is_active   TINYINT(1)    NOT NULL DEFAULT 1 AFTER sort,
+  ADD COLUMN uploaded_by INT UNSIGNED      NULL AFTER is_active",
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+-- filename برای ویدیوی خارجی خالی است، پس NOT NULL باید برداشته شود
+SET @n := (SELECT IS_NULLABLE FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'media' AND COLUMN_NAME = 'filename');
+SET @sql := IF(@n = 'NO',
+  'ALTER TABLE media MODIFY COLUMN filename VARCHAR(255) NULL',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+SET @k := (SELECT COUNT(*) FROM information_schema.STATISTICS
+           WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'media' AND INDEX_NAME = 'idx_media_kind');
+SET @sql := IF(@k = 0,
+  'ALTER TABLE media ADD KEY idx_media_kind (kind, is_active, created_at)',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+-- ------------------------------------------------------------
+-- اتصال رسانه به موجودیت
+--
+-- entity_id روی کلید اصلی است و در MySQL ستون کلید اصلی NULL
+-- نمی‌پذیرد، پس برای گالری عمومی کلینیک مقدار ۰ می‌گیرد.
+-- entity_type چندریختی است و کلید خارجی نمی‌پذیرد؛ پاک‌سازی
+-- ردیف‌های یتیم در Media::forget() انجام می‌شود.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS media_tag (
+  media_id    INT UNSIGNED NOT NULL,
+  entity_type ENUM('doctor','clinic','page','site') NOT NULL,
+  entity_id   INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '۰ یعنی کل کلینیک، وقتی entity_type = site',
+  role        ENUM('profile','gallery') NOT NULL DEFAULT 'gallery',
+  sort        SMALLINT     NOT NULL DEFAULT 0,
+  PRIMARY KEY (media_id, entity_type, entity_id, role),
+  KEY idx_mt_lookup (entity_type, entity_id, role, sort),
+  CONSTRAINT fk_mt_media FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -1234,6 +1305,15 @@ ON DUPLICATE KEY UPDATE doctor_id = VALUES(doctor_id);
 UPDATE doctors SET photo = 'doctors/rezaei-kalantari.jpg' WHERE name = 'دکتر کیارا رضایی کلانتری';
 UPDATE doctors SET photo = 'doctors/tadayon.jpg'          WHERE name = 'دکتر نیکی تدین';
 UPDATE doctors SET photo = 'doctors/shafiei-sabet.jpg'    WHERE name = 'دکتر مهدی شفیعی ثابت';
+
+-- ------------------------------------------------------------
+--  صفحه‌ی گالری
+--
+--  ‎/گالری/ از قبل جزو ۸۲ آدرس ایندکس‌شده بود ولی محتوایی نداشت.
+--  آدرس همان می‌ماند؛ فقط نوعش عوض می‌شود تا قالب گالری بگیرد و
+--  رسانه‌های تگ‌خورده به «کل کلینیک» را نشان دهد.
+-- ------------------------------------------------------------
+UPDATE pages SET type = 'gallery' WHERE path = '/گالری/';
 
 -- ##### db/seed/03-content.sql #####
 

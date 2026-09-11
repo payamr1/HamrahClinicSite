@@ -9,6 +9,9 @@ $clinics = $repo->clinics();
 $doctors = $repo->doctors();   // همه‌ی پزشکان، نه فقط شش تای اول
 $posts   = $repo->posts(4);
 
+// عکس پروفایل همه‌ی پزشکان با یک کوئری، نه یکی به ازای هر کارت
+$prof = $app['media']->profilesFor('doctor', array_column($doctors, 'id'));
+
 $nClinics = count($clinics);
 $nDoctors = $repo->countPhysicians();
 $nService = $repo->countOfType('service');
@@ -150,11 +153,7 @@ ob_start(); ?>
   <div class="dgrid">
     <?php foreach ($doctors as $d): ?>
       <a class="doc" href="<?= url($d['path'] ?? '/team/') ?>">
-        <?php if (!empty($d['photo'])): ?>
-          <span class="ph" style="background-image:url('<?= e(img($d['photo'], 400)) ?>')"></span>
-        <?php else: ?>
-          <span class="ph ph-empty"></span>
-        <?php endif; ?>
+        <?= profileBox($prof[(int) $d['id']] ?? [], $d['photo'], 400, 'ph', $d['name']) ?>
         <span class="bd">
           <h3><?= e($d['name']) ?></h3>
           <span class="sp"><?= e($d['specialty']) ?></span>

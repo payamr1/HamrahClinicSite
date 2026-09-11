@@ -1,0 +1,24 @@
+# ============================================================
+#  پوشه‌ی بارگذاری — هیچ‌چیز اینجا اجرا نمی‌شود
+#
+#  اگر کسی بتواند فایلی با پسوند php اینجا بگذارد، بدون این قاعده
+#  سرور اجرایش می‌کند و کل سایت از دست می‌رود. Media نوع فایل را
+#  از محتوایش می‌سنجد، ولی این لایه‌ی دوم است و باید بماند.
+# ============================================================
+php_flag engine off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine Off
+</IfModule>
+
+<FilesMatch "\.(php|php\d|phtml|phar|cgi|pl|py|sh|htaccess)$">
+  Require all denied
+</FilesMatch>
+
+# نوع فایل را سرور حدس نزند
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+Options -Indexes -ExecCGI
+AddHandler default-handler .php .phtml .phar .cgi .pl .py

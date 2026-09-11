@@ -69,6 +69,7 @@ $template = match ($page['type']) {
     'service' => 'service',
     'doctor'  => 'doctor',
     'post'    => 'article',
+    'gallery' => 'gallery',
     'archive' => 'archive/' . ($page['slug'] ?: 'service'),
     default   => 'page',
 };

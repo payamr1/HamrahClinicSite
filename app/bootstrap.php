@@ -35,6 +35,7 @@ require $appDir . '/Router.php';
 require $appDir . '/Seo.php';
 require $appDir . '/Repository.php';
 require $appDir . '/Images.php';
+require $appDir . '/Media.php';
 require $appDir . '/helpers.php';
 
 // ---- دیتابیس --------------------------------------------------
@@ -52,8 +53,15 @@ try {
 
 // ---- بهینه‌ساز تصویر ------------------------------------------
 // ریشه‌ی وب همان پوشه‌ای است که index.php در آن اجرا می‌شود
-$images = new Images($_SERVER['DOCUMENT_ROOT'] ?: dirname($appDir) . '/public');
+$webRoot = $_SERVER['DOCUMENT_ROOT'] ?: dirname($appDir) . '/public';
+$images  = new Images($webRoot);
 img_init($images);
+
+// ---- کتابخانه‌ی رسانه ------------------------------------------
+// uploads کنار assets/img می‌نشیند تا Images بتواند از همان‌جا
+// نسخه‌ی کوچک‌شده بسازد
+$media = new Media($db, $webRoot . '/assets/uploads');
+media_init($media);
 
 // ---- تنظیمات عمومی از دیتابیس ---------------------------------
 $settings = [];
@@ -73,6 +81,7 @@ return [
     'repo'     => new Repository($db),
     'seo'      => new Seo($config, $settings),
     'images'   => $images,
+    'media'    => $media,
     'debug'    => $debug,
     'appDir'   => $appDir,
     'rootDir'  => $rootDir,
