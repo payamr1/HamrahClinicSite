@@ -184,7 +184,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/کلینیک-واریس/', '/service/کلینیک-واریس/', 'service', 'کلینیک-واریس', 'کلینیک واریس', 'کلینیک واریس تهران | درمان واریس پا در تجریش', 'تشخیص و درمان واریس و نارسایی وریدی اندام تحتانی در کلینیک واریس همراه، تجریش تهران. ارزیابی با سونوگرافی داپلر و درمان سرپایی زیر نظر متخصص قلب.')
+  ('/service/کلینیک-واریس/', '/service/کلینیک-واریس/', 'service', 'کلینیک-واریس', 'کلینیک واریس', 'کلینیک واریس تهران | درمان واریس پا در تجریش', 'تشخیص و درمان واریس و نارسایی وریدی اندام تحتانی در کلینیک واریس همراه، تجریش تهران. ارزیابی با سونوگرافی داپلر و درمان سرپایی کم‌تهاجمی، زیر نظر جراح عروق.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES

@@ -538,7 +538,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/کلینیک-واریس/', '/service/کلینیک-واریس/', 'service', 'کلینیک-واریس', 'کلینیک واریس', 'کلینیک واریس تهران | درمان واریس پا در تجریش', 'تشخیص و درمان واریس و نارسایی وریدی اندام تحتانی در کلینیک واریس همراه، تجریش تهران. ارزیابی با سونوگرافی داپلر و درمان سرپایی زیر نظر متخصص قلب.')
+  ('/service/کلینیک-واریس/', '/service/کلینیک-واریس/', 'service', 'کلینیک-واریس', 'کلینیک واریس', 'کلینیک واریس تهران | درمان واریس پا در تجریش', 'تشخیص و درمان واریس و نارسایی وریدی اندام تحتانی در کلینیک واریس همراه، تجریش تهران. ارزیابی با سونوگرافی داپلر و درمان سرپایی کم‌تهاجمی، زیر نظر جراح عروق.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -1196,6 +1196,44 @@ SELECT d.id, c.id FROM doctors d, clinics c WHERE
   OR (d.name = 'دکتر مریم اسلامی' AND c.slug = 'mental-health')
   OR (d.name = 'مرتضی مهدوی'      AND c.slug = 'mental-health')
 ON DUPLICATE KEY UPDATE doctor_id = VALUES(doctor_id);
+
+-- ------------------------------------------------------------
+--  کلینیک واریس
+--
+--  صفحه‌اش از قبل جزو ۸۲ آدرس ایندکس‌شده بود ولی ردیف clinic
+--  نداشت، برای همین هیچ پزشکی زیرش دیده نمی‌شد. حالا که دو
+--  متخصصِ خودش آمده‌اند، بخش را می‌سازیم و به همان صفحه وصل
+--  می‌کنیم — آدرس دست نمی‌خورد.
+-- ------------------------------------------------------------
+INSERT INTO clinics (slug, name, tagline, summary, sort, page_id) VALUES
+  ('varicose', 'کلینیک واریس',
+   'درمان سرپایی واریس و نارسایی وریدی',
+   'ارزیابی با سونوگرافی داپلر و درمان کم‌تهاجمی واریس پا، با جراح عروق و فوق‌تخصص اینترونشنال رادیولوژی.',
+   45, (SELECT id FROM pages WHERE path = '/service/کلینیک-واریس/'))
+ON DUPLICATE KEY UPDATE
+  name = VALUES(name), tagline = VALUES(tagline),
+  summary = VALUES(summary), sort = VALUES(sort), page_id = VALUES(page_id);
+
+-- دکتر تدین قبلاً حدسی به قلب و عروق وصل شده بود؛ جایش اینجاست.
+DELETE dc FROM doctor_clinic dc
+  JOIN doctors d ON d.id = dc.doctor_id
+  JOIN clinics c ON c.id = dc.clinic_id
+ WHERE d.name = 'دکتر نیکی تدین' AND c.slug = 'cardiology';
+
+INSERT INTO doctor_clinic (doctor_id, clinic_id)
+SELECT d.id, c.id FROM doctors d, clinics c
+ WHERE d.name IN ('دکتر نیکی تدین', 'دکتر کیارا رضایی کلانتری')
+   AND c.slug = 'varicose'
+ON DUPLICATE KEY UPDATE doctor_id = VALUES(doctor_id);
+
+-- ------------------------------------------------------------
+--  عکس‌های تازه
+--  اسلامی و مهدوی هنوز عکس ندارند؛ قالب برایشان باکس خالی
+--  می‌گذارد تا بعداً جایگزین شود.
+-- ------------------------------------------------------------
+UPDATE doctors SET photo = 'doctors/rezaei-kalantari.jpg' WHERE name = 'دکتر کیارا رضایی کلانتری';
+UPDATE doctors SET photo = 'doctors/tadayon.jpg'          WHERE name = 'دکتر نیکی تدین';
+UPDATE doctors SET photo = 'doctors/shafiei-sabet.jpg'    WHERE name = 'دکتر مهدی شفیعی ثابت';
 
 -- ##### db/seed/03-content.sql #####
 
