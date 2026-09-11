@@ -2,29 +2,49 @@
 declare(strict_types=1);
 
 /**
- * ورود به پنل مدیریت.
+ * ورود به پنل مدیریت — فقط با کد یک‌بارمصرف پیامکی.
+ *
+ * رمز عبوری در کار نیست. مدیر شماره‌ی موبایلش را وارد می‌کند، یک
+ * کد شش‌رقمی برایش پیامک می‌شود، و با همان کد وارد می‌شود.
  *
  * چند قاعده که عمداً رعایت شده‌اند:
  *
- *  ۱. رمز هرگز جایی جز خروجی password_hash ذخیره نمی‌شود، و
- *     مقایسه با password_verify انجام می‌شود که زمان‌ثابت است.
+ *  ۱. خود کد هیچ‌جا ذخیره نمی‌شود، فقط هشش. اگر کسی به دیتابیس
+ *     دسترسی پیدا کند نباید بتواند کدِ در جریان را بخواند.
  *
- *  ۲. پیام خطای ورود همیشه یکی است، چه نام کاربری اشتباه باشد چه
- *     رمز. پیام متفاوت به مهاجم می‌گوید کدام نام کاربری وجود دارد.
+ *  ۲. پیام پاسخ همیشه یکی است، چه شماره در فهرست مدیران باشد چه
+ *     نباشد. پیام متفاوت به هر کسی می‌گوید کدام شماره مدیر است —
+ *     و علاوه بر آن، پیامک خرج دارد و نباید با شماره‌ی دلخواه
+ *     کسی بتواند خرج بتراشد.
  *
- *  ۳. بعد از چند تلاش ناموفق حساب موقتاً قفل می‌شود. بدون این،
- *     حدس‌زدن رمز فقط یک مسئله‌ی زمان است.
+ *  ۳. سقف تلاش روی هر کد، و فاصله‌ی اجباری بین دو ارسال. فضای یک
+ *     کد شش‌رقمی فقط یک میلیون حالت است؛ بدون سقف، حدس‌زدنش کار
+ *     چند دقیقه است.
  *
  *  ۴. شناسه‌ی نشست بعد از ورود عوض می‌شود تا session fixation
  *     ممکن نباشد.
  */
 final class Auth
 {
-    private const MAX_TRIES  = 5;
-    private const LOCK_MIN   = 15;
-    private const IDLE_MIN   = 120;    // بی‌کاری تا خروج خودکار
+    /** سقف تلاش برای وارد کردن یک کد */
+    private const MAX_TRIES = 5;
 
-    public function __construct(private Database $db) {}
+    /** قفل حساب بعد از پر شدن سقف */
+    private const LOCK_MIN = 15;
+
+    /** عمر کد */
+    private const CODE_TTL_SEC = 180;
+
+    /** کمینه‌ی فاصله‌ی دو ارسال پیاپی — نمای ورود هم همین را نشان می‌دهد */
+    public const RESEND_SEC = 90;
+
+    /** سقف ارسال در یک ساعت، برای هر حساب */
+    private const MAX_SENDS_HOUR = 6;
+
+    /** بی‌کاری تا خروج خودکار */
+    private const IDLE_MIN = 120;
+
+    public function __construct(private Database $db, private Sms $sms) {}
 
     // ---------------------------------------------------------------
     //  نشست
@@ -73,74 +93,10 @@ final class Auth
     {
         $u = $this->user();
         if ($u === null) {
-            $to = $_SERVER['REQUEST_URI'] ?? '/admin/';
-            header('Location: /admin/?r=' . rawurlencode($to));
+            header('Location: /admin/');
             exit;
         }
         return $u;
-    }
-
-    // ---------------------------------------------------------------
-    //  ورود و خروج
-    // ---------------------------------------------------------------
-
-    /** @return string|null پیام خطا، یا null اگر ورود موفق بود */
-    public function login(string $username, string $password, ?string $ip): ?string
-    {
-        $generic = 'نام کاربری یا رمز عبور درست نیست.';
-        $u = $this->db->one('SELECT * FROM admin_users WHERE username = ?', [trim($username)]);
-
-        if ($u === null) {
-            // کاربر ناموجود باید همان‌قدر زمان ببرد که کاربر موجود،
-            // وگرنه اختلاف زمانِ پاسخ خودش لو می‌دهد چه نامی ثبت است.
-            // یک هش واقعی می‌سازیم تا همان کار محاسباتی انجام شود.
-            password_hash($password, PASSWORD_DEFAULT);
-            return $generic;
-        }
-
-        if (!empty($u['locked_until']) && strtotime((string) $u['locked_until']) > time()) {
-            $min = max(1, (int) ceil((strtotime((string) $u['locked_until']) - time()) / 60));
-            return "به دلیل چند تلاش ناموفق، ورود تا {$min} دقیقه‌ی دیگر بسته است.";
-        }
-
-        if (!password_verify($password, (string) $u['password_hash'])) {
-            $tries = (int) $u['failed_tries'] + 1;
-            $lock  = $tries >= self::MAX_TRIES
-                ? date('Y-m-d H:i:s', time() + self::LOCK_MIN * 60)
-                : null;
-            $this->db->run(
-                'UPDATE admin_users SET failed_tries = ?, locked_until = ? WHERE id = ?',
-                [$tries, $lock, $u['id']]
-            );
-            $this->audit(null, 'login_failed', 'admin_users', (int) $u['id'], $username, $ip);
-            return $generic;
-        }
-
-        if ((int) $u['is_active'] !== 1) {
-            return 'این حساب غیرفعال است.';
-        }
-
-        // رمز درست بود — اگر الگوریتم پیش‌فرض PHP عوض شده باشد،
-        // هش را همین‌جا به‌روز می‌کنیم
-        if (password_needs_rehash((string) $u['password_hash'], PASSWORD_DEFAULT)) {
-            $this->db->run(
-                'UPDATE admin_users SET password_hash = ? WHERE id = ?',
-                [password_hash($password, PASSWORD_DEFAULT), $u['id']]
-            );
-        }
-
-        $this->db->run(
-            'UPDATE admin_users SET failed_tries = 0, locked_until = NULL, last_login_at = NOW() WHERE id = ?',
-            [$u['id']]
-        );
-
-        session_regenerate_id(true);
-        $_SESSION['admin_id'] = (int) $u['id'];
-        $_SESSION['seen_at']  = time();
-        $_SESSION['csrf']     = bin2hex(random_bytes(32));
-
-        $this->audit((int) $u['id'], 'login', 'admin_users', (int) $u['id'], null, $ip);
-        return null;
     }
 
     public function logout(): void
@@ -151,6 +107,204 @@ final class Auth
             setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
         }
         session_destroy();
+    }
+
+    // ---------------------------------------------------------------
+    //  مرحله‌ی یک: درخواست کد
+    // ---------------------------------------------------------------
+
+    /**
+     * کد می‌سازد و پیامک می‌کند.
+     *
+     * پاسخ هیچ‌وقت نمی‌گوید شماره مدیر هست یا نه. تنها خطایی که
+     * صریح برمی‌گردد، خطای خود سرویس پیامک است — آن هم فقط وقتی
+     * شماره واقعاً مدیر بوده، وگرنه اصلاً ارسالی در کار نیست.
+     *
+     * @return array{ok:bool, error:?string, phone:?string}
+     */
+    public function requestCode(?string $rawPhone, ?string $ip): array
+    {
+        $phone = Sms::normalizePhone($rawPhone);
+        if ($phone === null) {
+            return ['ok' => false, 'error' => 'شماره‌ی موبایل درست نیست. مثل ۰۹۱۲۱۲۳۴۵۶۷ وارد کنید.', 'phone' => null];
+        }
+
+        if (!$this->sms->isConfigured()) {
+            // این یکی را پنهان نمی‌کنیم: ایراد از پیکربندی است، نه
+            // از کاربر، و پنهان کردنش فقط وقت مدیر را تلف می‌کند
+            return ['ok' => false, 'error' => 'سرویس پیامک هنوز تنظیم نشده. ' . $this->sms->configHint(), 'phone' => $phone];
+        }
+
+        $u = $this->db->one(
+            'SELECT * FROM admin_users WHERE phone = ? AND is_active = 1',
+            [$phone]
+        );
+
+        // شماره‌ی ناشناس: همان پاسخ موفق، بدون ارسال چیزی
+        if ($u === null) {
+            $this->audit(null, 'otp_unknown_phone', 'admin_users', null, Sms::maskPhone($phone), $ip);
+            return ['ok' => true, 'error' => null, 'phone' => $phone];
+        }
+
+        if (!empty($u['locked_until']) && strtotime((string) $u['locked_until']) > time()) {
+            $min = max(1, (int) ceil((strtotime((string) $u['locked_until']) - time()) / 60));
+            return ['ok' => false, 'error' => "به دلیل چند تلاش ناموفق، ورود تا {$min} دقیقه‌ی دیگر بسته است.", 'phone' => $phone];
+        }
+
+        // فاصله‌ی اجباری بین دو ارسال
+        $lastSent = $this->db->value(
+            'SELECT created_at FROM admin_otp WHERE admin_id = ? ORDER BY id DESC LIMIT 1',
+            [(int) $u['id']]
+        );
+        if ($lastSent !== null && $lastSent !== false) {
+            $wait = self::RESEND_SEC - (time() - (int) strtotime((string) $lastSent));
+            if ($wait > 0) {
+                return ['ok' => false, 'error' => "کد تازه فرستاده شده. {$wait} ثانیه صبر کنید.", 'phone' => $phone];
+            }
+        }
+
+        // سقف ساعتی — جلوی خرج‌تراشی و آزار با پیامک را می‌گیرد
+        $inHour = (int) $this->db->value(
+            'SELECT COUNT(*) FROM admin_otp WHERE admin_id = ? AND created_at > (NOW() - INTERVAL 1 HOUR)',
+            [(int) $u['id']]
+        );
+        if ($inHour >= self::MAX_SENDS_HOUR) {
+            return ['ok' => false, 'error' => 'سقف ارسال کد در یک ساعت پر شده است. بعداً دوباره تلاش کنید.', 'phone' => $phone];
+        }
+
+        // کد شش‌رقمی، با منبع تصادفی امن
+        $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        $err = $this->sms->sendCode($phone, $code);
+        if ($err !== null) {
+            $this->audit((int) $u['id'], 'otp_send_failed', 'admin_users', (int) $u['id'], $err, $ip);
+            return ['ok' => false, 'error' => $err, 'phone' => $phone];
+        }
+
+        // کدهای قبلیِ همین حساب از اعتبار می‌افتند
+        $this->db->run(
+            'UPDATE admin_otp SET used_at = NOW() WHERE admin_id = ? AND used_at IS NULL',
+            [(int) $u['id']]
+        );
+
+        $this->db->run(
+            'INSERT INTO admin_otp (admin_id, code_hash, expires_at, ip)
+             VALUES (?, ?, ?, ?)',
+            [
+                (int) $u['id'],
+                password_hash($code, PASSWORD_DEFAULT),
+                date('Y-m-d H:i:s', time() + self::CODE_TTL_SEC),
+                $ip ? @inet_pton($ip) : null,
+            ]
+        );
+
+        $this->audit((int) $u['id'], 'otp_sent', 'admin_users', (int) $u['id'], null, $ip);
+        $this->pruneOldCodes();
+
+        return ['ok' => true, 'error' => null, 'phone' => $phone];
+    }
+
+    // ---------------------------------------------------------------
+    //  مرحله‌ی دو: بررسی کد
+    // ---------------------------------------------------------------
+
+    /** @return string|null پیام خطا، یا null اگر ورود موفق بود */
+    public function verifyCode(?string $rawPhone, ?string $rawCode, ?string $ip): ?string
+    {
+        $generic = 'کد وارد‌شده درست نیست یا منقضی شده است.';
+
+        $phone = Sms::normalizePhone($rawPhone);
+        $code  = preg_replace('~\D~', '', en((string) $rawCode)) ?? '';
+
+        if ($phone === null || $code === '') {
+            return $generic;
+        }
+
+        $u = $this->db->one(
+            'SELECT * FROM admin_users WHERE phone = ? AND is_active = 1',
+            [$phone]
+        );
+        if ($u === null) {
+            // همان زمان محاسباتی را می‌سوزانیم تا اختلاف زمان پاسخ
+            // لو ندهد کدام شماره مدیر است
+            password_hash($code, PASSWORD_DEFAULT);
+            return $generic;
+        }
+
+        if (!empty($u['locked_until']) && strtotime((string) $u['locked_until']) > time()) {
+            $min = max(1, (int) ceil((strtotime((string) $u['locked_until']) - time()) / 60));
+            return "به دلیل چند تلاش ناموفق، ورود تا {$min} دقیقه‌ی دیگر بسته است.";
+        }
+
+        $otp = $this->db->one(
+            'SELECT * FROM admin_otp
+              WHERE admin_id = ? AND used_at IS NULL AND expires_at > NOW()
+              ORDER BY id DESC LIMIT 1',
+            [(int) $u['id']]
+        );
+        if ($otp === null) {
+            password_hash($code, PASSWORD_DEFAULT);
+            return $generic;
+        }
+
+        if ((int) $otp['tries'] >= self::MAX_TRIES) {
+            $this->burnCode((int) $otp['id']);
+            $this->lock((int) $u['id']);
+            return 'تعداد تلاش‌ها پر شد. کد تازه بگیرید.';
+        }
+
+        $this->db->run('UPDATE admin_otp SET tries = tries + 1 WHERE id = ?', [(int) $otp['id']]);
+
+        if (!password_verify($code, (string) $otp['code_hash'])) {
+            $left = self::MAX_TRIES - ((int) $otp['tries'] + 1);
+            $this->audit((int) $u['id'], 'otp_failed', 'admin_users', (int) $u['id'], null, $ip);
+
+            if ($left <= 0) {
+                $this->burnCode((int) $otp['id']);
+                $this->lock((int) $u['id']);
+                return 'تعداد تلاش‌ها پر شد. پانزده دقیقه‌ی دیگر دوباره تلاش کنید.';
+            }
+            return $generic . " ({$left} تلاش باقی مانده)";
+        }
+
+        // ---- کد درست بود ----
+        $this->burnCode((int) $otp['id']);
+        $this->db->run(
+            'UPDATE admin_users SET failed_tries = 0, locked_until = NULL, last_login_at = NOW() WHERE id = ?',
+            [(int) $u['id']]
+        );
+
+        session_regenerate_id(true);
+        $_SESSION['admin_id'] = (int) $u['id'];
+        $_SESSION['seen_at']  = time();
+        $_SESSION['csrf']     = bin2hex(random_bytes(32));
+        unset($_SESSION['otp_phone'], $_SESSION['otp_sent_at']);
+
+        $this->audit((int) $u['id'], 'login', 'admin_users', (int) $u['id'], null, $ip);
+        return null;
+    }
+
+    private function burnCode(int $otpId): void
+    {
+        $this->db->run('UPDATE admin_otp SET used_at = NOW() WHERE id = ?', [$otpId]);
+    }
+
+    private function lock(int $adminId): void
+    {
+        $this->db->run(
+            'UPDATE admin_users SET failed_tries = failed_tries + 1, locked_until = ? WHERE id = ?',
+            [date('Y-m-d H:i:s', time() + self::LOCK_MIN * 60), $adminId]
+        );
+    }
+
+    /** کدهای مصرف‌شده و منقضی بعد از یک روز لازم نیستند */
+    private function pruneOldCodes(): void
+    {
+        try {
+            $this->db->run('DELETE FROM admin_otp WHERE created_at < (NOW() - INTERVAL 1 DAY)');
+        } catch (\Throwable) {
+            // پاک‌سازی نباید جلوی ورود را بگیرد
+        }
     }
 
     // ---------------------------------------------------------------
@@ -167,60 +321,52 @@ final class Auth
      *
      * فقط وقتی کار می‌کند که هیچ حسابی وجود نداشته باشد، پس صفحه‌ی
      * راه‌اندازی بعد از اولین استفاده خودبه‌خود بسته می‌شود.
+     *
+     * شماره‌ی موبایل اینجا وارد می‌شود و در مخزن نمی‌نشیند — شماره‌ی
+     * شخصی در یک مخزن عمومی جایی ندارد.
      */
-    public function createFirst(string $username, string $password, string $name): ?string
+    public function createFirst(?string $rawPhone, string $name): ?string
     {
         if ($this->anyUser()) {
             return 'حساب مدیر از قبل ساخته شده است.';
         }
-        $username = trim($username);
-        if (!preg_match('~^[a-zA-Z0-9_.\-]{3,60}$~', $username)) {
-            return 'نام کاربری باید ۳ تا ۶۰ نویسه‌ی لاتین، عدد، نقطه یا خط تیره باشد.';
+
+        $phone = Sms::normalizePhone($rawPhone);
+        if ($phone === null) {
+            return 'شماره‌ی موبایل درست نیست. مثل ۰۹۱۲۱۲۳۴۵۶۷ وارد کنید.';
         }
-        if (($err = $this->passwordProblem($password)) !== null) {
-            return $err;
+
+        $name = trim($name);
+        if (mb_strlen($name) < 2) {
+            return 'نام را کامل وارد کنید.';
         }
 
         $this->db->run(
-            'INSERT INTO admin_users (username, password_hash, name, role) VALUES (?, ?, ?, ?)',
-            [$username, password_hash($password, PASSWORD_DEFAULT), trim($name) ?: $username, 'owner']
+            'INSERT INTO admin_users (username, phone, name, role) VALUES (?, ?, ?, ?)',
+            [$phone, $phone, $name, 'owner']
         );
         return null;
     }
 
-    public function changePassword(int $id, string $current, string $new): ?string
+    /** افزودن مدیر تازه از داخل پنل */
+    public function addUser(?string $rawPhone, string $name, string $role = 'editor'): ?string
     {
-        $u = $this->db->one('SELECT * FROM admin_users WHERE id = ?', [$id]);
-        if ($u === null || !password_verify($current, (string) $u['password_hash'])) {
-            return 'رمز فعلی درست نیست.';
+        $phone = Sms::normalizePhone($rawPhone);
+        if ($phone === null) {
+            return 'شماره‌ی موبایل درست نیست.';
         }
-        if (($err = $this->passwordProblem($new)) !== null) {
-            return $err;
+        if ($this->db->one('SELECT id FROM admin_users WHERE phone = ?', [$phone]) !== null) {
+            return 'این شماره از قبل ثبت شده است.';
         }
-        $this->db->run(
-            'UPDATE admin_users SET password_hash = ? WHERE id = ?',
-            [password_hash($new, PASSWORD_DEFAULT), $id]
-        );
-        return null;
-    }
+        $name = trim($name);
+        if (mb_strlen($name) < 2) {
+            return 'نام را کامل وارد کنید.';
+        }
 
-    /**
-     * حداقل‌های رمز.
-     *
-     * طول از پیچیدگی مهم‌تر است: یک عبارت بلند از یک رمز کوتاهِ
-     * پر از علامت هم امن‌تر است و هم به یاد می‌ماند.
-     */
-    private function passwordProblem(string $p): ?string
-    {
-        if (mb_strlen($p) < 12) {
-            return 'رمز عبور باید دست‌کم ۱۲ نویسه باشد. یک عبارت چندکلمه‌ای انتخاب کنید.';
-        }
-        $weak = ['password', '123456789012', 'qwertyuiop', 'hamrahclinic'];
-        foreach ($weak as $w) {
-            if (stripos($p, $w) !== false) {
-                return 'این رمز قابل حدس است. عبارت دیگری انتخاب کنید.';
-            }
-        }
+        $this->db->run(
+            'INSERT INTO admin_users (username, phone, name, role) VALUES (?, ?, ?, ?)',
+            [$phone, $phone, $name, $role === 'owner' ? 'owner' : 'editor']
+        );
         return null;
     }
 

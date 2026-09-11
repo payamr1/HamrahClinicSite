@@ -58,6 +58,14 @@ $nav = [
 </header>
 <?php endif; ?>
 
+<?php if (!empty($app['sms']) && $app['sms']->isEmergencyMode()): ?>
+  <p class="emerg">
+    حالت اضطراری ورود روشن است — کد ورود به‌جای پیامک در لاگ سرور
+    نوشته می‌شود. بعد از ورود، <code>emergency_log_code</code> را در
+    <code>config.php</code> دوباره <code>false</code> کنید.
+  </p>
+<?php endif; ?>
+
 <main class="<?= $u ? 'wrap' : 'centre' ?>">
   <?= $content ?>
 </main>

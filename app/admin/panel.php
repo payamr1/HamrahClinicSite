@@ -14,8 +14,8 @@ declare(strict_types=1);
 /** @var array $app */
 require __DIR__ . '/Auth.php';
 
-$db   = $app['db'];
-$auth = new Auth($db);
+$db    = $app['db'];
+$auth  = new Auth($db, $app['sms']);
 $media = $app['media'];
 
 $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
@@ -81,17 +81,21 @@ if (!$auth->anyUser()) {
     if ($isPost) {
         $guardPost();
         $error = $auth->createFirst(
-            (string) ($_POST['username'] ?? ''),
-            (string) ($_POST['password'] ?? ''),
+            (string) ($_POST['phone'] ?? ''),
             (string) ($_POST['name'] ?? '')
         );
         if ($error === null) {
             $auth->audit(null, 'setup', 'admin_users', null, 'اولین حساب ساخته شد', $ip);
-            $flash('حساب ساخته شد. حالا وارد شوید.');
+            $flash('حساب ساخته شد. حالا با همان شماره وارد شوید.');
             $redirect('/admin/');
         }
     }
-    $render('setup', ['error' => $error, 'title' => 'راه‌اندازی پنل']);
+    $render('setup', [
+        'error'   => $error,
+        'title'   => 'راه‌اندازی پنل',
+        'smsOk'   => $app['sms']->isConfigured(),
+        'smsHint' => $app['sms']->configHint(),
+    ]);
     exit;
 }
 
@@ -108,24 +112,51 @@ $user = $auth->user();
 
 if ($user === null) {
     $error = null;
+    $step  = !empty($_SESSION['otp_phone']) ? 'code' : 'phone';
+
     if ($isPost) {
         $guardPost();
-        $error = $auth->login(
-            (string) ($_POST['username'] ?? ''),
-            (string) ($_POST['password'] ?? ''),
-            $ip
-        );
-        if ($error === null) {
-            $to = (string) ($_POST['r'] ?? '/admin/');
-            // فقط مسیر داخلی پنل، تا به سایت دیگری هدایت نشویم
-            $redirect(preg_match('~^/admin/~', $to) ? $to : '/admin/');
+        $action = (string) ($_POST['step'] ?? 'phone');
+
+        if ($action === 'back') {
+            unset($_SESSION['otp_phone'], $_SESSION['otp_sent_at']);
+            $redirect('/admin/');
+        }
+
+        if ($action === 'phone') {
+            $r = $auth->requestCode((string) ($_POST['phone'] ?? ''), $ip);
+            if ($r['ok']) {
+                // شماره در نشست می‌ماند تا در مرحله‌ی دوم دوباره
+                // پرسیده نشود؛ خود کد هرگز در نشست نمی‌نشیند
+                $_SESSION['otp_phone']   = $r['phone'];
+                $_SESSION['otp_sent_at'] = time();
+                $redirect('/admin/');
+            }
+            $error = $r['error'];
+            // اگر کد قبلاً فرستاده شده، ارسال دوباره که شکست خورد
+            // نباید کاربر را به صفحه‌ی شماره برگرداند و ورودی کد را
+            // از دستش بگیرد
+            $step  = !empty($_SESSION['otp_phone']) ? 'code' : 'phone';
+        } else {
+            $phone = (string) ($_SESSION['otp_phone'] ?? '');
+            $error = $auth->verifyCode($phone, (string) ($_POST['code'] ?? ''), $ip);
+            if ($error === null) {
+                $redirect('/admin/');
+            }
+            $step = 'code';
         }
     }
+
+    $sentAt = (int) ($_SESSION['otp_sent_at'] ?? 0);
     $render('login', [
-        'error' => $error,
-        'r'     => (string) ($_GET['r'] ?? '/admin/'),
-        'title' => 'ورود',
-        'flash' => $flash(),
+        'error'  => $error,
+        'title'  => 'ورود',
+        'flash'  => $flash(),
+        'step'   => $step,
+        'phone'  => (string) ($_SESSION['otp_phone'] ?? ''),
+        'wait'   => $sentAt > 0 ? max(0, Auth::RESEND_SEC - (time() - $sentAt)) : 0,
+        'smsOk'  => $app['sms']->isConfigured(),
+        'smsHint'=> $app['sms']->configHint(),
     ]);
     exit;
 }
@@ -296,27 +327,31 @@ switch ($route) {
         ]);
         break;
 
-    // ---- حساب --------------------------------------------------
+    // ---- حساب و مدیران -----------------------------------------
     case 'account':
         $error = null;
-        if ($isPost) {
+
+        // فقط owner می‌تواند مدیر تازه اضافه کند
+        if ($isPost && $user['role'] === 'owner') {
             $guardPost();
-            $error = $auth->changePassword(
-                (int) $user['id'],
-                (string) ($_POST['current'] ?? ''),
-                (string) ($_POST['new'] ?? '')
+            $error = $auth->addUser(
+                (string) ($_POST['phone'] ?? ''),
+                (string) ($_POST['name'] ?? ''),
+                (string) ($_POST['role'] ?? 'editor')
             );
             if ($error === null) {
-                $auth->audit((int) $user['id'], 'password_change', 'admin_users', (int) $user['id'], null, $ip);
-                $flash('رمز عبور عوض شد.');
+                $auth->audit((int) $user['id'], 'admin_added', 'admin_users', null, (string) ($_POST['name'] ?? ''), $ip);
+                $flash('مدیر تازه اضافه شد. با شماره‌ی خودش وارد می‌شود.');
                 $redirect('/admin/?p=account');
             }
         }
+
         $render('account', [
-            'title' => 'حساب من',
-            'user'  => $user,
-            'flash' => $flash(),
-            'error' => $error,
+            'title'  => 'حساب من',
+            'user'   => $user,
+            'flash'  => $flash(),
+            'error'  => $error,
+            'admins' => $db->all('SELECT id, name, phone, role, is_active, last_login_at FROM admin_users ORDER BY id'),
         ]);
         break;
 

@@ -386,7 +386,8 @@ CREATE TABLE IF NOT EXISTS appointments (
 CREATE TABLE IF NOT EXISTS admin_users (
   id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
   username       VARCHAR(60)  NOT NULL,
-  password_hash  VARCHAR(255) NOT NULL  COMMENT 'خروجی password_hash با الگوریتم پیش‌فرض',
+  password_hash  VARCHAR(255)     NULL  COMMENT 'دیگر استفاده نمی‌شود؛ ورود فقط با کد پیامکی',
+  phone          VARCHAR(15)      NULL  COMMENT 'شکل یکسان‌شده: 09xxxxxxxxx — همین شناسه‌ی ورود است',
   name           VARCHAR(120) NOT NULL,
   role           ENUM('owner','editor') NOT NULL DEFAULT 'editor',
   is_active      TINYINT(1)   NOT NULL DEFAULT 1,
@@ -395,7 +396,54 @@ CREATE TABLE IF NOT EXISTS admin_users (
   locked_until   DATETIME         NULL,
   created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_admin_username (username)
+  UNIQUE KEY uq_admin_username (username),
+  UNIQUE KEY uq_admin_phone (phone)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ستون phone و NULL شدن password_hash برای دیتابیسی که از قبل
+-- ساخته شده — CREATE TABLE IF NOT EXISTS روی جدول موجود کاری
+-- نمی‌کند و MySQL برای ADD COLUMN گزینه‌ی IF NOT EXISTS ندارد.
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'admin_users' AND COLUMN_NAME = 'phone');
+SET @sql := IF(@c = 0,
+  'ALTER TABLE admin_users ADD COLUMN phone VARCHAR(15) NULL AFTER password_hash,
+     ADD UNIQUE KEY uq_admin_phone (phone)',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+-- ورود دیگر رمزی نیست، پس این ستون نباید اجباری بماند
+SET @n := (SELECT IS_NULLABLE FROM information_schema.COLUMNS
+           WHERE TABLE_SCHEMA = DATABASE()
+             AND TABLE_NAME = 'admin_users' AND COLUMN_NAME = 'password_hash');
+SET @sql := IF(@n = 'NO',
+  'ALTER TABLE admin_users MODIFY COLUMN password_hash VARCHAR(255) NULL',
+  'DO 0');
+PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
+
+-- ------------------------------------------------------------
+-- کد یک‌بارمصرف ورود
+--
+-- خودِ کد ذخیره نمی‌شود، فقط هشش. اگر روزی کسی به دیتابیس دست
+-- پیدا کند، نباید بتواند کد در جریان را بخواند و وارد شود.
+--
+-- عمر کد کوتاه است و شمار تلاش هم محدود، چون فضای جست‌وجوی یک
+-- کد شش‌رقمی فقط یک میلیون حالت است — بدون سقف تلاش، حدس‌زدنش
+-- کار چند دقیقه است.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin_otp (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  admin_id    INT UNSIGNED NOT NULL,
+  code_hash   VARCHAR(255) NOT NULL  COMMENT 'هش کد، نه خود کد',
+  expires_at  DATETIME     NOT NULL,
+  tries       TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  used_at     DATETIME         NULL,
+  ip          VARBINARY(16)    NULL,
+  created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_otp_admin (admin_id, created_at),
+  KEY idx_otp_expiry (expires_at),
+  CONSTRAINT fk_otp_admin FOREIGN KEY (admin_id) REFERENCES admin_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS audit_log (

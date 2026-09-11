@@ -78,3 +78,32 @@
     });
   });
 })();
+
+/* ============================================================
+   شمارش معکوس دکمه‌ی «ارسال دوباره»
+
+   سرور خودش فاصله‌ی اجباری را نگه می‌دارد؛ این فقط عدد را جلوی
+   چشم کاربر می‌آورد تا نداند چرا دکمه کار نمی‌کند.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var btn = document.querySelector('button.link[data-wait]');
+  if (!btn) { return; }
+
+  var left = parseInt(btn.dataset.wait, 10) || 0;
+  var fa   = function (n) {
+    return String(n).replace(/[0-9]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[+d]; });
+  };
+
+  var tick = setInterval(function () {
+    left -= 1;
+    if (left <= 0) {
+      clearInterval(tick);
+      btn.disabled = false;
+      btn.textContent = 'ارسال دوباره‌ی کد';
+      return;
+    }
+    btn.textContent = 'ارسال دوباره تا ' + fa(left) + ' ثانیه';
+  }, 1000);
+})();

@@ -88,7 +88,7 @@ if ($hasConfig) {
 // ---- ۵. جدول‌ها و داده --------------------------------------------
 $pageCount = null;
 if ($db instanceof PDO) {
-    $want  = ['pages','clinics','doctors','doctor_clinic','page_author','faqs','redirects','not_found_log','media','appointments','admin_users','audit_log','settings'];
+    $want  = ['pages','clinics','doctors','doctor_clinic','page_author','faqs','redirects','not_found_log','media','media_tag','appointments','admin_users','admin_otp','audit_log','settings'];
     $have  = $db->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN) ?: [];
     $miss  = array_values(array_diff($want, $have));
     $add('جدول‌های دیتابیس', $miss === [],
@@ -127,6 +127,25 @@ if ($db instanceof PDO) {
             $ar === 1 ? '/team/دكتر-فاطمه-نائيني/ دست‌نخورده مانده' : 'پیدا نشد — این آدرس ایندکس‌شده از دست می‌رود');
     }
 }
+
+// ---- ۵.۲ سرویس پیامک --------------------------------------------
+// ورود به پنل فقط با کد پیامکی است، پس بدون این هیچ‌کس نمی‌تواند
+// وارد پنل شود — و تا وقتی کسی امتحان نکند، معلوم هم نمی‌شود.
+$smsCfg  = $config['sms'] ?? [];
+$smsKey  = trim((string) ($smsCfg['api_key'] ?? ''));
+$smsTpl  = trim((string) ($smsCfg['template'] ?? ''));
+$smsFrom = trim((string) ($smsCfg['sender'] ?? ''));
+$smsEmerg = !empty($smsCfg['emergency_log_code']);
+
+$add('کلید کاوه‌نگار', $smsKey !== '',
+    $smsKey !== '' ? 'ثبت شده' : 'در config.php ▸ sms ▸ api_key پر نشده');
+$add('راه ارسال کد', $smsTpl !== '' || $smsFrom !== '',
+    $smsTpl !== '' ? "الگوی verify: $smsTpl"
+                   : ($smsFrom !== '' ? "شماره‌ی خط: $smsFrom" : 'نه الگو و نه شماره‌ی خط'));
+$add('حالت اضطراری ورود', !$smsEmerg,
+    $smsEmerg ? 'روشن است — کد در لاگ نوشته می‌شود، نه پیامک. خاموشش کنید.' : 'خاموش',
+    $smsEmerg);
+$add('cURL', function_exists('curl_init'), 'برای تماس با کاوه‌نگار', true);
 
 // ---- ۵.۵ بهینه‌ساز تصویر ----------------------------------------
 // اگر هر یک از این سه شرط برقرار نباشد، img() بی‌صدا آدرس اصلی را

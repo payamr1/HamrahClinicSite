@@ -36,6 +36,7 @@ require $appDir . '/Seo.php';
 require $appDir . '/Repository.php';
 require $appDir . '/Images.php';
 require $appDir . '/Media.php';
+require $appDir . '/Sms.php';
 require $appDir . '/helpers.php';
 
 // ---- دیتابیس --------------------------------------------------
@@ -73,6 +74,11 @@ try {
     // جدول هنوز ساخته نشده — صفحه‌ی سلامت این را گزارش می‌دهد
 }
 
+// ---- پیامک -----------------------------------------------------
+// بعد از خواندن settings، چون نام سایت در متن پیامکِ حالت ارسال
+// ساده می‌آید
+$sms = new Sms(($config['sms'] ?? []) + ['site_name' => $settings['site_name'] ?? 'همراه کلینیک']);
+
 return [
     'config'   => $config,
     'settings' => $settings,
@@ -82,6 +88,7 @@ return [
     'seo'      => new Seo($config, $settings),
     'images'   => $images,
     'media'    => $media,
+    'sms'      => $sms,
     'debug'    => $debug,
     'appDir'   => $appDir,
     'rootDir'  => $rootDir,
