@@ -201,8 +201,10 @@ UPDATE pages p SET clinic_id = (SELECT id FROM clinics WHERE slug = 'infectious'
    'respiratory-infection','fungal-infection','skin-infection','urinary-tract-infection',
    'fever-unknown-origin');
 
+-- کلینیک واریس عمداً اینجا نیست؛ بخش خودش را دارد و پایین‌تر
+-- وصل می‌شود، بعد از اینکه آن ردیف ساخته شد.
 UPDATE pages p SET clinic_id = (SELECT id FROM clinics WHERE slug = 'cardiology')
-  WHERE p.path IN ('/service/قلب-و-عروق/','/service/کلینیک-واریس/',
+  WHERE p.path IN ('/service/قلب-و-عروق/',
                    '/service/کلینیک-قلب-کودکان/','/service/اکوکاردیوگرافی-قلب-جنین/');
 
 UPDATE pages p SET clinic_id = (SELECT id FROM clinics WHERE slug = 'oncology')
@@ -521,11 +523,40 @@ ON DUPLICATE KEY UPDATE
   name = VALUES(name), tagline = VALUES(tagline),
   summary = VALUES(summary), sort = VALUES(sort), page_id = VALUES(page_id);
 
+/*
+ * اتصال صفحه به بخش خودش.
+ *
+ * این خط جا افتاده بود و باعث شده بود صفحه‌ی کلینیک واریس همه‌ی
+ * پزشکان قلب را نشان دهد. دو ستون جداگانه‌اند و هر دو لازم:
+ *
+ *   clinics.page_id  → بخش می‌گوید صفحه‌ام کدام است
+ *   pages.clinic_id  → صفحه می‌گوید مال کدام بخشم
+ *
+ * قالب service.php پزشکان را از روی دومی پیدا می‌کند، و تا وقتی
+ * روی «قلب و عروق» مانده بود، فهرست پزشکانِ قلب را می‌آورد.
+ */
+UPDATE pages SET clinic_id = (SELECT id FROM clinics WHERE slug = 'varicose')
+  WHERE path = '/service/کلینیک-واریس/';
+
 -- دکتر تدین قبلاً حدسی به قلب و عروق وصل شده بود؛ جایش اینجاست.
 DELETE dc FROM doctor_clinic dc
   JOIN doctors d ON d.id = dc.doctor_id
   JOIN clinics c ON c.id = dc.clinic_id
  WHERE d.name = 'دکتر نیکی تدین' AND c.slug = 'cardiology';
+
+/*
+ * فقط این دو نفر زیر کلینیک واریس می‌مانند.
+ *
+ * اول هر اتصال دیگری به این بخش پاک می‌شود، بعد این دو اضافه
+ * می‌شوند. بدون DELETE، اگر روزی کسی از پنل پزشک دیگری را به این
+ * بخش وصل کند، اجرای دوباره‌ی این فایل پاکش نمی‌کرد و فهرست بی‌سر
+ * و صدا رشد می‌کرد.
+ */
+DELETE dc FROM doctor_clinic dc
+  JOIN clinics c ON c.id = dc.clinic_id
+  JOIN doctors d ON d.id = dc.doctor_id
+ WHERE c.slug = 'varicose'
+   AND d.name NOT IN ('دکتر نیکی تدین', 'دکتر کیارا رضایی کلانتری');
 
 INSERT INTO doctor_clinic (doctor_id, clinic_id)
 SELECT d.id, c.id FROM doctors d, clinics c
