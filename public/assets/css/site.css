@@ -34,26 +34,23 @@ This set of fonts are used in this project under the license: (KBMJU7GR)
   --maxw:1200px;
   --avatar-glyph:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 12.2a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Zm0 1.9c-4 0-8 2-8 4.5V21h16v-2.4c0-2.5-4-4.5-8-4.5Z'/%3E%3C/svg%3E");
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --navy:#16255C; --navy-d:#0E1B45; --navy-l:#233C82;
-    --teal:#4EC3A9; --teal-d:#5FCFB6; --teal-dd:#78DAC4;
-    --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
-    --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8;
-    --rule:#243050;
-    --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
-    --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 24px 56px -20px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --navy:#16255C; --navy-d:#0E1B45; --navy-l:#233C82;
-  --teal:#4EC3A9; --teal-d:#5FCFB6; --teal-dd:#78DAC4;
-  --ground:#0D1424; --soft:#131C30; --soft-2:#1A2540;
-  --ink:#E9EDF6; --ink-2:#AEBAD4; --ink-3:#7F8BA8;
-  --rule:#243050;
-  --sh:0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
-  --sh-lg:0 4px 10px rgba(0,0,0,.4), 0 24px 56px -20px rgba(0,0,0,.7);
-}
+/*
+ * سایت عمومی همیشه روشن است.
+ *
+ * قبلاً از تنظیم سیستم بازدیدکننده پیروی می‌کرد، ولی طراحی در
+ * حالت روشن تأیید شده و ثبات برند مهم‌تر از تطبیق با تم دستگاه
+ * تشخیص داده شد.
+ *
+ * بلوک‌های تاریک عمداً حذف شده‌اند نه خاموش: CSSای که هیچ‌وقت
+ * اجرا نمی‌شود با هر تغییر بعدی از قافله عقب می‌افتد، و روزی که
+ * کسی روشنش کند نیمه‌کاره از کار درمی‌آید. اگر دوباره لازم شد،
+ * در تاریخچه‌ی گیت هست.
+ *
+ * color-scheme هم اعلام می‌شود تا اجزای خود مرورگر — نوار
+ * پیمایش، منوی select، تقویم — روی دستگاهِ تاریک روشن بمانند.
+ * بدون این خط، متن روی زمینه‌ی تیره‌ی آن‌ها ناخوانا می‌شود.
+ */
+:root{color-scheme:light}
 
 *,*::before,*::after{box-sizing:border-box}
 html{direction:rtl}

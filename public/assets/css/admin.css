@@ -45,6 +45,10 @@ This set of fonts are used in this project under the license: (KBMJU7GR)
   }
 }
 
+/* پنل ابزار کار خودتان است و دارک‌مودش می‌ماند؛ این خط
+   می‌گوید اجزای خود مرورگر هم هر دو حالت را بشناسند */
+:root{color-scheme:light dark}
+
 *{box-sizing:border-box}
 
 body{
