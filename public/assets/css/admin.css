@@ -1,3 +1,18 @@
+/*
+Narengi fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com
+--------------------------------------------------------------------------------------
+This set of fonts are used in this project under the license: (KBMJU7GR)
+--------------------------------------------------------------------------------------
+*/
+@font-face{
+  font-family:"Narengi";
+  src:url("/assets/fonts/NarengiVF.woff2") format("woff2-variations"),
+      url("/assets/fonts/NarengiVF.woff2") format("woff2");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+
 /* ============================================================
    پنل مدیریت همراه کلینیک
 
@@ -36,7 +51,7 @@ body{
   margin:0;
   background:var(--soft);
   color:var(--ink);
-  font:14.5px/1.75 "Vazirmatn","IRANSans",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  font:14.5px/1.75 "Narengi","Vazirmatn",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
   -webkit-text-size-adjust:100%;
 }
 body.plain{display:grid;place-items:center;min-height:100vh;padding:24px}

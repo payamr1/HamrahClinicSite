@@ -26,6 +26,8 @@ $nav = [
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title><?= e($title ?? 'پنل') ?> · پنل همراه کلینیک</title>
 <link rel="icon" href="/assets/img/brand/mark.jpg" type="image/jpeg">
+<link rel="preload" href="<?= e(asset('/assets/fonts/NarengiVF.woff2')) ?>"
+      as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= e(asset('/assets/css/admin.css')) ?>">
 </head>
 <body class="<?= $u ? '' : 'plain' ?>">

@@ -50,9 +50,8 @@ if ($trail !== []) {
 <link rel="icon" href="/assets/img/brand/mark.jpg" type="image/jpeg">
 <link rel="apple-touch-icon" href="/assets/img/brand/mark.jpg">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap">
+<link rel="preload" href="<?= e(asset('/assets/fonts/NarengiVF.woff2')) ?>"
+      as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= asset('/assets/css/site.css') ?>">
 
 <script type="application/ld+json"><?= $seo->graph($nodes) ?></script>

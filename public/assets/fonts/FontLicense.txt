@@ -1,0 +1,42 @@
+FONT LICENCE RECORD — Narengi Pro
+ثبت پروانه‌ی فونت — نارنگی پرو
+
+--------------------------------------------------------------------
+This set of fonts is used in this project under the licence below.
+این مجموعه فونت با پروانه‌ی زیر در این پروژه به‌کار رفته است.
+--------------------------------------------------------------------
+
+Font / فونت            : Narengi Pro  (نارنگی پرو)
+Licence type / نوع     : نامحدود
+Licence code / کد      : KBMJU7GR
+Issued to / صادر شده برای : پیام ریاضی‌خواه
+Registered site / وبسایت  : jabizparda.com
+Issue date / تاریخ صدور   : ۱۴۰۵/۰۶/۲۱
+
+Used on / استفاده در   : hamrahclinic.ir
+                         (new.hamrahclinic.ir — نسخه‌ی آزمایشی)
+
+File in use / فایل به‌کاررفته : NarengiVF.woff2  (variable, 100–900)
+
+--------------------------------------------------------------------
+Narengi is proprietary software. For information about the laws
+regarding the use of these fonts, please visit www.fontiran.com
+
+نارنگی نرم‌افزار اختصاصی است. برای آگاهی از قوانین استفاده به
+www.fontiran.com مراجعه کنید.
+--------------------------------------------------------------------
+
+NOTE / یادداشت
+
+This file is a record of the licence details supplied by the licence
+holder, kept beside the font files as the vendor requires. It is not
+the licence certificate itself. The original package — including
+License.pdf and شرایط-استفاده.pdf — is kept outside this repository,
+because this repository is public and the package contains
+installable desktop font files that must not be redistributed.
+
+این فایل، ثبتِ مشخصات پروانه است که دارنده‌ی پروانه ارائه کرده و
+طبق خواسته‌ی فروشنده کنار فایل‌های فونت نگهداری می‌شود. خودِ سند
+پروانه نیست. بسته‌ی اصلی — شامل License.pdf و شرایط-استفاده.pdf —
+بیرون از این مخزن نگهداری می‌شود، چون این مخزن عمومی است و بسته
+فایل‌های نصب‌شدنی فونت دارد که نباید بازتوزیع شوند.

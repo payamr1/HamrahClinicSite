@@ -1,3 +1,18 @@
+/*
+Narengi fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com
+--------------------------------------------------------------------------------------
+This set of fonts are used in this project under the license: (KBMJU7GR)
+--------------------------------------------------------------------------------------
+*/
+@font-face{
+  font-family:"Narengi";
+  src:url("/assets/fonts/NarengiVF.woff2") format("woff2-variations"),
+      url("/assets/fonts/NarengiVF.woff2") format("woff2");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+
 /* ============================================================
    همراه کلینیک — استایل پایه
    پالت از رنگ‌های لوگو: سرمه‌ای #24408D و فیروزه‌ای #4EC3A9
@@ -44,7 +59,7 @@
 html{direction:rtl}
 body{
   margin:0;background:var(--ground);color:var(--ink);
-  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  font-family:"Narengi","Vazirmatn","Segoe UI",Tahoma,sans-serif;
   font-weight:400;font-size:15px;line-height:1.85;
   -webkit-font-smoothing:antialiased;
 }
