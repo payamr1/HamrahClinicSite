@@ -161,7 +161,7 @@ svg{display:block}
 /* ---- فوتر --------------------------------------------------- */
 .site-foot{background:var(--navy-d);color:#B7C4DE;margin-top:40px;
   padding-block:40px 0;font-size:13.5px}
-.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:34px;
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:34px;
   padding-bottom:32px}
 .site-foot h4{font-size:14.5px;color:#fff;margin-bottom:14px}
 .site-foot ul{margin:0;padding:0;list-style:none;
@@ -179,6 +179,8 @@ svg{display:block}
 /* ---- واکنش‌گرا ---------------------------------------------- */
 @media (max-width:1000px){
   .menu{display:none}
+  /* چهار ستون فوتر در این عرض تنگ می‌شود */
+  .fgrid{grid-template-columns:1fr 1fr;gap:28px}
 }
 @media (max-width:760px){
   .in{padding:0 16px}

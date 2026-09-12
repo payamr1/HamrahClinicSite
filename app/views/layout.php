@@ -88,6 +88,7 @@ if ($trail !== []) {
       <a href="<?= url('/service/') ?>">کلینیک‌ها</a>
       <a href="<?= url('/team/') ?>">پزشکان</a>
       <a href="<?= url('/about-us/') ?>">درباره ما</a>
+      <a href="<?= url('/گالری/') ?>">گالری</a>
       <a href="<?= url('/blog/') ?>">مقالات</a>
       <a href="<?= url('/contact-us/') ?>">تماس</a>
     </nav>
@@ -125,6 +126,15 @@ if ($trail !== []) {
           <?php foreach (array_slice($repo->clinics(), 0, 5) as $c): ?>
             <li><a href="<?= url($c['page_path'] ?? '/service/') ?>"><?= e($c['name']) ?></a></li>
           <?php endforeach; ?>
+        </ul>
+      </div>
+      <div>
+        <h4>بیشتر</h4>
+        <ul>
+          <li><a href="<?= url('/گالری/') ?>">گالری تصاویر</a></li>
+          <li><a href="<?= url('/team/') ?>">تیم درمان</a></li>
+          <li><a href="<?= url('/about-us/') ?>">درباره ما</a></li>
+          <li><a href="<?= url('/سوالات-متداول/') ?>">سوالات متداول</a></li>
         </ul>
       </div>
       <div>

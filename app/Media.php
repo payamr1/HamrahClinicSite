@@ -115,28 +115,36 @@ final class Media
         return $out;
     }
 
-    /** گالری عمومی کل کلینیک، با امکان فیلتر روی یک موجودیت */
+    /**
+     * گالری عمومی کل کلینیک.
+     *
+     * همه‌ی رسانه‌ی گالری را نشان می‌دهد، هر کسی که تگ خورده باشد —
+     * نه فقط آن‌هایی که تگ «کل کلینیک» دارند. خودِ تگ‌ها اینجا نقش
+     * فیلتر را بازی می‌کنند، پس محدود کردن فهرست به یک تگ خاص،
+     * صفحه را خالی می‌گذارد و فیلترها را بی‌معنی می‌کند.
+     *
+     * فقط نقش gallery می‌آید. عکس پروفایل پرتره‌ی کارت است نه
+     * محتوای گالری؛ اگر عکسی باید در هر دو جا باشد، در پنل هم
+     * پروفایلِ یکی می‌شود و هم گالریِ دیگری.
+     *
+     * ‎is_active راه پنهان کردن یک فایل از سایت است.
+     */
     public function siteGallery(
         string $kind = 'all',
         ?string $filterType = null,
         ?int $filterId = null,
         int $limit = 200
     ): array {
+        $sql = "SELECT DISTINCT m.*
+                  FROM media m
+                  JOIN media_tag t ON t.media_id = m.id
+                 WHERE t.role = 'gallery' AND m.is_active = 1";
+        $args = [];
+
         if ($filterType !== null && $filterId !== null) {
-            // هر فایلی که به این موجودیت تگ خورده، در هر نقشی
-            $sql = 'SELECT DISTINCT m.*
-                      FROM media m
-                      JOIN media_tag t ON t.media_id = m.id
-                     WHERE t.entity_type = ? AND t.entity_id = ?
-                       AND m.is_active = 1';
-            $args = [$filterType, $filterId];
-        } else {
-            $sql = "SELECT DISTINCT m.*
-                      FROM media m
-                      JOIN media_tag t ON t.media_id = m.id
-                     WHERE t.entity_type = 'site' AND t.role = 'gallery'
-                       AND m.is_active = 1";
-            $args = [];
+            $sql .= ' AND t.entity_type = ? AND t.entity_id = ?';
+            $args[] = $filterType;
+            $args[] = $filterId;
         }
         if ($kind !== 'all') {
             $sql .= ' AND m.kind = ?';
@@ -153,11 +161,15 @@ final class Media
      */
     public function galleryFacets(): array
     {
+        // شرط‌ها باید دقیقاً همان شرط‌های siteGallery باشد، وگرنه
+        // دکمه‌ای ساخته می‌شود که زدنش چیزی نشان نمی‌دهد
         $rows = $this->db->all(
             "SELECT t.entity_type, t.entity_id, COUNT(DISTINCT m.id) AS n
                FROM media_tag t
                JOIN media m ON m.id = t.media_id
-              WHERE m.is_active = 1 AND t.entity_type <> 'site'
+              WHERE m.is_active = 1
+                AND t.role = 'gallery'
+                AND t.entity_type <> 'site'
               GROUP BY t.entity_type, t.entity_id
               HAVING n > 0
               ORDER BY n DESC"
