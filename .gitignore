@@ -26,3 +26,6 @@ public/assets/cache/
 public/assets/uploads/*
 !public/assets/uploads/.htaccess
 !public/assets/uploads/index.html
+
+# سند تحویلی، نه کد منبع — از همین مخزن تولید می‌شود
+hamrah-clinic-services.docx
