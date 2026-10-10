@@ -561,7 +561,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/از-کجا-بفهمیم-شیمی-درمانی-جواب-داده/', '/از-کجا-بفهمیم-شیمی-درمانی-جواب-داده/', 'post', 'از-کجا-بفهمیم-شیمی-درمانی-جواب-داده', 'از کجا بفهمیم شیمی درمانی جواب داده؟ علائم و روش‌های تشخیص', 'از کجا بفهمیم شیمی‌درمانی جواب داده؟ علائم و روش‌های تشخیص', 'علائم پاسخ بدن به شیمی‌درمانی چیست؟ نقش آزمایش خون، سی‌تی‌اسکن، ام‌آر‌آی و تومورمارکرها در سنجش اثربخشی درمان، به زبان ساده از پزشکان همراه کلینیک.')
+  ('/از-کجا-بفهمیم-شیمی-درمانی-جواب-داده/', '/از-کجا-بفهمیم-شیمی-درمانی-جواب-داده/', 'post', 'از-کجا-بفهمیم-شیمی-درمانی-جواب-داده', 'از کجا بفهمیم شیمی درمانی جواب داده؟ علائم و روش‌های تشخیص', 'از کجا بفهمیم شیمی‌درمانی جواب داده؟ نشانه‌ها و زمان ارزیابی', 'پاسخ به درمان معمولاً پس از دو تا سه دوره و با تصویربرداری و تومورمارکر سنجیده می‌شود، نه از روی حال عمومی. نشانه‌های پاسخ و زمان درست ارزیابی.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -601,7 +601,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود/', '/قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود/', 'post', 'قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود', 'قرص نیتروگلیسیرین چه زمانی مصرف شود؟', 'قرص نیتروگلیسیرین چه زمانی مصرف شود؟', 'نیتروگلیسیرین را بلافاصله پس از شروع درد قفسه‌ی سینه یا ۵ دقیقه پیش از فعالیت سنگین مصرف کنید. روش صحیح، دوز مجاز و هشدارهای مهم دارویی.')
+  ('/قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود/', '/قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود/', 'post', 'قرص-نیتروگلیسیرین-چه-زمانی-مصرف-شود', 'قرص نیتروگلیسیرین چه زمانی مصرف شود؟', 'قرص نیتروگلیسیرین زیر زبانی | زمان مصرف، دوز و هشدارها', 'زیر زبان و بلافاصله پس از شروع درد قفسه‌ی سینه. اگر درد پس از نوبت اول و پنج دقیقه صبر ادامه داشت، اورژانس را خبر کنید. دوز مجاز و تداخل‌های خطرناک.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -609,7 +609,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/هر-دوره-شیمی-درمانی-چند-جلسه-است/', '/هر-دوره-شیمی-درمانی-چند-جلسه-است/', 'post', 'هر-دوره-شیمی-درمانی-چند-جلسه-است', 'تعداد جلسات شیمی‌ درمانی و فاصله بین جلسات چقدر است؟', 'تعداد جلسات شیمی‌درمانی و فاصله بین آن‌ها', 'هر دوره‌ی شیمی‌درمانی چند جلسه است و فاصله‌ی بین جلسات چقدر؟ عوامل تعیین‌کننده‌ی تعداد جلسات و آنچه در فاصله‌ی بین دو جلسه باید بدانید.')
+  ('/هر-دوره-شیمی-درمانی-چند-جلسه-است/', '/هر-دوره-شیمی-درمانی-چند-جلسه-است/', 'post', 'هر-دوره-شیمی-درمانی-چند-جلسه-است', 'تعداد جلسات شیمی‌ درمانی و فاصله بین جلسات چقدر است؟', 'هر دوره شیمی‌درمانی چند جلسه است؟ تعداد و فاصله‌ی جلسات', 'تعداد جلسات به نوع سرطان و پروتکل بستگی دارد و فاصله‌ی دوره‌ها اغلب دو تا سه هفته است. چه چیزی این عدد را تعیین می‌کند و بین دو جلسه چه باید کرد.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -677,7 +677,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/arterial-ulcer/', '/service/arterial-ulcer/', 'service', 'arterial-ulcer', 'درمان زخم شریانی', 'درمان زخم شریانی | کلینیک زخم همراه تهران', 'زخم شریانی (Arterial Ulcer) ناشی از کاهش جریان خون شریانی به اندام‌های انتهایی است و معمولاً در انگشتان پا، پاشنه و نواحی فشاری ظاهر می‌شود. این زخم‌ها بسیار')
+  ('/service/arterial-ulcer/', '/service/arterial-ulcer/', 'service', 'arterial-ulcer', 'درمان زخم شریانی', 'درمان زخم شریانی | کلینیک زخم همراه تهران', 'زخم شریانی از کاهش خون‌رسانی به پا می‌آید و بدون اصلاح گردش خون خوب نمی‌شود. ارزیابی عروق و درمان تخصصی در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -685,11 +685,11 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/burn-wound/', '/service/burn-wound/', 'service', 'burn-wound', 'درمان زخم سوختگی', 'درمان زخم سوختگی | کلینیک زخم همراه تهران', 'زخم سوختگی یکی از پیچیده‌ترین انواع زخم است که نیاز به مراقبت تخصصی برای کاهش عوارض، اسکار و عفونت دارد. کلینیک زخم همراه با پروتکل‌های مدرن، درمان سوختگی‌های')
+  ('/service/burn-wound/', '/service/burn-wound/', 'service', 'burn-wound', 'درمان زخم سوختگی', 'درمان زخم سوختگی | کلینیک زخم همراه تهران', 'درمان تخصصی زخم سوختگی در کلینیک زخم همراه، تجریش تهران؛ پانسمان مدرن برای کاهش درد، پیشگیری از عفونت و کم کردن جای زخم.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/chronic-wound/', '/service/chronic-wound/', 'service', 'chronic-wound', 'درمان زخم مزمن غیرملتئم', 'درمان زخم مزمن غیرملتئم | کلینیک زخم همراه تهران', 'زخم مزمن (Chronic Wound) هر زخمی است که در عرض ۶ هفته با درمان‌های متداول بهبود نیافته باشد. این زخم‌ها معمولاً علامت یک بیماری زمینه‌ای هستند و نیازمند')
+  ('/service/chronic-wound/', '/service/chronic-wound/', 'service', 'chronic-wound', 'درمان زخم مزمن غیرملتئم', 'درمان زخم مزمن غیرملتئم | کلینیک زخم همراه تهران', 'زخمی که بیش از شش هفته خوب نشده، معمولاً علامت یک بیماری زمینه‌ای است. تشخیص علت و درمان زخم مزمن در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -697,7 +697,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/diabetic-foot/', '/service/diabetic-foot/', 'service', 'diabetic-foot', 'درمان زخم پای دیابتی', 'درمان زخم پای دیابتی | کلینیک زخم همراه تهران', 'زخم پای دیابتی شایع‌ترین عارضه‌ی مزمن دیابت است که در ۱۵ تا ۲۵ درصد بیماران دیابتی در طول عمرشان رخ می‌دهد. این زخم اگر به‌موقع و توسط تیم تخصصی درمان نشود،')
+  ('/service/diabetic-foot/', '/service/diabetic-foot/', 'service', 'diabetic-foot', 'درمان زخم پای دیابتی', 'درمان زخم پای دیابتی | کلینیک زخم همراه تهران', 'زخم پای دیابتی اگر به‌موقع درمان نشود می‌تواند به قطع عضو برسد. ارزیابی گردش خون، پانسمان تخصصی و کنترل قند در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -705,15 +705,15 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/fever-unknown-origin/', '/service/fever-unknown-origin/', 'service', 'fever-unknown-origin', 'بررسی تب با علت نامشخص (FUO)', 'بررسی تب با علت نامشخص (FUO) | کلینیک عفونی تهران', 'تب با علت نامشخص (FUO) به تب بیش از ۳۸.۳ که حداقل ۳ هفته طول کشیده و پس از بررسی‌های اولیه علت آن مشخص نشده، گفته می‌شود. کلینیک عفونی همراه با رویکرد')
+  ('/service/fever-unknown-origin/', '/service/fever-unknown-origin/', 'service', 'fever-unknown-origin', 'بررسی تب با علت نامشخص (FUO)', 'بررسی تب با علت نامشخص (FUO) | کلینیک عفونی تهران', 'تب بالای سه هفته که علتش پیدا نشده، بررسی گام‌به‌گام می‌خواهد. ارزیابی تب با منشأ نامشخص در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/fungal-infection/', '/service/fungal-infection/', 'service', 'fungal-infection', 'درمان عفونت‌های قارچی', 'درمان عفونت‌های قارچی | کلینیک عفونی تهران', 'عفونت‌های قارچی از موارد سطحی پوست تا عفونت‌های مهاجم تهدیدکننده‌ی جان متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری بخش انکولوژی و بیماری‌های مزمن، عفونت‌های')
+  ('/service/fungal-infection/', '/service/fungal-infection/', 'service', 'fungal-infection', 'درمان عفونت‌های قارچی', 'درمان عفونت‌های قارچی | کلینیک عفونی تهران', 'عفونت قارچی از ضایعه‌ی سطحی پوست تا عفونت مهاجم فرق می‌کند. تشخیص و درمان عفونت‌های قارچی در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/gi-infection/', '/service/gi-infection/', 'service', 'gi-infection', 'درمان عفونت‌های گوارشی', 'درمان عفونت‌های گوارشی | کلینیک عفونی تهران', 'عفونت‌های گوارشی از علل اصلی اسهال حاد و مزمن هستند. کلینیک عفونی همراه با تشخیص دقیق پاتوژن (باکتری، انگل، ویروس) و درمان هدفمند، از تجویز کور آنتی‌بیوتیک')
+  ('/service/gi-infection/', '/service/gi-infection/', 'service', 'gi-infection', 'درمان عفونت‌های گوارشی', 'درمان عفونت‌های گوارشی | کلینیک عفونی تهران', 'تشخیص دقیق عامل اسهال و درمان هدفمند، به‌جای تجویز کور آنتی‌بیوتیک. درمان عفونت‌های گوارشی در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -725,7 +725,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/infectious-clinic/', '/service/infectious-clinic/', 'service', 'infectious-clinic', 'مرکز تخصصی بیماری‌های عفونی و گرمسیری', 'بهترین کلینیک تخصصی عفونی در تهران', 'کلینیک تخصصی عفونی در شهر تهران با پزشکان مجرب، تشخیص دقیق و درمان بیماری‌های عفونی، تب، هپاتیت و عفونت‌های ویروسی و باکتریایی با امکان رزرو نوبت بصورت آنلاین')
+  ('/service/infectious-clinic/', '/service/infectious-clinic/', 'service', 'infectious-clinic', 'مرکز تخصصی بیماری‌های عفونی و گرمسیری', 'بهترین کلینیک تخصصی عفونی در تهران', 'تشخیص و درمان بیماری‌های عفونی، هپاتیت، سل و تب با علت نامشخص در کلینیک عفونی همراه، تجریش تهران. رزرو نوبت آنلاین.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -753,11 +753,11 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/pressure-ulcer/', '/service/pressure-ulcer/', 'service', 'pressure-ulcer', 'درمان زخم بستر (فشاری)', 'درمان زخم بستر (فشاری) | کلینیک زخم همراه تهران', 'زخم بستر یا زخم فشاری (Pressure Ulcer) آسیبی است که در پوست و بافت‌های زیرین آن به دلیل فشار طولانی‌مدت ایجاد می‌شود. این زخم‌ها معمولاً در بیماران سالمند،')
+  ('/service/pressure-ulcer/', '/service/pressure-ulcer/', 'service', 'pressure-ulcer', 'درمان زخم بستر (فشاری)', 'درمان زخم بستر (فشاری) | کلینیک زخم همراه تهران', 'زخم بستر از فشار طولانی‌مدت می‌آید و درمانش به تغییر وضعیت و پانسمان درست بستگی دارد. درمان زخم فشاری در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/respiratory-infection/', '/service/respiratory-infection/', 'service', 'respiratory-infection', 'درمان عفونت تنفسی', 'درمان عفونت تنفسی | کلینیک عفونی تهران', 'عفونت‌های تنفسی از علل اصلی مراجعه به پزشک هستند. کلینیک عفونی همراه با ارزیابی دقیق، تصویربرداری مناسب و تشخیص افتراقی بین عفونت‌های ویروسی و باکتریایی، از')
+  ('/service/respiratory-infection/', '/service/respiratory-infection/', 'service', 'respiratory-infection', 'درمان عفونت تنفسی', 'درمان عفونت تنفسی | کلینیک عفونی تهران', 'تشخیص افتراقی عفونت ویروسی از باکتریایی، تا آنتی‌بیوتیک بی‌دلیل تجویز نشود. درمان عفونت تنفسی در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -765,15 +765,15 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/skin-infection/', '/service/skin-infection/', 'service', 'skin-infection', 'درمان عفونت پوست و بافت نرم', 'درمان عفونت پوست و بافت نرم | کلینیک عفونی تهران', 'عفونت‌های پوست و بافت نرم (SSTI) از سلولیت ساده تا عفونت‌های تهدیدکننده‌ی جان مانند نکروتیزینگ فاسئیت متفاوت‌اند. کلینیک عفونی همراه با هم‌کاری کلینیک زخم،')
+  ('/service/skin-infection/', '/service/skin-infection/', 'service', 'skin-infection', 'درمان عفونت پوست و بافت نرم', 'درمان عفونت پوست و بافت نرم | کلینیک عفونی تهران', 'عفونت پوست و بافت نرم از سلولیت ساده تا موارد جدی فرق می‌کند. تشخیص و درمان با همکاری کلینیک زخم، در همراه کلینیک تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/sti/', '/service/sti/', 'service', 'sti', 'تشخیص و درمان عفونت‌های مقاربتی (STI)', 'تشخیص و درمان عفونت‌های مقاربتی (STI)', 'عفونت‌های مقاربتی (STI) قابل تشخیص و درمان هستند، اما به دلیل تابو فرهنگی، اغلب دیر تشخیص داده می‌شوند. کلینیک عفونی همراه با رعایت کامل محرمانگی و حریم')
+  ('/service/sti/', '/service/sti/', 'service', 'sti', 'تشخیص و درمان عفونت‌های مقاربتی (STI)', 'تشخیص و درمان عفونت‌های مقاربتی (STI)', 'عفونت‌های مقاربتی قابل تشخیص و درمان‌اند. بررسی و درمان در کلینیک عفونی همراه، تجریش تهران، با رعایت کامل محرمانگی.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/surgical-wound/', '/service/surgical-wound/', 'service', 'surgical-wound', 'درمان زخم بعد از جراحی', 'درمان زخم بعد از جراحی | کلینیک زخم همراه تهران', 'زخم‌های بعد از جراحی که دیر التیام می‌یابند یا دچار باز شدن (Wound Dehiscence) شده‌اند، نیازمند مراقبت تخصصی هستند. کلینیک زخم همراه با پروتکل‌های استاندارد و')
+  ('/service/surgical-wound/', '/service/surgical-wound/', 'service', 'surgical-wound', 'درمان زخم بعد از جراحی', 'درمان زخم بعد از جراحی | کلینیک زخم همراه تهران', 'زخم جراحی که دیر خوب می‌شود یا باز شده، مراقبت تخصصی می‌خواهد. پانسمان و پیگیری در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -781,15 +781,15 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/traumatic-wound/', '/service/traumatic-wound/', 'service', 'traumatic-wound', 'درمان زخم ضربه‌ای (تروماتیک)', 'درمان زخم ضربه‌ای (تروماتیک) | کلینیک زخم همراه تهران', 'زخم‌های ضربه‌ای (Traumatic Wounds) ناشی از تصادف، سقوط، بریدگی شدید یا حادثه هستند که می‌توانند سطحی یا عمیق، تمیز یا آلوده باشند. کلینیک زخم همراه پیگیری پس')
+  ('/service/traumatic-wound/', '/service/traumatic-wound/', 'service', 'traumatic-wound', 'درمان زخم ضربه‌ای (تروماتیک)', 'درمان زخم ضربه‌ای (تروماتیک) | کلینیک زخم همراه تهران', 'زخم ضربه‌ای ناشی از تصادف یا بریدگی، بسته به عمق و آلودگی درمان متفاوتی دارد. مراقبت و پیگیری در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/tuberculosis/', '/service/tuberculosis/', 'service', 'tuberculosis', 'تشخیص و درمان سل (TB)', 'تشخیص و درمان سل (TB) | کلینیک عفونی تهران', 'سل (Tuberculosis) یکی از کشنده‌ترین عفونت‌های جهان است که هنوز سالانه میلیون‌ها نفر را در سراسر دنیا مبتلا می‌کند. کلینیک عفونی همراه با دسترسی به Gene-Xpert')
+  ('/service/tuberculosis/', '/service/tuberculosis/', 'service', 'tuberculosis', 'تشخیص و درمان سل (TB)', 'تشخیص و درمان سل (TB) | کلینیک عفونی تهران', 'تشخیص سل با روش‌های مولکولی و درمان کامل تا پایان دوره، در کلینیک عفونی همراه، تجریش تهران. سل با درمان درست کاملاً قابل درمان است.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/urinary-tract-infection/', '/service/urinary-tract-infection/', 'service', 'urinary-tract-infection', 'درمان عفونت ادراری (UTI)', 'درمان عفونت ادراری (UTI) | کلینیک عفونی تهران', 'عفونت ادراری (UTI) شایع‌ترین عفونت باکتریایی در جامعه است و حدود ۵۰٪ زنان حداقل یک‌بار در طول عمرشان به آن مبتلا می‌شوند. کلینیک عفونی همراه با تشخیص دقیق')
+  ('/service/urinary-tract-infection/', '/service/urinary-tract-infection/', 'service', 'urinary-tract-infection', 'درمان عفونت ادراری (UTI)', 'درمان عفونت ادراری (UTI) | کلینیک عفونی تهران', 'عفونت ادراری که تکرار می‌شود، علت دارد. تشخیص با کشت ادرار و درمان هدفمند در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -797,11 +797,11 @@ INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VA
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/venous-ulcer/', '/service/venous-ulcer/', 'service', 'venous-ulcer', 'درمان زخم وریدی', 'درمان زخم وریدی | کلینیک زخم همراه تهران', 'زخم وریدی شایع‌ترین نوع زخم مزمن پای انسان است و در ۸۰٪ موارد زخم‌های مزمن ساق پا را شامل می‌شود. این زخم‌ها معمولاً در نتیجه‌ی نارسایی مزمن وریدی (CVI) و')
+  ('/service/venous-ulcer/', '/service/venous-ulcer/', 'service', 'venous-ulcer', 'درمان زخم وریدی', 'درمان زخم وریدی | کلینیک زخم همراه تهران', 'زخم وریدی شایع‌ترین زخم مزمن پاست و بدون درمان نارسایی وریدی برمی‌گردد. ارزیابی با داپلر و درمان در کلینیک زخم همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
-  ('/service/viral-hepatitis/', '/service/viral-hepatitis/', 'service', 'viral-hepatitis', 'درمان هپاتیت ویروسی (B و C)', 'درمان هپاتیت ویروسی (B و C) | کلینیک عفونی تهران', 'هپاتیت‌های ویروسی B و C از مهم‌ترین عفونت‌های مزمن کبد هستند که در صورت عدم درمان به سیروز، نارسایی کبد و سرطان کبد منجر می‌شوند. کلینیک عفونی همراه با دسترسی')
+  ('/service/viral-hepatitis/', '/service/viral-hepatitis/', 'service', 'viral-hepatitis', 'درمان هپاتیت ویروسی (B و C)', 'درمان هپاتیت ویروسی (B و C) | کلینیک عفونی تهران', 'هپاتیت B و C امروز قابل کنترل و در بسیاری موارد قابل درمان‌اند. تشخیص، درمان و پیگیری در کلینیک عفونی همراه، تجریش تهران.')
   ON DUPLICATE KEY UPDATE path_norm=VALUES(path_norm), title=VALUES(title),
     meta_title=VALUES(meta_title), meta_desc=VALUES(meta_desc);
 INSERT INTO pages (path, path_norm, type, slug, title, meta_title, meta_desc) VALUES
@@ -10003,9 +10003,9 @@ INSERT INTO faqs (page_id, question, answer, sort)
 --  بلوک عوض می‌شود.
 -- ------------------------------------------------------------
 INSERT INTO clinics (slug, name, tagline, summary, sort, page_id) VALUES
-  ('imaging', 'تصویربرداری و مداخلات',
+  ('imaging', 'رادیولوژی مداخله‌ای',
    'سونوگرافی تشخیصی و نمونه‌برداری هدایت‌شده',
-   'سونوگرافی تشخیصی و نمونه‌برداری زیر هدایت تصویر، زیر نظر فوق‌تخصص اینترونشنال رادیولوژی.',
+   'سونوگرافی تشخیصی، نمونه‌برداری زیر هدایت تصویر و درمان‌های کم‌تهاجمی، زیر نظر فوق‌تخصص اینترونشنال رادیولوژی.',
    95, NULL)
 ON DUPLICATE KEY UPDATE
   name = VALUES(name), tagline = VALUES(tagline),
