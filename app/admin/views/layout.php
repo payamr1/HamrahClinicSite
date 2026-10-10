@@ -26,7 +26,9 @@ $nav = [
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title><?= e($title ?? 'پنل') ?> · پنل همراه کلینیک</title>
 <link rel="icon" href="/assets/img/brand/mark.jpg" type="image/jpeg">
-<link rel="preload" href="<?= e(asset('/assets/fonts/NarengiVF.woff2')) ?>"
+<!-- بدون ?v=، تا با آدرسِ @font-face در admin.css یکی باشد؛
+     وگرنه فونت دو بار دانلود می‌شود. توضیح کامل در layout سایت. -->
+<link rel="preload" href="/assets/fonts/NarengiVF.woff2"
       as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= e(asset('/assets/css/admin.css')) ?>">
 </head>

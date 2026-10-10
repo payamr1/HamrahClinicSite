@@ -50,7 +50,18 @@ if ($trail !== []) {
 <link rel="icon" href="/assets/img/brand/mark.jpg" type="image/jpeg">
 <link rel="apple-touch-icon" href="/assets/img/brand/mark.jpg">
 
-<link rel="preload" href="<?= e(asset('/assets/fonts/NarengiVF.woff2')) ?>"
+<!--
+  این یکی عمداً بدون ?v= است.
+
+  آدرسی که @font-face در site.css صدا می‌زند کوئری ندارد. اگر
+  اینجا asset() بگذاریم، مرورگر دو آدرس متفاوت می‌بیند: ۱۸۸
+  کیلوبایت فونت دو بار دانلود می‌شود و preload — که کارش جلو
+  انداختن همین دانلود است — بی‌اثر می‌ماند.
+
+  فونت هم عوض نمی‌شود. اگر روزی شد، نام فایل را عوض کنید؛
+  .htaccess یک سال immutable کشش می‌کند.
+-->
+<link rel="preload" href="/assets/fonts/NarengiVF.woff2"
       as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= asset('/assets/css/site.css') ?>">
 
