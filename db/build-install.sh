@@ -43,7 +43,11 @@ OUT=db/install.sql
            db/seed/01-pages.sql \
            db/seed/02-clinics-doctors.sql \
            db/seed/03-content.sql \
-           db/seed/04-faqs.sql
+           db/seed/04-faqs.sql \
+           db/seed/05-new-services.sql \
+           db/seed/06-services-part2.sql \
+           db/seed/07-visits.sql \
+           db/seed/08-visits-gaps.sql
   do
     printf -- "\n-- ##### %s #####\n\n" "$f"
     grep -v '^SET NAMES utf8mb4;$' "$f"
