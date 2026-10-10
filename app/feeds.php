@@ -26,18 +26,35 @@ $staging = $seo->isStaging();
 //  robots.txt
 // ---------------------------------------------------------------
 if ($path === '/robots.txt') {
-    header('Content-Type: text/plain; charset=utf-8');
-    header('X-Robots-Tag: noindex');
-
+    /*
+     * روی staging هیچ robots.txtی سرو نمی‌شود — ۴۰۴.
+     *
+     * نسخه‌ی اول این فایل اینجا «Disallow: /» می‌گذاشت، که اشتباه
+     * رایجی است و دقیقاً خلاف هدف عمل می‌کند:
+     *
+     *   اگر خزیدن را با robots.txt ببندیم، گوگل نمی‌تواند صفحه را
+     *   بخواند — یعنی نمی‌تواند noindex را هم ببیند. در آن حالت
+     *   اگر لینکی از بیرون به آدرسی برسد، گوگل همان آدرس را بدون
+     *   توضیح در نتایج نشان می‌دهد و ما ابزاری برای بیرون آوردنش
+     *   نداریم.
+     *
+     * برای صفحه‌ای که نباید ایندکس شود، ابزار درست noindex است نه
+     * robots.txt؛ و noindex فقط وقتی کار می‌کند که اجازه‌ی خزیدن
+     * داده شود. هر ۱۲۶ صفحه هم هدر X-Robots-Tag دارند و هم متای
+     * robots، پس خزنده می‌خزد، noindex را می‌خواند و رد می‌شود.
+     *
+     * روز سوییچ، با production شدن env، robots.txt واقعی سرو
+     * می‌شود — همان پایین.
+     */
     if ($staging) {
-        // نسخه‌ی آزمایشی: هیچ‌چیز خزیده نشود.
-        // این چهارمین لایه‌ی محافظت است، کنار هدر X-Robots-Tag،
-        // متای robots و canonicalِ دامنه‌ی اصلی.
-        echo "User-agent: *\n";
-        echo "Disallow: /\n";
+        http_response_code(404);
+        header('Content-Type: text/plain; charset=utf-8');
+        header('X-Robots-Tag: noindex, nofollow');
+        echo "robots.txt روی نسخه‌ی آزمایشی سرو نمی‌شود.\n";
         exit;
     }
 
+    header('Content-Type: text/plain; charset=utf-8');
     echo "User-agent: *\n";
     echo "Allow: /\n\n";
 
@@ -52,11 +69,27 @@ if ($path === '/robots.txt') {
 
 // ---------------------------------------------------------------
 //  sitemap.xml
+//
+//  روی staging اصلاً وجود ندارد — نه نسخه‌ی noindex، نه نسخه‌ی
+//  خالی. ۴۰۴ می‌دهد، انگار هیچ‌وقت ساخته نشده.
+//
+//  دلیلش ساده است: sitemap کارش دعوت کردن خزنده به صفحه‌هاست، و
+//  نسخه‌ی آزمایشی نباید دعوت کند. هر چیز دیگری — حتی sitemapی که
+//  خودش noindex است — یعنی فهرست کامل آدرس‌های ما جایی قابل
+//  برداشت باشد پیش از آنکه آماده باشیم.
+//
+//  کد سر جایش می‌ماند و روزی که env بشود production خودبه‌خود
+//  فعال می‌شود؛ کاری لازم نیست جز همان یک تغییر در config.
 // ---------------------------------------------------------------
-header('Content-Type: application/xml; charset=utf-8');
 if ($staging) {
-    header('X-Robots-Tag: noindex');
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=utf-8');
+    header('X-Robots-Tag: noindex, nofollow');
+    echo "sitemap روی نسخه‌ی آزمایشی فعال نیست.\n";
+    exit;
 }
+
+header('Content-Type: application/xml; charset=utf-8');
 
 $rows = $repo->allPublishedPaths();
 
