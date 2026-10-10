@@ -96,9 +96,19 @@ if ($db instanceof PDO) {
 
     if (in_array('pages', $have, true)) {
         $pageCount = (int) $db->query('SELECT COUNT(*) FROM pages')->fetchColumn();
-        $add('آدرس‌های ثبت‌شده', $pageCount === 82,
-            $pageCount . ' از ۸۲' . ($pageCount === 82 ? '' : ' — فایل db/seed/01-pages.sql را اجرا کنید'),
-            $pageCount > 0 && $pageCount < 82);
+        /*
+         * ۸۲ کفِ کار است، نه سقف.
+         *
+         * این عدد تعداد آدرس‌های ایندکس‌شده‌ی سایت قدیم است و
+         * هیچ‌کدامشان نباید گم شود. ولی صفحه‌ی تازه آزادانه اضافه
+         * می‌شود، پس بیشتر بودن ایراد نیست — شرط قبلی برابری بود و
+         * با هر صفحه‌ی تازه الکی قرمز می‌شد.
+         */
+        $add('آدرس‌های ثبت‌شده', $pageCount >= 82,
+            $pageCount >= 82
+                ? $pageCount . ' صفحه (' . ($pageCount - 82) . ' تا بیشتر از ۸۲ آدرس ایندکس‌شده)'
+                : $pageCount . ' از ۸۲ — فایل db/install.sql را import کنید',
+            false);
 
         /*
          * سالم بودن UTF-8 مسیرها.
