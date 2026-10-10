@@ -161,7 +161,13 @@ sub extract_body {
     # ممکن امتحان و بلندترین خروجی انتخاب می‌شود.
     my @candidates;
 
-    for my $marker ('class="entry-content', 'class="site-main', 'data-elementor-type=') {
+    # content-inner و site-content برای مقاله‌هایی لازم‌اند که با
+    # قالب دیگری ساخته شده‌اند و هیچ‌کدام از سه نشانه‌ی اول را
+    # ندارند. دو صفحه‌ی پرترافیک سایت دقیقاً همین‌طور بودند و
+    # بی‌صدا خالی درمی‌آمدند.
+    for my $marker ('class="entry-content', 'class="site-main',
+                    'class="content-inner', 'class="site-content',
+                    'data-elementor-type=') {
         my $pos = 0;
         while ((my $i = index($src, $marker, $pos)) >= 0) {
             $pos = $i + 1;
@@ -232,6 +238,17 @@ while (my $l = <$tsv>) {
     my $file = "$RAW/$name.html";
 
     unless (-s $file) { push @report, "بی‌فایل   $path"; next; }
+
+    # صفحه‌های آرشیو متن ثابت نمی‌گیرند.
+    #
+    # فهرست مقاله‌ها و پزشک‌ها و خدمات را قالب در لحظه از دیتابیس
+    # می‌سازد. اگر نسخه‌ی کرال‌شده‌ی آن فهرست را در body ذخیره
+    # کنیم، یک کپی یخ‌زده با تاریخ‌های کهنه می‌ماند که روزی کسی
+    # ناخواسته نمایشش می‌دهد.
+    if ($path =~ m{^/(?:blog|service|team|گالری)/$}) {
+        push @report, "آرشیو     $path — متن ثابت نمی‌گیرد";
+        next;
+    }
 
     open my $fh, '<:encoding(UTF-8)', $file or next;
     local $/; my $src = <$fh>; close $fh;
