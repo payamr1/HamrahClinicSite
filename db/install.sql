@@ -9907,7 +9907,7 @@ INSERT INTO pages (path, path_norm, type, slug, title, lede, meta_title, meta_de
    'خارج کردن حجم مشخصی از خون، به‌عنوان درمان پزشکی.',
    'فصد درمانی و فلبوتومی در تهران | همراه کلینیک تجریش',
    'فصد درمانی (فلبوتومی) برای پلی‌سیتمی و اضافه‌بار آهن در همراه کلینیک تجریش تهران؛ زیر نظر فوق‌تخصص خون و با پایش آزمایشگاهی.',
-   35),
+   24),
 
   ('/service/تزریقات-تخصصی/', '/service/تزریقات-تخصصی/', 'service', 'تزریقات-تخصصی',
    'تزریقات تخصصی و فوق‌تخصصی',
@@ -9960,10 +9960,13 @@ UPDATE pages SET clinic_id = (SELECT id FROM clinics WHERE slug = 'varicose')
 UPDATE pages SET clinic_id = (SELECT id FROM clinics WHERE slug = 'chemotherapy')
   WHERE path IN ('/service/شیمی-درمانی-تک-دارویی/', '/service/شیمی-درمانی-ترکیبی/',
                  '/service/ایمونوتراپی/', '/service/تزریق-آهن-وریدی/',
-                 '/service/فصد-درمانی/', '/service/تزریقات-تخصصی/');
+                 '/service/تزریقات-تخصصی/');
 
+-- فصد درمانی و نمونه‌برداری مغز استخوان هر دو زیر آنکولوژی و
+-- هماتولوژی انجام می‌شوند، نه بخش تزریقات. هر دو اقدام تشخیصی
+-- و درمانیِ خون‌اند و تصمیم و اجرایشان با فوق‌تخصص خون است.
 UPDATE pages SET clinic_id = (SELECT id FROM clinics WHERE slug = 'oncology')
-  WHERE path = '/service/نمونه-برداری-مغز-استخوان/';
+  WHERE path IN ('/service/نمونه-برداری-مغز-استخوان/', '/service/فصد-درمانی/');
 
 UPDATE pages SET clinic_id = (SELECT id FROM clinics WHERE slug = 'imaging')
   WHERE path IN ('/service/بیوپسی-تحت-گاید-سونوگرافی/', '/service/سونوگرافی/');
