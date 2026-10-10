@@ -27,5 +27,20 @@ public/assets/uploads/*
 !public/assets/uploads/.htaccess
 !public/assets/uploads/index.html
 
+# فونت تجاری — روی سرور هست، در مخزن نه
+#
+# این مخزن عمومی است. سرو کردن woff2 از خود سایت استفاده‌ی عادی
+# وب است، ولی گذاشتنش در یک مخزن عمومی گیت‌هاب یعنی هرکسی
+# می‌تواند فایل فونت را از مخزن بردارد — این دیگر بازتوزیع است.
+#
+# فایل مستقیم روی سرور آپلود شده. استقرار با cp انجام می‌شود و
+# چیزی را پاک نمی‌کند، پس سالم می‌ماند. صفحه‌ی سلامت بودنش را
+# بررسی می‌کند. FontLicense.txt عمداً در مخزن می‌ماند: فروشنده
+# می‌خواهد کنار فونت باشد و خودش فونت نیست.
+public/assets/fonts/*.woff2
+public/assets/fonts/*.woff
+public/assets/fonts/*.ttf
+public/assets/fonts/*.otf
+
 # سند تحویلی، نه کد منبع — از همین مخزن تولید می‌شود
 hamrah-clinic-services.docx
