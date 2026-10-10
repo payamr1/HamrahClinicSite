@@ -1,5 +1,5 @@
 <?php
-/** آرشیو خدمات — فهرست ۹ کلینیک و خدمات هرکدام */
+/** آرشیو خدمات — هر بخش با همه‌ی خدماتش */
 /** @var Repository $repo */
 /** @var Seo $seo */
 $clinics = $repo->clinics();
@@ -16,7 +16,7 @@ ob_start(); ?>
 </header>
 
 <?php foreach ($clinics as $c):
-  $svc = $repo->servicesOfClinic((int) $c['id'], 24);
+  $svc = $repo->servicesOfClinic((int) $c['id'], 60);
   if ($svc === [] && empty($c['page_path'])) { continue; } ?>
   <section class="sec<?= empty($alt) ? '' : ' alt' ?>"><div class="in">
     <?php $alt = empty($alt); ?>

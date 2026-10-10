@@ -26,7 +26,21 @@ $repo = $app['repo'];
 /** @var Seo $seo */
 $seo = $app['seo'];
 
-$path   = Router::requestPath();
+$path = Router::requestPath();
+
+// ---- sitemap.xml و robots.txt ----------------------------------
+//
+// هر دو از دیتابیس ساخته می‌شوند، نه از فایل ثابت. با ۱۲۶ صفحه
+// که بیشترشان تازه‌اند و هنوز لینک بیرونی ندارند، sitemap تنها
+// راه معقول کشف‌شدنشان توسط گوگل است.
+//
+// روی staging، robots.txt همه‌چیز را می‌بندد. این عمدی است و با
+// سه لایه‌ی noindex موجود هم‌خوان: نسخه‌ی آزمایشی نباید خزیده شود.
+if ($path === '/sitemap.xml' || $path === '/robots.txt') {
+    require $appRoot . '/app/feeds.php';
+    exit;
+}
+
 $result = $router->resolve($path);
 
 // ---- ریدایرکت -------------------------------------------------

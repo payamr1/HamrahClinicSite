@@ -9,7 +9,10 @@
 $clinic  = !empty($page['clinic_id']) ? $repo->clinicById((int) $page['clinic_id']) : null;
 $faqs    = $repo->faqs((int) $page['id']);
 $docs    = $clinic ? $repo->doctorsOfClinic((int) $clinic['id']) : [];
-$sibling = $clinic ? $repo->servicesOfClinic((int) $clinic['id'], 8) : [];
+// سقف بالا عمدی است: بخش قلب ۱۷ خدمت دارد و سقف قبلی (۸)
+// یعنی بیش از نیمشان از هیچ صفحه‌ای قابل رسیدن نبودند، در
+// حالی که شمارنده‌ی بالای صفحه هم همان عدد ناقص را می‌گفت.
+$sibling = $clinic ? $repo->servicesOfClinic((int) $clinic['id'], 60) : [];
 $sibling = array_values(array_filter($sibling, fn($s) => (int) $s['id'] !== (int) $page['id']));
 $booking = $repo->bookingLinks((int) $page['id'], isset($page['clinic_id']) ? (int) $page['clinic_id'] : null);
 $prof    = $app['media']->profilesFor('doctor', array_column($docs, 'id'));
