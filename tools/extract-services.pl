@@ -22,6 +22,8 @@ my @order;
 my %clinicName;
 my %belongs;  # slug یا path => clinic slug
 my @allSlugs;
+my %drafted;  # صفحه‌هایی که از انتشار درآمده‌اند
+my %offline;  # بخش‌هایی که غیرفعال شده‌اند
 
 for my $file (@FILES) {
     open my $fh, '<:encoding(UTF-8)', $file or die "$file: $!";
@@ -32,12 +34,21 @@ for my $file (@FILES) {
     parse_pages($sql);
     parse_clinics($sql);
     parse_assignments($sql);
+    parse_removals($sql);
 }
 
 # ---- خروجی ----
+#
+# چیزی که از سایت برداشته شده نباید در سند بماند. فایل‌های
+# بعدی می‌توانند صفحه را پیش‌نویس یا بخش را غیرفعال کنند، و
+# سند باید همان چیزی را بگوید که بازدیدکننده می‌بیند.
 for my $path (@order) {
+    next if $drafted{$path};
+
     my $s  = $svc{$path};
     my $cl = $belongs{ $s->{slug} } // $belongs{$path} // '';
+    next if $cl && $offline{$cl};
+
     my $cn = $cl ? ($clinicName{$cl} // $cl) : 'بدون بخش';
     print join("\t", $cn, $s->{title}, $path, $s->{desc}), "\n";
 }
@@ -145,5 +156,20 @@ sub parse_assignments {
         else {
             $belongs{$_} = $cl for @vals;
         }
+    }
+}
+
+# صفحه‌های پیش‌نویس‌شده و بخش‌های غیرفعال‌شده
+sub parse_removals {
+    my ($sql) = @_;
+
+    while ($sql =~ /UPDATE\s+pages\s+SET\s+status\s*=\s*'draft'\s*(.*?);/gis) {
+        $drafted{$_} = 1 for ($1 =~ /'([^']+)'/g);
+    }
+    while ($sql =~ /DELETE\s+FROM\s+pages\s*(.*?);/gis) {
+        $drafted{$_} = 1 for ($1 =~ /'([^']+)'/g);
+    }
+    while ($sql =~ /UPDATE\s+clinics\s+SET\s+is_active\s*=\s*0\s*WHERE\s+slug\s*=\s*'([a-z\-]+)'/gis) {
+        $offline{$1} = 1;
     }
 }
